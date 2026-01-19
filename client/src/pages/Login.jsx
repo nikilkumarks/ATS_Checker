@@ -19,28 +19,38 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
 
-    try {
-      const data = await loginApi(formData);
+  try {
+    const data = await loginApi(formData);
 
-      if (!data.token) {
-        setError(data.message || "Invalid credentials");
-        setLoading(false);
-        return;
-      }
-
-      setToken(data.token);
-      alert("Login successful");
-    } catch (err) {
-      setError("Server not responding");
-    } finally {
-      setLoading(false);
+    // ✅ Safety check
+    if (!data?.token) {
+      setError(data?.message || "Invalid credentials");
+      return;
     }
-  };
+
+    // ✅ Store token
+    localStorage.setItem("token", data.token);
+
+    // ✅ Store user
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    alert("Login successful");
+
+  } catch (err) {
+    console.error(err);
+    setError("Server not responding");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0e0e10] flex items-center justify-center px-4">

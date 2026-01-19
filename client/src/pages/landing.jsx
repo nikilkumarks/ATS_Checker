@@ -3,75 +3,65 @@ import { Link } from "react-router-dom";
 
 export default function Landing() {
   return (
-    <div className="relative bg-[#0e0e10] text-white min-h-screen overflow-hidden">
+    <div className="bg-[#0e0e10] text-white min-h-screen">
       <Navbar />
 
-      {/* 🌌 Animated Background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-purple-600/10 to-cyan-600/20 animate-gradient" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-[28rem] h-[28rem] bg-purple-500/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-20 right-20 w-72 h-72 bg-cyan-500/20 rounded-full blur-3xl animate-float-fast" />
-      </div>
-
-      {/* 🚀 HERO */}
-      <section className="pt-36 pb-28 text-center px-6 animate-fade-up">
-        <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
-          Build{" "}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400">
-            ATS-Friendly
-          </span>{" "}
-          Resumes That Get Interviews
+      {/* HERO */}
+      <section className="pt-36 pb-24 text-center px-6 animate-fade-up">
+        <h1 className="text-5xl md:text-6xl font-semibold leading-tight mb-6">
+          Build <span className="text-blue-500">ATS-Friendly</span> Resumes
+          <br className="hidden md:block" />
+          That Get Interviews
         </h1>
 
         <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-          Create professional resumes, analyze ATS scores, and match with the
-          right jobs — all in one powerful career platform.
+          Create professional resumes, check ATS compatibility, and improve
+          your chances of getting shortlisted — all in one platform.
         </p>
 
         <div className="mt-10 flex justify-center gap-4 flex-wrap">
           <Link
             to="/signup"
-            className="relative px-8 py-4 rounded-xl text-lg font-medium bg-gradient-to-r from-indigo-600 to-purple-600 hover:-translate-y-1 hover:shadow-xl transition-all"
+            className="px-8 py-4 rounded-lg text-lg font-medium bg-blue-600 hover:bg-blue-500 transition"
           >
             Get Started Free
           </Link>
 
           <Link
             to="/login"
-            className="px-8 py-4 rounded-xl text-lg border border-white/20 hover:bg-white/10 transition"
+            className="px-8 py-4 rounded-lg text-lg border border-white/20 hover:bg-white/5 transition"
           >
             Sign In
           </Link>
         </div>
 
         <p className="mt-8 text-sm text-gray-500">
-          Trusted by job seekers optimizing resumes for modern ATS systems
+          Used by job seekers preparing resumes for modern ATS systems
         </p>
       </section>
 
-      {/* ✨ FEATURES */}
-      <section className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8">
+      {/* FEATURES */}
+      <section className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
         {[
           {
-            title: "Smart Resume Builder",
-            desc: "Build clean, recruiter-approved resumes using guided templates."
+            title: "Resume Builder",
+            desc: "Create clean, structured resumes that recruiters actually read."
           },
           {
             title: "ATS Score Checker",
-            desc: "Instantly see how well your resume matches job descriptions."
+            desc: "Understand how your resume performs against ATS filters."
           },
           {
-            title: "AI Job Matching",
-            desc: "Find roles aligned with your skills, experience, and resume strength."
+            title: "Job Matching",
+            desc: "Find roles that align with your skills and resume strength."
           },
         ].map((item, index) => (
           <div
             key={item.title}
-            className="bg-white/5 backdrop-blur-xl p-8 rounded-2xl border border-white/10 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 animate-fade-up"
-            style={{ animationDelay: `${index * 0.15}s` }}
+            className="bg-white/5 p-8 rounded-xl border border-white/10 hover:border-blue-500/40 transition animate-fade-up"
+            style={{ animationDelay: `${index * 0.1}s` }}
           >
-            <h3 className="text-xl font-semibold mb-3">
+            <h3 className="text-xl font-medium mb-3">
               {item.title}
             </h3>
             <p className="text-gray-400 leading-relaxed">
@@ -81,20 +71,19 @@ export default function Landing() {
         ))}
       </section>
 
-      {/* 🎯 CTA */}
-      <section className="mt-32 pb-28 text-center px-6 animate-fade-up">
-        <h2 className="text-4xl font-bold mb-6">
+      {/* CTA */}
+      <section className="mt-28 pb-24 text-center px-6 animate-fade-up">
+        <h2 className="text-4xl font-semibold mb-4">
           Your Resume Is Your First Interview
         </h2>
 
         <p className="text-gray-400 max-w-xl mx-auto">
-          Optimize it for ATS, stand out to recruiters, and increase your
-          shortlisting chances.
+          Make sure it passes ATS checks and reaches recruiters.
         </p>
 
         <Link
           to="/signup"
-          className="inline-block mt-10 px-10 py-4 rounded-xl text-lg font-medium bg-gradient-to-r from-emerald-500 to-cyan-500 hover:-translate-y-1 hover:shadow-xl transition-all"
+          className="inline-block mt-8 px-10 py-4 rounded-lg text-lg font-medium bg-blue-600 hover:bg-blue-500 transition"
         >
           Create Free Account
         </Link>
