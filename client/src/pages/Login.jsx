@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { loginApi } from "../api/authApi";
 import { setToken } from "../services/tokenService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -11,6 +11,8 @@ export default function Login() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+
 
   const handleChange = (e) => {
     setFormData({
@@ -39,7 +41,8 @@ const handleSubmit = async (e) => {
     // ✅ Store user
     localStorage.setItem("user", JSON.stringify(data.user));
 
-    alert("Login successful");
+   navigate("/dashboard");
+
 
   } catch (err) {
     console.error(err);
