@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Wand2, ChevronRight, ChevronLeft, Download, Plus, Trash2, Layout,
-    User, Briefcase, GraduationCap, Code2, FolderGit2, Award, Globe, Languages
+    User, Briefcase, GraduationCap, Code2, FolderGit2, Award, Globe, Languages,
+    Mail, Phone, MapPin, Linkedin
 } from 'lucide-react';
 import html2canvas from 'html2canvas'; // Fixed import
 import jsPDF from 'jspdf';
@@ -114,32 +115,56 @@ export default function ResumeBuilder() {
     };
 
     const handleDownloadPDF = async () => {
-        if (!previewRef.current) return;
+        const previewElement = document.getElementById('resume-preview');
+
+        if (!previewElement) {
+            alert("Error: Preview element not found. If you are on a mobile device, please try using a desktop.");
+            return;
+        }
+
         setLoading(true);
         try {
-            const canvas = await html2canvas(previewRef.current, {
-                scale: 3, // Higher scale for better quality
+            // Force scroll to top to ensure nothing is cut off
+            window.scrollTo(0, 0);
+
+            const canvas = await html2canvas(previewElement, {
+                scale: 2, // 2x is very crisp for A4
                 useCORS: true,
+                allowTaint: true,
                 backgroundColor: "#ffffff",
-                windowWidth: previewRef.current.scrollWidth,
-                windowHeight: previewRef.current.scrollHeight,
+                scrollX: 0,
+                scrollY: 0,
+                // These specific settings help capture transformed/scaled divs
+                onclone: (clonedDoc) => {
+                    const el = clonedDoc.getElementById('resume-preview');
+                    if (el) {
+                        el.style.transform = "scale(1)";
+                        el.style.position = "static";
+                        el.style.margin = "0";
+                        el.style.padding = "20mm";
+                        el.style.width = "210mm"; // Force A4 width
+                        el.style.minHeight = "297mm"; // Force A4 height
+                        el.style.display = "block"; // Ensure it's not hidden
+                    }
+                }
             });
 
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF({
-                orientation: 'portrait',
+                orientation: 'p',
                 unit: 'mm',
-                format: 'a4'
+                format: 'a4',
+                compress: true
             });
 
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
             pdf.save(`${resumeData.personal.fullName?.replace(/\s+/g, '_') || 'Resume'}_ATS.pdf`);
         } catch (err) {
             console.error("PDF Export Error:", err);
-            alert("Failed to generate PDF. Please try again.");
+            alert("Failed to generate PDF. Tip: Try using Chrome or a Desktop browser.");
         } finally {
             setLoading(false);
         }
@@ -393,11 +418,24 @@ export default function ResumeBuilder() {
             </div>
 
             {/* RIGHT PANEL: LIVE PREVIEW */}
-            <div className="hidden md:flex flex-1 bg-[#1c1c1e] items-start justify-center p-8 overflow-y-auto">
+            <div className={`
+                ${activeStep === 7 ? 'fixed inset-0 z-[60] bg-[#1c1c1e] overflow-y-auto p-4 flex flex-col items-center' : 'hidden'} 
+                md:static md:flex md:flex-1 md:bg-[#1c1c1e] md:items-start md:justify-center md:p-8 md:overflow-y-auto
+            `}>
+                {/* Mobile Close Button (only visible on step 7 mobile) */}
+                {activeStep === 7 && (
+                    <button
+                        onClick={() => setActiveStep(6)}
+                        className="md:hidden absolute top-4 right-4 p-2 bg-white/10 rounded-full text-white z-[70]"
+                    >
+                        <Trash2 size={24} className="rotate-45" /> {/* Close icon alternative */}
+                    </button>
+                )}
                 <div
                     ref={previewRef}
+                    id="resume-preview"
                     className={`
-                w-[210mm] bg-white text-black shadow-2xl origin-top scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] transition-all duration-300
+                w-[210mm] bg-white text-black shadow-2xl origin-top scale-[0.4] sm:scale-[0.5] md:scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] transition-all duration-300
                 pb-16
             `}
                     style={{
@@ -408,10 +446,10 @@ export default function ResumeBuilder() {
                 >
                     {/* --- TEMPLATE RENDERER --- */}
 
-                    {/* HEADER */}
                     {(() => {
                         const styles = {
                             classic: {
+                                layout: "single",
                                 container: "font-serif text-gray-900 bg-white",
                                 header: "text-center mb-8 border-b-2 border-gray-900 pb-6",
                                 name: "text-4xl font-bold uppercase tracking-widest mb-2",
@@ -424,19 +462,24 @@ export default function ResumeBuilder() {
                                 date: "text-gray-600 font-serif italic"
                             },
                             modern: {
-                                container: "font-sans text-slate-900 bg-white",
-                                header: "text-left mb-12 pb-10 border-b-[6px] border-slate-900",
-                                name: "text-6xl font-black tracking-tighter text-slate-900 mb-2 leading-tight",
-                                title: "text-2xl text-indigo-600 font-extrabold mb-4 uppercase tracking-[0.2em]",
-                                meta: "justify-start text-[13px] font-bold text-slate-500 gap-10",
-                                sectionTitle: "text-2xl font-black text-slate-900 mb-8 border-l-8 border-indigo-600 pl-4 flex items-center",
-                                body: "text-[14px] leading-[1.8] text-slate-600 font-medium",
-                                subTitle: "font-black text-slate-900 text-lg tracking-tight",
-                                metaInfo: "text-indigo-600 font-extrabold text-sm uppercase tracking-wide",
-                                date: "text-slate-900 font-bold text-[11px] bg-slate-100 px-4 py-1.5 rounded-sm uppercase tracking-wider"
+                                layout: "double",
+                                container: "font-sans text-slate-900 bg-white flex min-h-[297mm]",
+                                sidebar: "w-[35%] bg-slate-900 text-white p-8",
+                                main: "w-[65%] p-10 bg-white",
+                                header: "mb-10",
+                                name: "text-4xl font-black tracking-tighter mb-1",
+                                title: "text-lg text-indigo-400 font-bold uppercase tracking-widest mb-6",
+                                meta: "flex-col gap-3 text-[12px] font-medium text-slate-300",
+                                sectionTitle: "text-lg font-black text-slate-900 mb-6 pb-2 border-b-4 border-indigo-600 inline-block",
+                                sidebarTitle: "text-xs font-bold uppercase tracking-[0.2em] text-indigo-300 mb-4",
+                                body: "text-[13px] leading-relaxed text-slate-600 font-medium",
+                                subTitle: "font-black text-slate-900 text-base flex justify-between items-center",
+                                metaInfo: "text-indigo-600 font-bold text-xs uppercase tracking-wide mt-0.5",
+                                date: "text-slate-400 font-bold text-[10px] uppercase"
                             },
                             minimal: {
-                                container: "font-mono text-gray-800 bg-white",
+                                layout: "single",
+                                container: "font-mono text-gray-800 bg-white p-16",
                                 header: "mb-10 text-left",
                                 name: "text-3xl font-medium tracking-tighter text-black mb-4",
                                 title: "text-sm uppercase tracking-widest text-gray-500 mb-6",
@@ -448,11 +491,120 @@ export default function ResumeBuilder() {
                                 date: "text-gray-400 text-xs"
                             }
                         };
-
                         const t = styles[selectedTemplate] || styles.classic;
 
+                        if (t.layout === "double") {
+                            return (
+                                <div className={t.container}>
+                                    {/* SIDEBAR */}
+                                    <aside className={t.sidebar}>
+                                        <div className={t.header}>
+                                            <h1 className={t.name}>{resumeData.personal.fullName || "YOUR NAME"}</h1>
+                                            <p className={t.title}>{resumeData.personal.jobTitle || "TARGET TITLE"}</p>
+                                        </div>
+
+                                        <section className="mb-8">
+                                            <h3 className={t.sidebarTitle}>Contact</h3>
+                                            <div className={`flex ${t.meta}`}>
+                                                {resumeData.personal.email && (
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center"><Mail size={10} /></div>
+                                                        <span>{resumeData.personal.email}</span>
+                                                    </div>
+                                                )}
+                                                {resumeData.personal.phone && (
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center"><Phone size={10} /></div>
+                                                        <span>{resumeData.personal.phone}</span>
+                                                    </div>
+                                                )}
+                                                {resumeData.personal.location && (
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center"><MapPin size={10} /></div>
+                                                        <span>{resumeData.personal.location}</span>
+                                                    </div>
+                                                )}
+                                                {resumeData.personal.linkedin && (
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center"><Linkedin size={10} /></div>
+                                                        <a href={resumeData.personal.linkedin} className="text-indigo-300 hover:underline overflow-hidden text-ellipsis whitespace-nowrap max-w-[120px]">LinkedIn</a>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </section>
+
+                                        {resumeData.skills && (
+                                            <section className="mb-8">
+                                                <h3 className={t.sidebarTitle}>Skills</h3>
+                                                <p className="text-[12px] leading-6 text-slate-300 uppercase tracking-wider">{resumeData.skills}</p>
+                                            </section>
+                                        )}
+
+                                        {resumeData.education.length > 0 && (
+                                            <section className="mb-8">
+                                                <h3 className={t.sidebarTitle}>Education</h3>
+                                                {resumeData.education.map(edu => (
+                                                    <div key={edu.id} className="mb-4">
+                                                        <div className="text-[13px] font-bold">{edu.degree}</div>
+                                                        <div className="text-[11px] text-slate-400 italic mb-1">{edu.school}</div>
+                                                        <div className="text-[10px] text-indigo-400">{edu.year}</div>
+                                                    </div>
+                                                ))}
+                                            </section>
+                                        )}
+                                    </aside>
+
+                                    {/* MAIN CONTENT */}
+                                    <main className={t.main}>
+                                        {/* SUMMARY */}
+                                        {resumeData.summary && (
+                                            <section className="mb-10">
+                                                <h2 className={t.sectionTitle}>Profile</h2>
+                                                <p className={t.body}>{resumeData.summary}</p>
+                                            </section>
+                                        )}
+
+                                        {/* EXPERIENCE */}
+                                        {resumeData.experience.length > 0 && (
+                                            <section className="mb-10">
+                                                <h2 className={t.sectionTitle}>Experience</h2>
+                                                {resumeData.experience.map(exp => (
+                                                    <div key={exp.id} className="mb-6 last:mb-0">
+                                                        <div className={t.subTitle}>
+                                                            <span>{exp.title}</span>
+                                                            <span className={t.date}>{exp.startDate} – {exp.endDate}</span>
+                                                        </div>
+                                                        <div className={t.metaInfo}>{exp.company} | {exp.location}</div>
+                                                        <p className={`${t.body} mt-2 whitespace-pre-line`}>{exp.description}</p>
+                                                    </div>
+                                                ))}
+                                            </section>
+                                        )}
+
+                                        {/* PROJECTS */}
+                                        {resumeData.projects.length > 0 && (
+                                            <section className="mb-10">
+                                                <h2 className={t.sectionTitle}>Projects</h2>
+                                                {resumeData.projects.map(proj => (
+                                                    <div key={proj.id} className="mb-5 last:mb-0">
+                                                        <div className={t.subTitle}>
+                                                            <span>{proj.name}</span>
+                                                            {proj.link && <a href={proj.link} className="text-[10px] text-indigo-600 font-bold uppercase underline">Link</a>}
+                                                        </div>
+                                                        <div className="text-[11px] font-bold text-slate-400 mb-1">{proj.techStack}</div>
+                                                        <p className={t.body}>{proj.description}</p>
+                                                    </div>
+                                                ))}
+                                            </section>
+                                        )}
+                                    </main>
+                                </div>
+                            );
+                        }
+
+                        // SINGLE COLUMN LAYOUT (Classic / Minimal)
                         return (
-                            <div className={t.container}>
+                            <div className={t.container} style={{ padding: '20mm' }}>
                                 {/* HEADER */}
                                 <header className={t.header}>
                                     <h1 className={t.name}>{resumeData.personal.fullName || "YOUR NAME"}</h1>

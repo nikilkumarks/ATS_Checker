@@ -11,22 +11,31 @@ exports.enhanceText = async (req, res) => {
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         // Try the latest flash model first
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash-latest",
+            systemInstruction: "You are a professional resume writer and career coach. Your goal is to rewrite resume content to be high-impact, professional, and ATS-optimized. You must return ONLY the rewritten text itself. Never include conversational prefixes, quotes, markdown formatting, or explanations."
+        });
 
-        let prompt = "";
+        let userPrompt = "";
         if (type === 'experience') {
-            prompt = `As an expert resume writer and recruiter, rewrite the following resume work experience bullet point to be extremely impactful, professional, and ATS-optimized. Use strong action verbs, quantify achievements with metrics (use placeholders like [X%] if not provided), and align it with industry standards: "${text}"`;
+            userPrompt = `Rewrite this resume work experience bullet point. Use strong action verbs, focus on achievements, and quantify results if possible. Keep it to one concise line. Input: "${text}"`;
         } else if (type === 'summary') {
-            prompt = `Write a premium, high-impact professional summary (3-4 lines) based on the following information. Ensure it highlights key strengths, uses professional industry keywords, and sounds authoritative yet humble: "${text}"`;
+            userPrompt = `Compose a high-impact professional summary (approximately 3 lines) based on these skills and experiences. Use a confident, executive tone. Input: "${text}"`;
         } else if (type === 'skills') {
-            prompt = `Organize and optimize the following skills for a resume. Group them logically (e.g., Languages, Frameworks, Tools) and format them cleanly. Remove repetitions and ensure they look professional: "${text}"`;
+            userPrompt = `Organize these technical skills into logical categories (e.g., Languages, Frameworks, Tools). Format as category names followed by a comma-separated list. Input: "${text}"`;
         } else {
-            prompt = `Critically analyze and refine the following text for a professional resume. Improve grammar, vocabulary, and overall corporate tone: "${text}"`;
+            userPrompt = `Refine this professional text for a resume, improving grammar, tone, and impact. Input: "${text}"`;
         }
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const enhancedText = response.text().trim().replace(/^"(.*)"$/, '$1'); // Clean up quotes if any
+        const result = await model.generateContent(userPrompt);
+        const responseText = await result.response;
+
+        let enhancedText = responseText.text()
+            .trim()
+            .replace(/^["'«„](.*)["'»“]$/g, '$1') // Remove various types of quotes
+            .replace(/\*\*/g, '') // Remove markdown bold
+            .replace(/[*#]/g, '') // Remove bullet points or headers
+            .trim();
 
         return res.json({ enhancedText });
 
