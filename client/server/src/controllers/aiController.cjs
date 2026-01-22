@@ -15,16 +15,18 @@ exports.enhanceText = async (req, res) => {
 
         let prompt = "";
         if (type === 'experience') {
-            prompt = `Rewrite this resume bullet point to be impactful, using action verbs and metrics if possible: "${text}"`;
+            prompt = `As an expert resume writer and recruiter, rewrite the following resume work experience bullet point to be extremely impactful, professional, and ATS-optimized. Use strong action verbs, quantify achievements with metrics (use placeholders like [X%] if not provided), and align it with industry standards: "${text}"`;
         } else if (type === 'summary') {
-            prompt = `Rewrite this professional summary to be concise, engaging, and highlighting expertise: "${text}"`;
+            prompt = `Write a premium, high-impact professional summary (3-4 lines) based on the following information. Ensure it highlights key strengths, uses professional industry keywords, and sounds authoritative yet humble: "${text}"`;
+        } else if (type === 'skills') {
+            prompt = `Organize and optimize the following skills for a resume. Group them logically (e.g., Languages, Frameworks, Tools) and format them cleanly. Remove repetitions and ensure they look professional: "${text}"`;
         } else {
-            prompt = `Improve the grammar and professional tone of: "${text}"`;
+            prompt = `Critically analyze and refine the following text for a professional resume. Improve grammar, vocabulary, and overall corporate tone: "${text}"`;
         }
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        const enhancedText = response.text();
+        const enhancedText = response.text().trim().replace(/^"(.*)"$/, '$1'); // Clean up quotes if any
 
         return res.json({ enhancedText });
 

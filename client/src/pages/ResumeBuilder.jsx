@@ -115,13 +115,34 @@ export default function ResumeBuilder() {
 
     const handleDownloadPDF = async () => {
         if (!previewRef.current) return;
-        const canvas = await html2canvas(previewRef.current, { scale: 2 });
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`${resumeData.personal.fullName || 'resume'}.pdf`);
+        setLoading(true);
+        try {
+            const canvas = await html2canvas(previewRef.current, {
+                scale: 3, // Higher scale for better quality
+                useCORS: true,
+                backgroundColor: "#ffffff",
+                windowWidth: previewRef.current.scrollWidth,
+                windowHeight: previewRef.current.scrollHeight,
+            });
+
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+            pdf.save(`${resumeData.personal.fullName?.replace(/\s+/g, '_') || 'Resume'}_ATS.pdf`);
+        } catch (err) {
+            console.error("PDF Export Error:", err);
+            alert("Failed to generate PDF. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     // --- Render Editors ---
@@ -204,7 +225,7 @@ export default function ResumeBuilder() {
                                 </div>
                                 <div className="relative">
                                     <textarea placeholder="Description..." className="textarea-field h-24 mb-1" value={proj.description} onChange={(e) => updateItem('projects', proj.id, 'description', e.target.value)} />
-                                    <button onClick={() => handleAIEnhance('projects', proj.description, 'summary', proj.id)} disabled={loading} className="ai-btn-sm absolute bottom-3 right-3">
+                                    <button onClick={() => handleAIEnhance('projects', proj.description, 'experience', proj.id)} disabled={loading} className="ai-btn-sm absolute bottom-3 right-3">
                                         <Wand2 size={12} /> AI Rewrite
                                     </button>
                                 </div>
@@ -241,7 +262,7 @@ export default function ResumeBuilder() {
                     <div className="space-y-4 animate-fade-in">
                         <div className="flex justify-between items-center mb-2">
                             <h3 className="section-title">Technical Skills</h3>
-                            <button onClick={() => handleAIEnhance('skills', resumeData.skills, 'general')} disabled={loading} className="ai-btn">
+                            <button onClick={() => handleAIEnhance('skills', resumeData.skills, 'skills')} disabled={loading} className="ai-btn">
                                 <Wand2 size={12} /> {loading ? "Optimizing..." : "Format Skills"}
                             </button>
                         </div>
@@ -304,9 +325,19 @@ export default function ResumeBuilder() {
 
                         <button
                             onClick={handleDownloadPDF}
-                            className="w-full mt-6 py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-cyan-600 text-white font-bold text-lg hover:shadow-lg hover:shadow-emerald-500/20 transition-all flex justify-center items-center gap-2"
+                            disabled={loading}
+                            className={`w-full mt-6 py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-cyan-600 text-white font-bold text-lg hover:shadow-lg hover:shadow-emerald-500/20 transition-all flex justify-center items-center gap-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                         >
-                            <Download size={20} /> Download PDF
+                            {loading ? (
+                                <>
+                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                    Generating PDF...
+                                </>
+                            ) : (
+                                <>
+                                    <Download size={20} /> Download PDF
+                                </>
+                            )}
                         </button>
                     </div>
                 );
@@ -378,117 +409,171 @@ export default function ResumeBuilder() {
                     {/* --- TEMPLATE RENDERER --- */}
 
                     {/* HEADER */}
-                    <header className={`mb-6 ${selectedTemplate === 'classic' ? 'text-center' : 'border-b-2 border-gray-800 pb-4'}`}>
-                        <h1 className="text-3xl font-extrabold uppercase tracking-wide text-gray-900 mb-1">{resumeData.personal.fullName || "YOUR NAME"}</h1>
-                        <p className="text-lg text-gray-700 font-medium mb-2">{resumeData.personal.jobTitle || "Target Job Title"}</p>
+                    {(() => {
+                        const styles = {
+                            classic: {
+                                container: "font-serif text-gray-900 bg-white",
+                                header: "text-center mb-8 border-b-2 border-gray-900 pb-6",
+                                name: "text-4xl font-bold uppercase tracking-widest mb-2",
+                                title: "text-xl italic text-gray-700 mb-3",
+                                meta: "justify-center text-sm text-gray-600 gap-4 italic",
+                                sectionTitle: "text-lg font-bold uppercase tracking-widest border-b border-gray-300 mb-4 pb-1 mt-6",
+                                body: "text-sm leading-relaxed text-justify",
+                                subTitle: "font-bold text-gray-900",
+                                metaInfo: "italic text-gray-600 text-sm",
+                                date: "text-gray-600 font-serif italic"
+                            },
+                            modern: {
+                                container: "font-sans text-slate-900 bg-white",
+                                header: "text-left mb-12 pb-10 border-b-[6px] border-slate-900",
+                                name: "text-6xl font-black tracking-tighter text-slate-900 mb-2 leading-tight",
+                                title: "text-2xl text-indigo-600 font-extrabold mb-4 uppercase tracking-[0.2em]",
+                                meta: "justify-start text-[13px] font-bold text-slate-500 gap-10",
+                                sectionTitle: "text-2xl font-black text-slate-900 mb-8 border-l-8 border-indigo-600 pl-4 flex items-center",
+                                body: "text-[14px] leading-[1.8] text-slate-600 font-medium",
+                                subTitle: "font-black text-slate-900 text-lg tracking-tight",
+                                metaInfo: "text-indigo-600 font-extrabold text-sm uppercase tracking-wide",
+                                date: "text-slate-900 font-bold text-[11px] bg-slate-100 px-4 py-1.5 rounded-sm uppercase tracking-wider"
+                            },
+                            minimal: {
+                                container: "font-mono text-gray-800 bg-white",
+                                header: "mb-10 text-left",
+                                name: "text-3xl font-medium tracking-tighter text-black mb-4",
+                                title: "text-sm uppercase tracking-widest text-gray-500 mb-6",
+                                meta: "flex-col text-xs text-gray-400 gap-1 items-start",
+                                sectionTitle: "text-xs font-bold uppercase tracking-[0.2em] text-gray-400 mb-6 mt-8",
+                                body: "text-xs leading-loose text-gray-600",
+                                subTitle: "font-bold text-black text-sm",
+                                metaInfo: "text-gray-500 text-xs",
+                                date: "text-gray-400 text-xs"
+                            }
+                        };
 
-                        <div className={`text-sm text-gray-600 flex flex-wrap gap-x-4 gap-y-1 ${selectedTemplate === 'classic' ? 'justify-center' : ''}`}>
-                            {resumeData.personal.email && <span>{resumeData.personal.email}</span>}
-                            {resumeData.personal.phone && <span>• {resumeData.personal.phone}</span>}
-                            {resumeData.personal.location && <span>• {resumeData.personal.location}</span>}
-                            {resumeData.personal.linkedin && <span>• <a href="#" className="text-blue-600 underline">LinkedIn</a></span>}
-                            {resumeData.personal.github && <span>• <a href="#" className="text-blue-600 underline">GitHub/Portfolio</a></span>}
-                        </div>
-                    </header>
+                        const t = styles[selectedTemplate] || styles.classic;
 
-                    {/* SUMMARY */}
-                    {resumeData.summary && (
-                        <section className="mb-5">
-                            <h2 className={`text-sm font-bold uppercase tracking-wider mb-2 ${selectedTemplate === 'minimal' ? 'text-gray-500 border-b border-gray-200' : 'text-gray-900 border-b border-gray-400 pb-1'}`}>Professional Summary</h2>
-                            <p className="text-sm text-gray-800 leading-relaxed text-justify">{resumeData.summary}</p>
-                        </section>
-                    )}
+                        return (
+                            <div className={t.container}>
+                                {/* HEADER */}
+                                <header className={t.header}>
+                                    <h1 className={t.name}>{resumeData.personal.fullName || "YOUR NAME"}</h1>
+                                    <p className={t.title}>{resumeData.personal.jobTitle || "Target Job Title"}</p>
 
-                    {/* SKILLS */}
-                    {resumeData.skills && (
-                        <section className="mb-5">
-                            <h2 className={`text-sm font-bold uppercase tracking-wider mb-2 ${selectedTemplate === 'minimal' ? 'text-gray-500 border-b border-gray-200' : 'text-gray-900 border-b border-gray-400 pb-1'}`}>Skills</h2>
-                            <p className="text-sm text-gray-800 leading-relaxed">{resumeData.skills}</p>
-                        </section>
-                    )}
+                                    <div className={`flex flex-wrap ${t.meta}`}>
+                                        {resumeData.personal.email && <span>{resumeData.personal.email}</span>}
+                                        {resumeData.personal.phone && <span>{resumeData.personal.phone}</span>}
+                                        {resumeData.personal.location && <span>{resumeData.personal.location}</span>}
+                                        {resumeData.personal.linkedin && <a href={resumeData.personal.linkedin} className="hover:underline">LinkedIn</a>}
+                                        {resumeData.personal.github && <a href={resumeData.personal.github} className="hover:underline">Portfolio</a>}
+                                    </div>
+                                </header>
 
-                    {/* EXPERIENCE */}
-                    {resumeData.experience.length > 0 && (
-                        <section className="mb-5">
-                            <h2 className={`text-sm font-bold uppercase tracking-wider mb-3 ${selectedTemplate === 'minimal' ? 'text-gray-500 border-b border-gray-200' : 'text-gray-900 border-b border-gray-400 pb-1'}`}>Work Experience</h2>
-                            {resumeData.experience.map(exp => (
-                                <div key={exp.id} className="mb-4">
-                                    <div className="flex justify-between items-baseline mb-1">
-                                        <h3 className="text-base font-bold text-gray-900">{exp.title}</h3>
-                                        <div className="text-sm text-gray-600 text-right">
-                                            <span className="font-semibold block">{exp.company}</span>
-                                            <span className="text-xs italic">{exp.startDate} – {exp.endDate} | {exp.location}</span>
+                                {/* SUMMARY */}
+                                {resumeData.summary && (
+                                    <section className="mb-6">
+                                        <h2 className={t.sectionTitle}>Professional Summary</h2>
+                                        <p className={t.body}>{resumeData.summary}</p>
+                                    </section>
+                                )}
+
+                                {/* SKILLS */}
+                                {resumeData.skills && (
+                                    <section className="mb-6">
+                                        <h2 className={t.sectionTitle}>Technical Skills</h2>
+                                        <p className={t.body}>{resumeData.skills}</p>
+                                    </section>
+                                )}
+
+                                {/* EXPERIENCE */}
+                                {resumeData.experience.length > 0 && (
+                                    <section className="mb-6">
+                                        <h2 className={t.sectionTitle}>Experience</h2>
+                                        {resumeData.experience.map(exp => (
+                                            <div key={exp.id} className="mb-5 last:mb-0">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div>
+                                                        <h3 className={t.subTitle}>{exp.title}</h3>
+                                                        <div className={t.metaInfo}>{exp.company} | {exp.location}</div>
+                                                    </div>
+                                                    <span className={t.date}>{exp.startDate} – {exp.endDate}</span>
+                                                </div>
+                                                <p className={`${t.body} whitespace-pre-line`}>{exp.description}</p>
+                                            </div>
+                                        ))}
+                                    </section>
+                                )}
+
+                                {/* PROJECTS */}
+                                {resumeData.projects.length > 0 && (
+                                    <section className="mb-6">
+                                        <h2 className={t.sectionTitle}>Projects</h2>
+                                        {resumeData.projects.map(proj => (
+                                            <div key={proj.id} className="mb-4 last:mb-0">
+                                                <div className="flex justify-between items-baseline mb-1">
+                                                    <h3 className={t.subTitle}>
+                                                        {proj.name}
+                                                        {proj.techStack && <span className={`font-normal text-xs ml-2 opacity-75`}>({proj.techStack})</span>}
+                                                    </h3>
+                                                    {proj.link && <a href={proj.link} className="text-xs text-blue-500 hover:underline">View Project</a>}
+                                                </div>
+                                                <p className={t.body}>{proj.description}</p>
+                                            </div>
+                                        ))}
+                                    </section>
+                                )}
+
+                                {/* EDUCATION */}
+                                {resumeData.education.length > 0 && (
+                                    <section className="mb-6">
+                                        <h2 className={t.sectionTitle}>Education</h2>
+                                        {resumeData.education.map(edu => (
+                                            <div key={edu.id} className="mb-3 flex justify-between items-start">
+                                                <div>
+                                                    <h3 className={t.subTitle}>{edu.degree}</h3>
+                                                    <div className="text-sm text-gray-700 italic">{edu.school}</div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className={t.date}>{edu.year}</div>
+                                                    {edu.grade && <div className="text-xs opacity-75 mt-1">{edu.grade}</div>}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </section>
+                                )}
+
+                                {/* EXTRAS */}
+                                {(resumeData.certifications.length > 0 || resumeData.achievements.length > 0) && (
+                                    <section className="mb-6">
+                                        <h2 className={t.sectionTitle}>Additional</h2>
+                                        <div className="grid grid-cols-1 gap-4">
+                                            {resumeData.certifications.length > 0 && (
+                                                <div>
+                                                    <h3 className="text-xs font-bold uppercase mb-2 opacity-70">Certifications</h3>
+                                                    <ul className={`list-none space-y-1 ${t.body}`}>
+                                                        {resumeData.certifications.map(cert => (
+                                                            <li key={cert.id} className="flex justify-between">
+                                                                <span>• {cert.name}</span>
+                                                                <span className="opacity-60 text-xs">{cert.year}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                            {resumeData.achievements.length > 0 && (
+                                                <div>
+                                                    <h3 className="text-xs font-bold uppercase mb-2 opacity-70">Achievements</h3>
+                                                    <ul className={`list-none space-y-1 ${t.body}`}>
+                                                        {resumeData.achievements.map(ach => (
+                                                            <li key={ach.id}>• {ach.title}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                    <p className="text-sm text-gray-800 whitespace-pre-line leading-relaxed">{exp.description}</p>
-                                </div>
-                            ))}
-                        </section>
-                    )}
-
-                    {/* PROJECTS */}
-                    {resumeData.projects.length > 0 && (
-                        <section className="mb-5">
-                            <h2 className={`text-sm font-bold uppercase tracking-wider mb-3 ${selectedTemplate === 'minimal' ? 'text-gray-500 border-b border-gray-200' : 'text-gray-900 border-b border-gray-400 pb-1'}`}>Projects</h2>
-                            {resumeData.projects.map(proj => (
-                                <div key={proj.id} className="mb-3">
-                                    <div className="flex justify-between items-baseline">
-                                        <h3 className="text-sm font-bold text-gray-900">{proj.name} <span className="text-xs font-normal text-gray-600">| {proj.techStack}</span></h3>
-                                        {proj.link && <a href={proj.link} className="text-xs text-blue-600 underline">View Link</a>}
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1">{proj.description}</p>
-                                </div>
-                            ))}
-                        </section>
-                    )}
-
-                    {/* EDUCATION */}
-                    {resumeData.education.length > 0 && (
-                        <section className="mb-5">
-                            <h2 className={`text-sm font-bold uppercase tracking-wider mb-3 ${selectedTemplate === 'minimal' ? 'text-gray-500 border-b border-gray-200' : 'text-gray-900 border-b border-gray-400 pb-1'}`}>Education</h2>
-                            {resumeData.education.map(edu => (
-                                <div key={edu.id} className="mb-2 flex justify-between items-start">
-                                    <div>
-                                        <h3 className="text-sm font-bold text-gray-900">{edu.degree}</h3>
-                                        <div className="text-sm text-gray-700">{edu.school}</div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="text-sm text-gray-600">{edu.year}</div>
-                                        {edu.grade && <div className="text-xs text-gray-500">CGPA/Grade: {edu.grade}</div>}
-                                    </div>
-                                </div>
-                            ))}
-                        </section>
-                    )}
-
-                    {/* CERTIFICATIONS & ACHIEVEMENTS */}
-                    {(resumeData.certifications.length > 0 || resumeData.achievements.length > 0) && (
-                        <section className="mb-5">
-                            <h2 className={`text-sm font-bold uppercase tracking-wider mb-2 ${selectedTemplate === 'minimal' ? 'text-gray-500 border-b border-gray-200' : 'text-gray-900 border-b border-gray-400 pb-1'}`}>Additional Info</h2>
-
-                            {resumeData.certifications.length > 0 && (
-                                <div className="mb-3">
-                                    <span className="font-bold text-sm text-gray-900 block mb-1">Certifications:</span>
-                                    <ul className="list-disc list-inside text-sm text-gray-800">
-                                        {resumeData.certifications.map(cert => (
-                                            <li key={cert.id}>{cert.name} {cert.year ? `(${cert.year})` : ''}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-
-                            {resumeData.achievements.length > 0 && (
-                                <div>
-                                    <span className="font-bold text-sm text-gray-900 block mb-1">Achievements:</span>
-                                    <ul className="list-disc list-inside text-sm text-gray-800">
-                                        {resumeData.achievements.map(ach => (
-                                            <li key={ach.id}>{ach.title}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-                        </section>
-                    )}
+                                    </section>
+                                )}
+                            </div>
+                        );
+                    })()}
 
                 </div>
             </div>
