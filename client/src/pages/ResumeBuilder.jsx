@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import API_URL from '../api/config';
 import { useNavigate } from 'react-router-dom';
 import {
     Wand2, ChevronRight, ChevronLeft, Download, Plus, Trash2, Layout,
@@ -102,7 +103,7 @@ export default function ResumeBuilder() {
         const token = localStorage.getItem("token");
 
         try {
-            const res = await fetch("http://localhost:5000/api/ai/enhance", {
+            const res = await fetch(`${API_URL}/api/ai/enhance`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({ text, type })

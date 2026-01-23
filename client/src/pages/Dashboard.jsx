@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API_URL from "../api/config";
 import { useNavigate } from "react-router-dom";
 import {
   LogOut,
@@ -33,12 +34,12 @@ export default function Dashboard() {
 
     const fetchData = async () => {
       try {
-        const dashRes = await fetch("http://localhost:5000/api/dashboard", {
+        const dashRes = await fetch(`${API_URL}/api/dashboard`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (!dashRes.ok) throw new Error("Unauthorized");
 
-        const activityRes = await fetch("http://localhost:5000/api/activity", {
+        const activityRes = await fetch(`${API_URL}/api/activity`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (activityRes.ok) {

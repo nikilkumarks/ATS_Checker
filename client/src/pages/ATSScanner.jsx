@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../api/config';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -57,7 +58,7 @@ const ATSScanner = () => {
         const token = localStorage.getItem("token");
 
         try {
-            const res = await fetch("http://localhost:5000/api/scan", {
+            const res = await fetch(`${API_URL}/api/scan`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`
