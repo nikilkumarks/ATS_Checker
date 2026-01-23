@@ -15,6 +15,10 @@ export default function ResumeBuilder() {
     const [selectedTemplate, setSelectedTemplate] = useState('classic'); // Default to most ATS friendly
     const previewRef = useRef(null);
 
+    // AI suggestion state
+    const [aiSuggestion, setAiSuggestion] = useState(null); // { original, enhanced, field, id, type }
+
+
     const [resumeData, setResumeData] = useState({
         personal: {
             fullName: "", jobTitle: "", email: "", phone: "", location: "", linkedin: "", github: ""
@@ -88,7 +92,11 @@ export default function ResumeBuilder() {
     const addLanguage = () => addItem('languages', { name: "", level: "" });
 
     const handleAIEnhance = async (field, text, type, id = null) => {
-        if (!text) return alert("Please enter text to enhance.");
+        if (!text || text.trim().length < 5) {
+            alert("Please enter more text to enhance (at least 5 characters).");
+            return;
+        }
+
         setLoading(true);
         const token = localStorage.getItem("token");
 
@@ -98,77 +106,159 @@ export default function ResumeBuilder() {
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({ text, type })
             });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || `Server error: ${res.status}`);
+            }
+
             const data = await res.json();
 
-            const enhanced = data.enhancedText || text;
-
-            if (field === 'experience' && id) updateItem('experience', id, 'description', enhanced);
-            else if (field === 'projects' && id) updateItem('projects', id, 'description', enhanced);
-            else if (field === 'summary') handleSimpleChange('summary', enhanced);
-            else if (field === 'skills') handleSimpleChange('skills', enhanced);
+            if (data.enhancedText) {
+                setAiSuggestion({
+                    field,
+                    id,
+                    type,
+                    original: text,
+                    enhanced: data.enhancedText,
+                    warning: data.warning || null
+                });
+            } else {
+                alert("AI could not enhance this text. Please try again.");
+            }
 
         } catch (err) {
-            console.error("AI Error", err);
+            console.error("AI Enhancement Error:", err);
+            alert(`Error: ${err.message}\n\nMake sure the server is running on port 5000.`);
         } finally {
             setLoading(false);
         }
     };
 
+
+    const applyAISuggestion = () => {
+        if (!aiSuggestion) return;
+        const { field, id, enhanced } = aiSuggestion;
+
+        if (field === 'experience' && id) updateItem('experience', id, 'description', enhanced);
+        else if (field === 'projects' && id) updateItem('projects', id, 'description', enhanced);
+        else if (field === 'summary') handleSimpleChange('summary', enhanced);
+        else if (field === 'skills') handleSimpleChange('skills', enhanced);
+        else if (field === 'jobTitle') handlePersonalChange('jobTitle', enhanced);
+
+        setAiSuggestion(null);
+    };
+
+
     const handleDownloadPDF = async () => {
         const previewElement = document.getElementById('resume-preview');
-
-        if (!previewElement) {
-            alert("Error: Preview element not found. If you are on a mobile device, please try using a desktop.");
-            return;
-        }
+        if (!previewElement) return;
 
         setLoading(true);
         try {
-            // Force scroll to top to ensure nothing is cut off
-            window.scrollTo(0, 0);
+            window.scrollTo({ top: 0, behavior: 'instant' });
 
             const canvas = await html2canvas(previewElement, {
-                scale: 2, // 2x is very crisp for A4
+                scale: 3,
                 useCORS: true,
-                allowTaint: true,
                 backgroundColor: "#ffffff",
-                scrollX: 0,
-                scrollY: 0,
-                // These specific settings help capture transformed/scaled divs
+                logging: false,
+                windowWidth: 794,
                 onclone: (clonedDoc) => {
                     const el = clonedDoc.getElementById('resume-preview');
-                    if (el) {
-                        el.style.transform = "scale(1)";
-                        el.style.position = "static";
-                        el.style.margin = "0";
-                        el.style.padding = "20mm";
-                        el.style.width = "210mm"; // Force A4 width
-                        el.style.minHeight = "297mm"; // Force A4 height
-                        el.style.display = "block"; // Ensure it's not hidden
-                    }
+                    if (!el) return;
+
+                    // Absolute stability for capture
+                    const style = clonedDoc.createElement('style');
+                    style.innerHTML = `
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+                        * { 
+                            box-sizing: border-box !important; 
+                            -webkit-print-color-adjust: exact !important; 
+                            print-color-adjust: exact !important;
+                            transition: none !important;
+                            animation: none !important;
+                        }
+                        #resume-preview { 
+                            width: 794px !important; 
+                            background: white !important;
+                            transform: none !important; 
+                            scale: 1 !important; 
+                            position: relative !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            display: block !important;
+                            box-shadow: none !important;
+                        }
+                        /* Modern Double Column specific fixes */
+                        #resume-preview aside { 
+                            width: 260px !important;
+                            min-height: 1123px !important;
+                            flex-shrink: 0 !important;
+                        }
+                        #resume-preview main { 
+                            width: 534px !important;
+                            min-height: 1123px !important;
+                            flex-shrink: 0 !important;
+                        }
+                        /* Ensure text colors are forced */
+                        .text-white { color: #ffffff !important; }
+                        .text-black { color: #000000 !important; }
+                    `;
+                    clonedDoc.head.appendChild(style);
+
+                    // Force remove problematic styles
+                    Array.from(clonedDoc.styleSheets).forEach(sheet => {
+                        try {
+                            const rules = Array.from(sheet.cssRules);
+                            for (let i = rules.length - 1; i >= 0; i--) {
+                                if (rules[i].cssText.includes('oklch')) sheet.deleteRule(i);
+                            }
+                        } catch (e) { }
+                    });
                 }
             });
 
-            const imgData = canvas.toDataURL('image/png');
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
             const pdf = new jsPDF({
-                orientation: 'p',
+                orientation: 'portrait',
                 unit: 'mm',
                 format: 'a4',
                 compress: true
             });
 
             const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const canvasWidth = canvas.width;
+            const canvasHeight = canvas.height;
 
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`${resumeData.personal.fullName?.replace(/\s+/g, '_') || 'Resume'}_ATS.pdf`);
+            const ratio = pdfWidth / canvasWidth;
+            const finalImageHeight = canvasHeight * ratio;
+
+            let heightLeft = finalImageHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, finalImageHeight, undefined, 'FAST');
+            heightLeft -= pdfHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - finalImageHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, finalImageHeight, undefined, 'FAST');
+                heightLeft -= pdfHeight;
+            }
+
+            const fileName = (resumeData.personal.fullName || 'Resume').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            pdf.save(`${fileName}_Professional.pdf`);
         } catch (err) {
             console.error("PDF Export Error:", err);
-            alert("Failed to generate PDF. Tip: Try using Chrome or a Desktop browser.");
+            alert("Export failed. If using complex layouts, try the 'Standard ATS' template.");
         } finally {
             setLoading(false);
         }
     };
+
+
 
     // --- Render Editors ---
 
@@ -179,17 +269,27 @@ export default function ResumeBuilder() {
                     <div className="space-y-4 animate-fade-in">
                         <h3 className="section-title">Header Information</h3>
                         <div className="grid grid-cols-1 gap-4">
-                            <input type="text" placeholder="Full Name" className="input-field font-bold" value={resumeData.personal.fullName} onChange={(e) => handlePersonalChange('fullName', e.target.value)} />
-                            <input type="text" placeholder="Target Job Title (e.g. Frontend Developer)" className="input-field" value={resumeData.personal.jobTitle} onChange={(e) => handlePersonalChange('jobTitle', e.target.value)} />
-                            <div className="grid grid-cols-2 gap-4">
-                                <input type="email" placeholder="Email" className="input-field" value={resumeData.personal.email} onChange={(e) => handlePersonalChange('email', e.target.value)} />
-                                <input type="text" placeholder="Phone" className="input-field" value={resumeData.personal.phone} onChange={(e) => handlePersonalChange('phone', e.target.value)} />
+                            <input type="text" placeholder="Full Name" className="input-field font-bold" value={resumeData.personal.fullName || ""} onChange={(e) => handlePersonalChange('fullName', e.target.value)} />
+                            <div className="relative">
+                                <input type="text" placeholder="Target Job Title (e.g. Frontend Developer)" className="input-field pr-24" value={resumeData.personal.jobTitle || ""} onChange={(e) => handlePersonalChange('jobTitle', e.target.value)} />
+                                <button
+                                    onClick={() => handleAIEnhance('jobTitle', resumeData.personal.jobTitle, 'general')}
+                                    disabled={loading}
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 ai-btn-sm"
+                                >
+                                    <Wand2 size={10} /> Optimize
+                                </button>
                             </div>
-                            <input type="text" placeholder="Location (City, Country)" className="input-field" value={resumeData.personal.location} onChange={(e) => handlePersonalChange('location', e.target.value)} />
                             <div className="grid grid-cols-2 gap-4">
-                                <input type="text" placeholder="LinkedIn URL" className="input-field" value={resumeData.personal.linkedin} onChange={(e) => handlePersonalChange('linkedin', e.target.value)} />
-                                <input type="text" placeholder="GitHub / Portfolio URL" className="input-field" value={resumeData.personal.github} onChange={(e) => handlePersonalChange('github', e.target.value)} />
+                                <input type="email" placeholder="Email" className="input-field" value={resumeData.personal.email || ""} onChange={(e) => handlePersonalChange('email', e.target.value)} />
+                                <input type="text" placeholder="Phone" className="input-field" value={resumeData.personal.phone || ""} onChange={(e) => handlePersonalChange('phone', e.target.value)} />
                             </div>
+                            <input type="text" placeholder="Location (City, Country)" className="input-field" value={resumeData.personal.location || ""} onChange={(e) => handlePersonalChange('location', e.target.value)} />
+                            <div className="grid grid-cols-2 gap-4">
+                                <input type="text" placeholder="LinkedIn URL" className="input-field" value={resumeData.personal.linkedin || ""} onChange={(e) => handlePersonalChange('linkedin', e.target.value)} />
+                                <input type="text" placeholder="GitHub / Portfolio URL" className="input-field" value={resumeData.personal.github || ""} onChange={(e) => handlePersonalChange('github', e.target.value)} />
+                            </div>
+
                         </div>
                     </div>
                 );
@@ -216,14 +316,14 @@ export default function ResumeBuilder() {
                                     <button onClick={() => removeItem('experience', exp.id)} className="delete-btn"><Trash2 size={16} /></button>
                                 </div>
                                 <div className="grid grid-cols-2 gap-3 mb-3">
-                                    <input type="text" placeholder="Job Title" className="input-field" value={exp.title} onChange={(e) => updateItem('experience', exp.id, 'title', e.target.value)} />
-                                    <input type="text" placeholder="Company" className="input-field" value={exp.company} onChange={(e) => updateItem('experience', exp.id, 'company', e.target.value)} />
-                                    <input type="text" placeholder="Start Date" className="input-field" value={exp.startDate} onChange={(e) => updateItem('experience', exp.id, 'startDate', e.target.value)} />
-                                    <input type="text" placeholder="End Date" className="input-field" value={exp.endDate} onChange={(e) => updateItem('experience', exp.id, 'endDate', e.target.value)} />
-                                    <input type="text" placeholder="Location" className="input-field col-span-2" value={exp.location} onChange={(e) => updateItem('experience', exp.id, 'location', e.target.value)} />
+                                    <input type="text" placeholder="Job Title" className="input-field" value={exp.title || ""} onChange={(e) => updateItem('experience', exp.id, 'title', e.target.value)} />
+                                    <input type="text" placeholder="Company" className="input-field" value={exp.company || ""} onChange={(e) => updateItem('experience', exp.id, 'company', e.target.value)} />
+                                    <input type="text" placeholder="Start Date" className="input-field" value={exp.startDate || ""} onChange={(e) => updateItem('experience', exp.id, 'startDate', e.target.value)} />
+                                    <input type="text" placeholder="End Date" className="input-field" value={exp.endDate || ""} onChange={(e) => updateItem('experience', exp.id, 'endDate', e.target.value)} />
+                                    <input type="text" placeholder="Location" className="input-field col-span-2" value={exp.location || ""} onChange={(e) => updateItem('experience', exp.id, 'location', e.target.value)} />
                                 </div>
                                 <div className="relative">
-                                    <textarea placeholder="Responsibilities (Bullet points)..." className="textarea-field h-32 mb-1" value={exp.description} onChange={(e) => updateItem('experience', exp.id, 'description', e.target.value)} />
+                                    <textarea placeholder="Responsibilities (Bullet points)..." className="textarea-field h-32 mb-1" value={exp.description || ""} onChange={(e) => updateItem('experience', exp.id, 'description', e.target.value)} />
                                     <button onClick={() => handleAIEnhance('experience', exp.description, 'experience', exp.id)} disabled={loading} className="ai-btn-sm absolute bottom-3 right-3">
                                         <Wand2 size={12} /> AI Rewrite
                                     </button>
@@ -244,15 +344,16 @@ export default function ResumeBuilder() {
                                     <button onClick={() => removeItem('projects', proj.id)} className="delete-btn"><Trash2 size={16} /></button>
                                 </div>
                                 <div className="grid grid-cols-1 gap-3 mb-3">
-                                    <input type="text" placeholder="Project Name" className="input-field" value={proj.name} onChange={(e) => updateItem('projects', proj.id, 'name', e.target.value)} />
-                                    <input type="text" placeholder="Tech Stack (e.g. React, Node.js)" className="input-field" value={proj.techStack} onChange={(e) => updateItem('projects', proj.id, 'techStack', e.target.value)} />
-                                    <input type="text" placeholder="Link (GitHub/Live)" className="input-field" value={proj.link} onChange={(e) => updateItem('projects', proj.id, 'link', e.target.value)} />
+                                    <input type="text" placeholder="Project Name" className="input-field" value={proj.name || ""} onChange={(e) => updateItem('projects', proj.id, 'name', e.target.value)} />
+                                    <input type="text" placeholder="Tech Stack (e.g. React, Node.js)" className="input-field" value={proj.techStack || ""} onChange={(e) => updateItem('projects', proj.id, 'techStack', e.target.value)} />
+                                    <input type="text" placeholder="Link (GitHub/Live)" className="input-field" value={proj.link || ""} onChange={(e) => updateItem('projects', proj.id, 'link', e.target.value)} />
                                 </div>
                                 <div className="relative">
-                                    <textarea placeholder="Description..." className="textarea-field h-24 mb-1" value={proj.description} onChange={(e) => updateItem('projects', proj.id, 'description', e.target.value)} />
-                                    <button onClick={() => handleAIEnhance('projects', proj.description, 'experience', proj.id)} disabled={loading} className="ai-btn-sm absolute bottom-3 right-3">
+                                    <textarea placeholder="Description..." className="textarea-field h-24 mb-1" value={proj.description || ""} onChange={(e) => updateItem('projects', proj.id, 'description', e.target.value)} />
+                                    <button onClick={() => handleAIEnhance('projects', proj.description, 'projects', proj.id)} disabled={loading} className="ai-btn-sm absolute bottom-3 right-3">
                                         <Wand2 size={12} /> AI Rewrite
                                     </button>
+
                                 </div>
                             </div>
                         ))}
@@ -270,11 +371,11 @@ export default function ResumeBuilder() {
                                     <button onClick={() => removeItem('education', edu.id)} className="delete-btn"><Trash2 size={16} /></button>
                                 </div>
                                 <div className="grid grid-cols-1 gap-3">
-                                    <input type="text" placeholder="Degree / Major" className="input-field" value={edu.degree} onChange={(e) => updateItem('education', edu.id, 'degree', e.target.value)} />
-                                    <input type="text" placeholder="College / University" className="input-field" value={edu.school} onChange={(e) => updateItem('education', edu.id, 'school', e.target.value)} />
+                                    <input type="text" placeholder="Degree / Major" className="input-field" value={edu.degree || ""} onChange={(e) => updateItem('education', edu.id, 'degree', e.target.value)} />
+                                    <input type="text" placeholder="College / University" className="input-field" value={edu.school || ""} onChange={(e) => updateItem('education', edu.id, 'school', e.target.value)} />
                                     <div className="grid grid-cols-2 gap-3">
-                                        <input type="text" placeholder="Year / Duration" className="input-field" value={edu.year} onChange={(e) => updateItem('education', edu.id, 'year', e.target.value)} />
-                                        <input type="text" placeholder="CGPA / Grade (Optional)" className="input-field" value={edu.grade} onChange={(e) => updateItem('education', edu.id, 'grade', e.target.value)} />
+                                        <input type="text" placeholder="Year / Duration" className="input-field" value={edu.year || ""} onChange={(e) => updateItem('education', edu.id, 'year', e.target.value)} />
+                                        <input type="text" placeholder="CGPA / Grade (Optional)" className="input-field" value={edu.grade || ""} onChange={(e) => updateItem('education', edu.id, 'grade', e.target.value)} />
                                     </div>
                                 </div>
                             </div>
@@ -303,8 +404,8 @@ export default function ResumeBuilder() {
                             <h3 className="section-title mb-3">Certifications</h3>
                             {resumeData.certifications.map((cert) => (
                                 <div key={cert.id} className="flex gap-2 mb-2">
-                                    <input type="text" placeholder="Certificate Name" className="input-field flex-1" value={cert.name} onChange={(e) => updateItem('certifications', cert.id, 'name', e.target.value)} />
-                                    <input type="text" placeholder="Platform/Year" className="input-field w-1/3" value={cert.year} onChange={(e) => updateItem('certifications', cert.id, 'year', e.target.value)} />
+                                    <input type="text" placeholder="Certificate Name" className="input-field flex-1" value={cert.name || ""} onChange={(e) => updateItem('certifications', cert.id, 'name', e.target.value)} />
+                                    <input type="text" placeholder="Platform/Year" className="input-field w-1/3" value={cert.year || ""} onChange={(e) => updateItem('certifications', cert.id, 'year', e.target.value)} />
                                     <button onClick={() => removeItem('certifications', cert.id)} className="delete-text-btn"><Trash2 size={16} /></button>
                                 </div>
                             ))}
@@ -316,7 +417,7 @@ export default function ResumeBuilder() {
                             <h3 className="section-title mb-3">Achievements</h3>
                             {resumeData.achievements.map((ach) => (
                                 <div key={ach.id} className="flex gap-2 mb-2">
-                                    <input type="text" placeholder="Achievement (e.g. Winner of Hackathon)" className="input-field flex-1" value={ach.title} onChange={(e) => updateItem('achievements', ach.id, 'title', e.target.value)} />
+                                    <input type="text" placeholder="Achievement (e.g. Winner of Hackathon)" className="input-field flex-1" value={ach.title || ""} onChange={(e) => updateItem('achievements', ach.id, 'title', e.target.value)} />
                                     <button onClick={() => removeItem('achievements', ach.id)} className="delete-text-btn"><Trash2 size={16} /></button>
                                 </div>
                             ))}
@@ -434,13 +535,13 @@ export default function ResumeBuilder() {
                 <div
                     ref={previewRef}
                     id="resume-preview"
+                    key={selectedTemplate}
                     className={`
-                w-[210mm] bg-white text-black shadow-2xl origin-top scale-[0.4] sm:scale-[0.5] md:scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] transition-all duration-300
+                w-[794px] bg-white text-black shadow-2xl origin-top scale-[0.4] sm:scale-[0.5] md:scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] transition-all duration-300
                 pb-16
             `}
                     style={{
-                        minHeight: '297mm',
-                        padding: activeStep === 7 ? '0' : '20mm', // Remove padding adjustment if needed, usually fixed padding
+                        minHeight: '1123px',
                         fontFamily: selectedTemplate === 'modern' ? 'ui-sans-serif, system-ui, sans-serif' : selectedTemplate === 'classic' ? 'Times, Times New Roman, serif' : 'monospace'
                     }}
                 >
@@ -450,45 +551,45 @@ export default function ResumeBuilder() {
                         const styles = {
                             classic: {
                                 layout: "single",
-                                container: "font-serif text-gray-900 bg-white",
-                                header: "text-center mb-8 border-b-2 border-gray-900 pb-6",
-                                name: "text-4xl font-bold uppercase tracking-widest mb-2",
-                                title: "text-xl italic text-gray-700 mb-3",
-                                meta: "justify-center text-sm text-gray-600 gap-4 italic",
-                                sectionTitle: "text-lg font-bold uppercase tracking-widest border-b border-gray-300 mb-4 pb-1 mt-6",
-                                body: "text-sm leading-relaxed text-justify",
-                                subTitle: "font-bold text-gray-900",
-                                metaInfo: "italic text-gray-600 text-sm",
-                                date: "text-gray-600 font-serif italic"
+                                container: "font-serif text-[#111827] bg-[#ffffff] w-[794px] min-h-[1123px] overflow-hidden",
+                                header: "text-center mb-8 border-b-2 border-[#111827] pb-6",
+                                name: "text-4xl font-bold uppercase tracking-widest mb-2 text-[#111827]",
+                                title: "text-xl italic text-[#374151] mb-3",
+                                meta: "flex justify-center flex-wrap text-sm text-[#4b5563] gap-4 italic",
+                                sectionTitle: "text-lg font-bold uppercase tracking-widest border-b border-[#d1d5db] mb-4 pb-1 mt-6 text-[#111827]",
+                                body: "text-sm leading-relaxed text-justify text-[#374151]",
+                                subTitle: "font-bold text-[#111827]",
+                                metaInfo: "italic text-[#4b5563] text-sm",
+                                date: "text-[#4b5563] font-serif italic"
                             },
                             modern: {
                                 layout: "double",
-                                container: "font-sans text-slate-900 bg-white flex min-h-[297mm]",
-                                sidebar: "w-[35%] bg-slate-900 text-white p-8",
-                                main: "w-[65%] p-10 bg-white",
+                                container: "font-sans text-[#0f172a] bg-[#ffffff] flex flex-row flex-nowrap w-[794px] min-h-[1123px]",
+                                sidebar: "w-[260px] flex-shrink-0 bg-[#0f172a] text-[#ffffff] p-8",
+                                main: "w-[534px] flex-shrink-0 p-10 bg-[#ffffff]",
                                 header: "mb-10",
-                                name: "text-4xl font-black tracking-tighter mb-1",
-                                title: "text-lg text-indigo-400 font-bold uppercase tracking-widest mb-6",
-                                meta: "flex-col gap-3 text-[12px] font-medium text-slate-300",
-                                sectionTitle: "text-lg font-black text-slate-900 mb-6 pb-2 border-b-4 border-indigo-600 inline-block",
-                                sidebarTitle: "text-xs font-bold uppercase tracking-[0.2em] text-indigo-300 mb-4",
-                                body: "text-[13px] leading-relaxed text-slate-600 font-medium",
-                                subTitle: "font-black text-slate-900 text-base flex justify-between items-center",
-                                metaInfo: "text-indigo-600 font-bold text-xs uppercase tracking-wide mt-0.5",
-                                date: "text-slate-400 font-bold text-[10px] uppercase"
+                                name: "text-4xl font-black tracking-tighter mb-1 text-[#ffffff]",
+                                title: "text-lg text-[#818cf8] font-bold uppercase tracking-widest mb-6",
+                                meta: "flex-col gap-3 text-[12px] font-medium text-[#cbd5e1]",
+                                sectionTitle: "text-lg font-black text-[#0f172a] mb-6 pb-2 border-b-4 border-[#4f46e5] inline-block",
+                                sidebarTitle: "text-xs font-bold uppercase tracking-[0.2em] text-[#a5b4fc] mb-4",
+                                body: "text-[13px] leading-relaxed text-[#475569] font-medium",
+                                subTitle: "font-black text-[#0f172a] text-base flex justify-between items-center",
+                                metaInfo: "text-[#4f46e5] font-bold text-xs uppercase tracking-wide mt-0.5",
+                                date: "text-[#94a3b8] font-bold text-[10px] uppercase"
                             },
                             minimal: {
                                 layout: "single",
-                                container: "font-mono text-gray-800 bg-white p-16",
+                                container: "font-mono text-[#1f2937] bg-[#ffffff] p-16 w-[794px] min-h-[1123px]",
                                 header: "mb-10 text-left",
-                                name: "text-3xl font-medium tracking-tighter text-black mb-4",
-                                title: "text-sm uppercase tracking-widest text-gray-500 mb-6",
-                                meta: "flex-col text-xs text-gray-400 gap-1 items-start",
-                                sectionTitle: "text-xs font-bold uppercase tracking-[0.2em] text-gray-400 mb-6 mt-8",
-                                body: "text-xs leading-loose text-gray-600",
-                                subTitle: "font-bold text-black text-sm",
-                                metaInfo: "text-gray-500 text-xs",
-                                date: "text-gray-400 text-xs"
+                                name: "text-3xl font-medium tracking-tighter text-[#000000] mb-4",
+                                title: "text-sm uppercase tracking-widest text-[#6b7280] mb-6",
+                                meta: "flex-col text-xs text-[#9ca3af] gap-1 items-start",
+                                sectionTitle: "text-xs font-bold uppercase tracking-[0.2em] text-[#9ca3af] mb-6 mt-8",
+                                body: "text-xs leading-loose text-[#4b5563]",
+                                subTitle: "font-bold text-[#000000] text-sm",
+                                metaInfo: "text-[#6b7280] text-xs",
+                                date: "text-[#9ca3af] text-xs"
                             }
                         };
                         const t = styles[selectedTemplate] || styles.classic;
@@ -508,26 +609,26 @@ export default function ResumeBuilder() {
                                             <div className={`flex ${t.meta}`}>
                                                 {resumeData.personal.email && (
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center"><Mail size={10} /></div>
-                                                        <span>{resumeData.personal.email}</span>
+                                                        <div className="w-5 h-5 rounded-full bg-[#334155] flex items-center justify-center"><Mail size={10} color="#ffffff" /></div>
+                                                        <span className="text-[#ffffff]">{resumeData.personal.email}</span>
                                                     </div>
                                                 )}
                                                 {resumeData.personal.phone && (
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center"><Phone size={10} /></div>
-                                                        <span>{resumeData.personal.phone}</span>
+                                                        <div className="w-5 h-5 rounded-full bg-[#334155] flex items-center justify-center"><Phone size={10} color="#ffffff" /></div>
+                                                        <span className="text-[#ffffff]">{resumeData.personal.phone}</span>
                                                     </div>
                                                 )}
                                                 {resumeData.personal.location && (
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center"><MapPin size={10} /></div>
-                                                        <span>{resumeData.personal.location}</span>
+                                                        <div className="w-5 h-5 rounded-full bg-[#334155] flex items-center justify-center"><MapPin size={10} color="#ffffff" /></div>
+                                                        <span className="text-[#ffffff]">{resumeData.personal.location}</span>
                                                     </div>
                                                 )}
                                                 {resumeData.personal.linkedin && (
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center"><Linkedin size={10} /></div>
-                                                        <a href={resumeData.personal.linkedin} className="text-indigo-300 hover:underline overflow-hidden text-ellipsis whitespace-nowrap max-w-[120px]">LinkedIn</a>
+                                                        <div className="w-5 h-5 rounded-full bg-[#334155] flex items-center justify-center"><Linkedin size={10} color="#ffffff" /></div>
+                                                        <a href={resumeData.personal.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#818cf8] hover:underline overflow-hidden text-ellipsis whitespace-nowrap max-w-[120px]">LinkedIn</a>
                                                     </div>
                                                 )}
                                             </div>
@@ -536,7 +637,7 @@ export default function ResumeBuilder() {
                                         {resumeData.skills && (
                                             <section className="mb-8">
                                                 <h3 className={t.sidebarTitle}>Skills</h3>
-                                                <p className="text-[12px] leading-6 text-slate-300 uppercase tracking-wider">{resumeData.skills}</p>
+                                                <p className="text-[12px] leading-6 text-[#cbd5e1] uppercase tracking-wider whitespace-pre-line">{resumeData.skills}</p>
                                             </section>
                                         )}
 
@@ -544,10 +645,10 @@ export default function ResumeBuilder() {
                                             <section className="mb-8">
                                                 <h3 className={t.sidebarTitle}>Education</h3>
                                                 {resumeData.education.map(edu => (
-                                                    <div key={edu.id} className="mb-4">
+                                                    <div key={edu.id} className="mb-4 text-[#ffffff]">
                                                         <div className="text-[13px] font-bold">{edu.degree}</div>
-                                                        <div className="text-[11px] text-slate-400 italic mb-1">{edu.school}</div>
-                                                        <div className="text-[10px] text-indigo-400">{edu.year}</div>
+                                                        <div className="text-[11px] text-[#94a3b8] italic mb-1">{edu.school}</div>
+                                                        <div className="text-[10px] text-[#818cf8]">{edu.year}</div>
                                                     </div>
                                                 ))}
                                             </section>
@@ -560,7 +661,7 @@ export default function ResumeBuilder() {
                                         {resumeData.summary && (
                                             <section className="mb-10">
                                                 <h2 className={t.sectionTitle}>Profile</h2>
-                                                <p className={t.body}>{resumeData.summary}</p>
+                                                <p className={`${t.body} whitespace-pre-line`}>{resumeData.summary}</p>
                                             </section>
                                         )}
 
@@ -569,13 +670,13 @@ export default function ResumeBuilder() {
                                             <section className="mb-10">
                                                 <h2 className={t.sectionTitle}>Experience</h2>
                                                 {resumeData.experience.map(exp => (
-                                                    <div key={exp.id} className="mb-6 last:mb-0">
+                                                    <div key={exp.id} className="mb-6 last:mb-0 text-[#0f172a]">
                                                         <div className={t.subTitle}>
-                                                            <span>{exp.title}</span>
+                                                            <span className="text-[#0f172a]">{exp.title}</span>
                                                             <span className={t.date}>{exp.startDate} – {exp.endDate}</span>
                                                         </div>
                                                         <div className={t.metaInfo}>{exp.company} | {exp.location}</div>
-                                                        <p className={`${t.body} mt-2 whitespace-pre-line`}>{exp.description}</p>
+                                                        <p className={`${t.body} mt-2 whitespace-pre-line text-[#475569]`}>{exp.description}</p>
                                                     </div>
                                                 ))}
                                             </section>
@@ -589,10 +690,10 @@ export default function ResumeBuilder() {
                                                     <div key={proj.id} className="mb-5 last:mb-0">
                                                         <div className={t.subTitle}>
                                                             <span>{proj.name}</span>
-                                                            {proj.link && <a href={proj.link} className="text-[10px] text-indigo-600 font-bold uppercase underline">Link</a>}
+                                                            {proj.link && <a href={proj.link} target="_blank" rel="noopener noreferrer" className="text-[10px] text-indigo-600 font-bold uppercase underline">Link</a>}
                                                         </div>
-                                                        <div className="text-[11px] font-bold text-slate-400 mb-1">{proj.techStack}</div>
-                                                        <p className={t.body}>{proj.description}</p>
+                                                        <div className="text-[11px] font-bold text-[#64748b] mb-1">{proj.techStack}</div>
+                                                        <p className={t.body} style={{ color: '#475569' }}>{proj.description}</p>
                                                     </div>
                                                 ))}
                                             </section>
@@ -604,7 +705,7 @@ export default function ResumeBuilder() {
 
                         // SINGLE COLUMN LAYOUT (Classic / Minimal)
                         return (
-                            <div className={t.container} style={{ padding: '20mm' }}>
+                            <div className={t.container} style={{ padding: '20mm', boxSizing: 'border-box' }}>
                                 {/* HEADER */}
                                 <header className={t.header}>
                                     <h1 className={t.name}>{resumeData.personal.fullName || "YOUR NAME"}</h1>
@@ -614,8 +715,8 @@ export default function ResumeBuilder() {
                                         {resumeData.personal.email && <span>{resumeData.personal.email}</span>}
                                         {resumeData.personal.phone && <span>{resumeData.personal.phone}</span>}
                                         {resumeData.personal.location && <span>{resumeData.personal.location}</span>}
-                                        {resumeData.personal.linkedin && <a href={resumeData.personal.linkedin} className="hover:underline">LinkedIn</a>}
-                                        {resumeData.personal.github && <a href={resumeData.personal.github} className="hover:underline">Portfolio</a>}
+                                        {resumeData.personal.linkedin && <a href={resumeData.personal.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">LinkedIn</a>}
+                                        {resumeData.personal.github && <a href={resumeData.personal.github} target="_blank" rel="noopener noreferrer" className="hover:underline">Portfolio</a>}
                                     </div>
                                 </header>
 
@@ -623,7 +724,7 @@ export default function ResumeBuilder() {
                                 {resumeData.summary && (
                                     <section className="mb-6">
                                         <h2 className={t.sectionTitle}>Professional Summary</h2>
-                                        <p className={t.body}>{resumeData.summary}</p>
+                                        <p className={`${t.body} whitespace-pre-line`}>{resumeData.summary}</p>
                                     </section>
                                 )}
 
@@ -631,7 +732,7 @@ export default function ResumeBuilder() {
                                 {resumeData.skills && (
                                     <section className="mb-6">
                                         <h2 className={t.sectionTitle}>Technical Skills</h2>
-                                        <p className={t.body}>{resumeData.skills}</p>
+                                        <p className={`${t.body} whitespace-pre-line`}>{resumeData.skills}</p>
                                     </section>
                                 )}
 
@@ -665,7 +766,7 @@ export default function ResumeBuilder() {
                                                         {proj.name}
                                                         {proj.techStack && <span className={`font-normal text-xs ml-2 opacity-75`}>({proj.techStack})</span>}
                                                     </h3>
-                                                    {proj.link && <a href={proj.link} className="text-xs text-blue-500 hover:underline">View Project</a>}
+                                                    {proj.link && <a href={proj.link} target="_blank" rel="noopener noreferrer" className="text-xs text-[#2563eb] hover:underline">View Project</a>}
                                                 </div>
                                                 <p className={t.body}>{proj.description}</p>
                                             </div>
@@ -681,7 +782,7 @@ export default function ResumeBuilder() {
                                             <div key={edu.id} className="mb-3 flex justify-between items-start">
                                                 <div>
                                                     <h3 className={t.subTitle}>{edu.degree}</h3>
-                                                    <div className="text-sm text-gray-700 italic">{edu.school}</div>
+                                                    <div className="text-sm text-[#4b5563] italic">{edu.school}</div>
                                                 </div>
                                                 <div className="text-right">
                                                     <div className={t.date}>{edu.year}</div>
@@ -729,6 +830,59 @@ export default function ResumeBuilder() {
 
                 </div>
             </div>
+            {/* AI SUGGESTION MODAL */}
+            {aiSuggestion && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-[#18181b] border border-white/10 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+                        <div className="p-6 border-b border-white/5 flex items-center gap-3 bg-gradient-to-r from-purple-500/10 to-transparent">
+                            <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400">
+                                <Wand2 size={24} />
+                            </div>
+                            <div>
+                                <h2 className="text-xl font-bold">AI Suggestion</h2>
+                                <p className="text-xs text-gray-400 uppercase tracking-widest">{aiSuggestion.type} Enhancement</p>
+                            </div>
+                        </div>
+
+                        <div className="p-6 space-y-4">
+                            <div>
+                                <label className="text-xs font-bold text-gray-500 uppercase mb-2 block">Original</label>
+                                <div className="p-3 bg-white/5 rounded-lg text-sm text-gray-400 border border-white/5 italic line-clamp-3">
+                                    "{aiSuggestion.original}"
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-xs font-bold text-purple-400 uppercase mb-2 block">AI Improved</label>
+                                <div className="p-4 bg-purple-500/5 rounded-xl text-white text-base leading-relaxed border border-purple-500/20 ring-1 ring-purple-500/10 whitespace-pre-line">
+                                    {aiSuggestion.enhanced}
+                                </div>
+                                {aiSuggestion.warning && (
+                                    <div className="mt-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg flex items-start gap-2">
+                                        <span className="text-yellow-400 text-xs">⚠️</span>
+                                        <p className="text-xs text-yellow-200/80">{aiSuggestion.warning}</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="p-4 bg-white/5 flex gap-3">
+                            <button
+                                onClick={() => setAiSuggestion(null)}
+                                className="flex-1 py-3 rounded-xl border border-white/10 hover:bg-white/5 transition-all text-sm font-medium"
+                            >
+                                Discard
+                            </button>
+                            <button
+                                onClick={applyAISuggestion}
+                                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-lg hover:shadow-purple-500/20 transition-all text-sm font-bold"
+                            >
+                                Apply Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
