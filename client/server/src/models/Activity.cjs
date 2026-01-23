@@ -17,6 +17,11 @@ const activitySchema = new mongoose.Schema({
     },
     details: {
         score: Number, // For scans
+        foundKeywords: [String],
+        missingKeywords: [String],
+        summary: String,
+        analysis: String,
+        jobDescription: String,
         template: String // For builder
     },
     createdAt: {

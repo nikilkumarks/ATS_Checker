@@ -109,7 +109,14 @@ exports.scanResume = async (req, res) => {
             user: req.user.id,
             type: 'RESUME_SCAN',
             title: `Resume Scan: ${req.file.originalname}`,
-            details: { score: analysisResult.score }
+            details: {
+                score: analysisResult.score,
+                foundKeywords: analysisResult.foundKeywords,
+                missingKeywords: analysisResult.missingKeywords,
+                summary: analysisResult.summary,
+                analysis: analysisResult.analysis,
+                jobDescription: jobDescription
+            }
         });
 
         // 4. Cleanup extracted file
