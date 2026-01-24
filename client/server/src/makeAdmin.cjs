@@ -7,4 +7,4 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
     await User.findOneAndUpdate({ email: "nikil123@test.com" }, { role: "admin" });
     console.log("Success: You are now an Admin!");
     process.exit();
-});
+});                      
