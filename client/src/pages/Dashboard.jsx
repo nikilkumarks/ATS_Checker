@@ -9,7 +9,8 @@ import {
   LayoutDashboard,
   ArrowUpRight,
   Search,
-  ChevronRight
+  ChevronRight,
+  Shield
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -38,6 +39,12 @@ export default function Dashboard() {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (!dashRes.ok) throw new Error("Unauthorized");
+
+        const dashData = await dashRes.json();
+        if (dashData.user) {
+          setUser(dashData.user);
+          localStorage.setItem("user", JSON.stringify(dashData.user));
+        }
 
         const activityRes = await fetch(`${API_URL}/api/activity`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -103,6 +110,15 @@ export default function Dashboard() {
               </div>
               <span className="text-xs font-black text-white">{user?.name || "User"}</span>
             </div>
+
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => navigate('/admin-panel')}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all text-xs font-black uppercase tracking-widest"
+              >
+                <Shield size={16} /> Admin
+              </button>
+            )}
 
             <button
               onClick={handleLogout}

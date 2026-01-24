@@ -27,12 +27,12 @@ export default function Landing() {
             Get Started Free
           </Link>
 
-          <Link
+          {/* <Link
             to="/login"
             className="px-8 py-4 rounded-lg text-lg border border-white/20 hover:bg-white/5 transition"
           >
             Sign In
-          </Link>
+          </Link> */}
         </div>
 
         <p className="mt-8 text-sm text-gray-500">

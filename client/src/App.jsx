@@ -5,6 +5,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import ATSScanner from "./pages/ATSScanner";
+import AdminPanel from "./pages/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -37,6 +38,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <ATSScanner />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin-panel"
+        element={
+          <ProtectedRoute>
+            <AdminPanel />
           </ProtectedRoute>
         }
       />

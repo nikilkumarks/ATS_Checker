@@ -7,6 +7,7 @@ const authRoutes = require("./routes/authRoutes.cjs")
 const activityRoutes = require("./routes/activityRoutes.cjs");
 const scanRoutes = require("./routes/scanRoutes.cjs");
 const aiRoutes = require("./routes/aiRoutes.cjs");
+const adminRoutes = require("./routes/adminRoutes.cjs");
 const auth = require("./middleware/auth.middleware.cjs");
 const router = express.Router();
 
@@ -20,10 +21,11 @@ app.use("/api/auth", authRoutes);
 app.use("/api/activity", activityRoutes);
 app.use("/api/scan", scanRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api", router);
 
 router.get("/dashboard", auth, (req, res) => {
-  res.json({ userId: req.user.id });
+  res.json({ user: req.user });
 });
 
 // Serve frontend in production
