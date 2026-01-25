@@ -8,63 +8,63 @@ This platform acts as a SaaS product with user and admin dashboards.
 
 🔐 Authentication & Security
 
-User Signup & Login
+-User Signup & Login
 
-JWT-based authentication
+-JWT-based authentication
 
-Protected dashboard routes
+-Protected dashboard routes
 
-Role-based access (User & Admin)
+-Role-based access (User & Admin)
 
 📄 ATS Resume Checker
 
-Upload resume in PDF format
+-Upload resume in PDF format
 
-Extracts resume text automatically
+-Extracts resume text automatically
 
-Compares resume with job description
+-Compares resume with job description
 
 Generates:
 
-✅ ATS Match Score
+-✅ ATS Match Score
 
-❌ Missing Keywords
+-❌ Missing Keywords
 
-💡 Resume Improvement Suggestions
+-💡 Resume Improvement Suggestions
 
 🧠 AI Resume Enhancement
 
-With “Enhance with AI” feature:
+-With “Enhance with AI” feature:
 
-Improves professional summary
+-Improves professional summary
 
-Optimizes experience descriptions
+-Optimizes experience descriptions
 
-Enhances project details
+-Enhances project details
 
-Makes resume more ATS-friendly
+-Makes resume more ATS-friendly
 
 🏗 Resume Builder
 
-Form-based resume creation
+-Form-based resume creation
 
 Sections included:
 
-Personal Details
+-Personal Details
 
-Education
+-Education
 
-Skills
+-Skills
 
-Experience
+-Experience
 
-Projects
+-Projects
 
-Achievement/Certification
+-Achievement/Certification
 
-Multiple resume templates
+-Multiple resume templates
 
-Download resume as PDF
+-Download resume as PDF
 
 📊 Resume Scan History
 
