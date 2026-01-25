@@ -26,11 +26,11 @@ This platform acts as a SaaS product with user and admin dashboards.
 
 Generates:
 
--✅ ATS Match Score
+✅ ATS Match Score
 
--❌ Missing Keywords
+❌ Missing Keywords
 
--💡 Resume Improvement Suggestions
+💡 Resume Improvement Suggestions
 
 🧠 AI Resume Enhancement
 
@@ -70,77 +70,77 @@ Sections included:
 
 Users can:
 
-View past resume scans
+-View past resume scans
 
-Track previous ATS scores
+-Track previous ATS scores
 
-Re-check resume after improvements
+-Re-check resume after improvements
 
 👨‍💼 Admin Dashboard
 
 Admin can:
 
-View all users
+-View all users
 
-Monitor resume scans
+-Monitor resume scans
 
-Access scan history
+-Access scan history
 
-Track system usage
+-Track system usage
 
 🛠 Tech Stack
 🎨 Frontend
 
-React.js
+-React.js
 
-Tailwind CSS
+-Tailwind CSS
 
-React Router
+-React Router
 
-Axios
+-Axios
 
 ⚙ Backend
 
-Node.js
+-Node.js
 
-Express.js
+-Express.js
 
-RESTful APIs
+-RESTful APIs
 
-JWT Authentication
+-JWT Authentication
 
-Multer (File Uploads)
+-Multer (File Uploads)
 
 🗄 Database
 
-MongoDB
+-MongoDB
 
 🤖 AI Integration
 
-Cohere AI API
+-Cohere AI API
 
-Resume enhancement
+-Resume enhancement
 
-Keyword optimization
+-Keyword optimization
 
-Job description comparison
+-Job description comparison
 
 🔗 API Architecture
 Method    	     Endpoint	        Description
 
-POST	/auth/register	Register new user
+-POST	/auth/register	Register new user
 
-POST	/auth/login	User login
+-POST	/auth/login	User login
 
-POST	/resume/analyze	Upload resume & get ATS score
+-POST	/resume/analyze	Upload resume & get ATS score
 
-POST	/resume/enhance	AI resume enhancement
+-POST	/resume/enhance	AI resume enhancement
 
-GET	/resume/history	User scan history
+-GET	/resume/history	User scan history
 
-GET	/admin/users	Admin: view users
+-GET	/admin/users	Admin: view users
 
-GET	/admin/scans	Admin: view all scans
+-GET	/admin/scans	Admin: view all scans
 
 ☁ Deployment
 
