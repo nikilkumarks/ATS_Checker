@@ -1,102 +1,173 @@
 @import "tailwindcss";
 
-html, body {
-  margin: 0;
-  padding: 0;
-  background-color: #0e0e10;
+:root {
+  --background: #09090b;
+  --foreground: #f8fafc;
+  --card: #18181b;
+  --card-foreground: #f8fafc;
+  --popover: #09090b;
+  --popover-foreground: #f8fafc;
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
+  --secondary: #27272a;
+  --secondary-foreground: #f8fafc;
+  --muted: #27272a;
+  --muted-foreground: #94a3b8;
+  --accent: #27272a;
+  --accent-foreground: #f8fafc;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #8b5cf6;
+  --radius: 1rem;
 }
 
-
-.input {
-  @apply w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white outline-none;
+.light {
+  --background: #ffffff;
+  --foreground: #09090b;
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #7c3aed;
 }
 
+@theme {
+  --color-background: #09090b;
+  --color-foreground: #f8fafc;
+  --color-card: #18181b;
+  --color-card-foreground: #f8fafc;
+  --color-popover: #09090b;
+  --color-popover-foreground: #f8fafc;
+  --color-primary: #8b5cf6;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #27272a;
+  --color-secondary-foreground: #f8fafc;
+  --color-muted: #27272a;
+  --color-muted-foreground: #94a3b8;
+  --color-accent: #27272a;
+  --color-accent-foreground: #f8fafc;
+  --color-border: #27272a;
+  --color-input: #27272a;
+  --color-ring: #8b5cf6;
+
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+* {
+  border-color: color-mix(in srgb, var(--border), transparent 50%);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium Glassmorphism */
+.glass {
+  background-color: color-mix(in srgb, var(--background), transparent 60%);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.light .glass {
+  @apply bg-white/40 border-black/5;
+}
+
+/* Enhanced Inputs */
+.input-field {
+  @apply w-full border border-border/50 rounded-2xl px-5 py-4 text-foreground outline-none transition-all duration-300 focus:ring-4 focus:ring-primary/10 focus:border-primary/50 text-sm font-medium;
+  background-color: color-mix(in srgb, var(--secondary), transparent 70%);
+}
+
+.textarea-field {
+  @apply w-full border border-border/50 rounded-[32px] px-6 py-5 text-foreground outline-none transition-all duration-300 focus:ring-4 focus:ring-primary/10 focus:border-primary/50 text-sm font-medium resize-none;
+  background-color: color-mix(in srgb, var(--secondary), transparent 70%);
+}
+
+/* Premium Buttons */
 .btn-primary {
-  @apply bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg;
+  @apply relative overflow-hidden bg-primary text-primary-foreground py-4 px-8 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-primary/20 hover:shadow-primary/40;
 }
 
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.btn-secondary {
+  @apply bg-secondary text-foreground py-4 px-8 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:bg-secondary/80;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes scaleIn {
-  from {
+/* Custom Animations */
+@keyframes spring-in {
+  0% {
+    transform: scale(0.9) translateY(10px);
     opacity: 0;
-    transform: scale(0.95) translateY(10px);
   }
-  to {
+
+  70% {
+    transform: scale(1.02) translateY(-2px);
     opacity: 1;
+  }
+
+  100% {
     transform: scale(1) translateY(0);
-  }
-}
-
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient 12s ease infinite;
-}
-
-.animate-float {
-  animation: float 8s ease-in-out infinite;
-}
-
-.animate-float-slow {
-  animation: float 12s ease-in-out infinite;
-}
-
-.animate-float-fast {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-scale-in {
-  animation: scaleIn 0.6s ease-out forwards;
-}
-
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-28px); }
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient 14s ease infinite;
+.animate-spring {
+  animation: spring-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-.animate-float {
-  animation: float 8s ease-in-out infinite;
+.ease-spring {
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.animate-float-slow {
-  animation: float 12s ease-in-out infinite;
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.animate-float-fast {
-  animation: float 6s ease-in-out infinite;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.animate-fade-up {
-  animation: fadeUp 0.8s ease-out forwards;
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--primary), transparent 50%);
+}
+
+/* Ambient Blobs */
+.blob {
+  @apply absolute rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-50;
+}
+
+.light .blob {
+  @apply mix-blend-multiply opacity-20;
 }

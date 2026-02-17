@@ -4,14 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import {
     Wand2, ChevronRight, ChevronLeft, Download, Plus, Trash2, Layout,
     User, Briefcase, GraduationCap, Code2, FolderGit2, Award, Globe, Languages,
-    Mail, Phone, MapPin, Linkedin, Github, ExternalLink, Sparkles
+    Mail, Phone, MapPin, Linkedin, Github, ExternalLink, Sparkles, X, CheckCircle2,
+    Sun, Moon
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
+import Navbar from '../components/Navbar';
+import './ResumeBuilder.css';
 
 export default function ResumeBuilder() {
     const navigate = useNavigate();
+    const { theme, toggleTheme } = useTheme();
     const [activeStep, setActiveStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState('classic'); // Default to most ATS friendly
@@ -261,1094 +266,745 @@ export default function ResumeBuilder() {
         }
     };
 
-
-
     // --- Render Editors ---
-
     const renderEditor = () => {
         switch (activeStep) {
-            case 0: // Header
+            case 0: // Personal Information
                 return (
-                    <div className="space-y-6 animate-slide-up">
-                        <div className="flex items-center gap-2 mb-2">
-                            <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400">
-                                <User size={20} />
-                            </div>
-                            <h3 className="section-title mb-0">Header Information</h3>
-                        </div>
-                        <div className="grid grid-cols-1 gap-5">
-                            <div className="space-y-2">
-                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Full Name</label>
-                                <input type="text" placeholder="e.g. John Doe" className="input-field font-semibold" value={resumeData.personal.fullName || ""} onChange={(e) => handlePersonalChange('fullName', e.target.value)} />
-                            </div>
+                    <div className="space-y-8 animate-spring">
+                        <header className="space-y-2">
+                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Personal <span className="text-primary">Details</span></h2>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">The foundation of your resume</p>
+                        </header>
 
-                            <div className="space-y-2">
-                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Target Job Title</label>
-                                <div className="relative group">
-                                    <input type="text" placeholder="e.g. Senior Frontend Engineer" className="input-field pr-28" value={resumeData.personal.jobTitle || ""} onChange={(e) => handlePersonalChange('jobTitle', e.target.value)} />
-                                    <button
-                                        onClick={() => handleAIEnhance('jobTitle', resumeData.personal.jobTitle, 'general')}
-                                        disabled={loading}
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 ai-btn-sm"
-                                    >
-                                        <Sparkles size={12} /> Optimize
-                                    </button>
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
+                                    <input type="text" placeholder="e.g. Alexander Pierce" className="input-field" value={resumeData.personal.fullName || ""} onChange={(e) => handlePersonalChange('fullName', e.target.value)} />
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center px-1">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Desired Job Title</label>
+                                        <button onClick={() => handleAIEnhance('jobTitle', resumeData.personal.jobTitle, 'jobTitle')} className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-1"><Sparkles size={10} /> AI Refine</button>
+                                    </div>
+                                    <input type="text" placeholder="e.g. Senior Software Architect" className="input-field" value={resumeData.personal.jobTitle || ""} onChange={(e) => handlePersonalChange('jobTitle', e.target.value)} />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Email Address</label>
-                                    <input type="email" placeholder="john@example.com" className="input-field" value={resumeData.personal.email || ""} onChange={(e) => handlePersonalChange('email', e.target.value)} />
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
+                                    <input type="email" placeholder="alex@example.com" className="input-field" value={resumeData.personal.email || ""} onChange={(e) => handlePersonalChange('email', e.target.value)} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Phone Number</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Phone Number</label>
                                     <input type="text" placeholder="+1 (555) 000-0000" className="input-field" value={resumeData.personal.phone || ""} onChange={(e) => handlePersonalChange('phone', e.target.value)} />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Location</label>
-                                <input type="text" placeholder="City, Country" className="input-field" value={resumeData.personal.location || ""} onChange={(e) => handlePersonalChange('location', e.target.value)} />
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Location</label>
+                                <input type="text" placeholder="San Francisco, CA" className="input-field" value={resumeData.personal.location || ""} onChange={(e) => handlePersonalChange('location', e.target.value)} />
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">LinkedIn Profile</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">LinkedIn Profile</label>
                                     <div className="relative">
-                                        <Linkedin size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
-                                        <input type="text" placeholder="linkedin.com/in/username" className="input-field pl-9" value={resumeData.personal.linkedin || ""} onChange={(e) => handlePersonalChange('linkedin', e.target.value)} />
+                                        <Linkedin size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
+                                        <input type="text" placeholder="linkedin.com/in/username" className="input-field pl-12" value={resumeData.personal.linkedin || ""} onChange={(e) => handlePersonalChange('linkedin', e.target.value)} />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Portfolio / GitHub</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Portfolio / GitHub</label>
                                     <div className="relative">
-                                        <Github size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
-                                        <input type="text" placeholder="github.com/username" className="input-field pl-9" value={resumeData.personal.github || ""} onChange={(e) => handlePersonalChange('github', e.target.value)} />
+                                        <Github size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
+                                        <input type="text" placeholder="github.com/username" className="input-field pl-12" value={resumeData.personal.github || ""} onChange={(e) => handlePersonalChange('github', e.target.value)} />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 );
+
             case 1: // Summary
                 return (
-                    <div className="space-y-6 animate-slide-up">
-                        <div className="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/10">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400">
-                                    <Briefcase size={20} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-white">Professional Summary</h3>
-                                    <p className="text-xs text-gray-400">Highlight your expertise & impact</p>
-                                </div>
+                    <div className="space-y-8 animate-spring">
+                        <header className="flex justify-between items-end">
+                            <div className="space-y-2">
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Professional <span className="text-primary">Bio</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Your 30-second elevator pitch</p>
                             </div>
-                            <button onClick={() => handleAIEnhance('summary', resumeData.summary, 'summary')} disabled={loading} className="ai-btn scale-90">
-                                <Sparkles size={14} /> {loading ? "..." : "AI Enhance"}
+                            <button onClick={() => handleAIEnhance('summary', resumeData.summary, 'summary')} disabled={loading} className="ai-btn py-2">
+                                <Sparkles size={16} /> {loading ? "Optimizing..." : "AI Optimize"}
                             </button>
-                        </div>
+                        </header>
+
                         <div className="relative group">
-                            <textarea className="textarea-field h-52 custom-scrollbar" placeholder="e.g. Results-driven Software Engineer with 5+ years of experience in building scalable web applications..." value={resumeData.summary} onChange={(e) => handleSimpleChange('summary', e.target.value)} />
-                            <div className="absolute bottom-4 right-4 text-[10px] text-gray-500 font-mono">
+                            <textarea
+                                className="textarea-field h-64 custom-scrollbar text-lg font-medium leading-relaxed italic"
+                                placeholder="e.g. Results-driven Software Engineer with 5+ years of experience in building scalable web applications. Expert in architectural design and cross-functional leadership..."
+                                value={resumeData.summary}
+                                onChange={(e) => handleSimpleChange('summary', e.target.value)}
+                            />
+                            <div className="absolute bottom-6 right-6 px-3 py-1 bg-background/50 backdrop-blur-sm border border-border rounded-full text-[10px] text-muted-foreground font-black uppercase tracking-widest">
                                 {resumeData.summary.length} characters
                             </div>
                         </div>
                     </div>
                 );
+
             case 2: // Experience
                 return (
-                    <div className="space-y-6 animate-slide-up">
-                        <div className="flex items-center justify-between gap-4 bg-white/5 p-5 rounded-2xl border border-white/10">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2.5 bg-blue-500/20 rounded-xl text-blue-400">
-                                    <Briefcase size={22} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-white leading-tight">Work Experience</h3>
-                                    <p className="text-[11px] text-gray-500 font-medium">Add your professional history</p>
-                                </div>
+                    <div className="space-y-8 animate-spring">
+                        <header className="flex justify-between items-end">
+                            <div className="space-y-2">
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Work <span className="text-primary">History</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Proof of your professional impact</p>
                             </div>
-                        </div>
+                            <button onClick={addExperience} className="ai-btn-sm py-2">
+                                <Plus size={16} /> Add Role
+                            </button>
+                        </header>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             {resumeData.experience.map((exp, index) => (
-                                <div key={exp.id} className="card-input group">
-                                    <div className="flex justify-between items-center mb-5">
-                                        <div className="flex items-center gap-2">
-                                            <span className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold text-gray-400 border border-white/5">
-                                                {index + 1}
-                                            </span>
-                                            <h4 className="font-bold text-sm text-gray-300">Experience</h4>
+                                <div key={exp.id} className="card-input group overflow-hidden">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-xs font-black text-primary border border-primary/20">
+                                                0{index + 1}
+                                            </div>
+                                            <h4 className="font-black text-xs uppercase tracking-widest text-foreground">Position Details</h4>
                                         </div>
-                                        <button onClick={() => removeItem('experience', exp.id)} className="delete-btn opacity-0 group-hover:opacity-100 transition-all">
-                                            <Trash2 size={16} />
+                                        <button onClick={() => removeItem('experience', exp.id)} className="delete-btn">
+                                            <Trash2 size={18} />
                                         </button>
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Job Title</label>
-                                            <input type="text" placeholder="e.g. Senior Developer" className="input-field" value={exp.title || ""} onChange={(e) => updateItem('experience', exp.id, 'title', e.target.value)} />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Title</label>
+                                            <input type="text" placeholder="e.g. Lead Developer" className="input-field" value={exp.title || ""} onChange={(e) => updateItem('experience', exp.id, 'title', e.target.value)} />
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Company</label>
-                                            <input type="text" placeholder="e.g. Google" className="input-field" value={exp.company || ""} onChange={(e) => updateItem('experience', exp.id, 'company', e.target.value)} />
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Company</label>
+                                            <input type="text" placeholder="e.g. Microsoft" className="input-field" value={exp.company || ""} onChange={(e) => updateItem('experience', exp.id, 'company', e.target.value)} />
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Start Date</label>
-                                            <input type="text" placeholder="MM/YYYY" className="input-field" value={exp.startDate || ""} onChange={(e) => updateItem('experience', exp.id, 'startDate', e.target.value)} />
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Start Date</label>
+                                            <input type="text" placeholder="Jan 2020" className="input-field" value={exp.startDate || ""} onChange={(e) => updateItem('experience', exp.id, 'startDate', e.target.value)} />
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">End Date</label>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">End Date</label>
                                             <input type="text" placeholder="Present" className="input-field" value={exp.endDate || ""} onChange={(e) => updateItem('experience', exp.id, 'endDate', e.target.value)} />
                                         </div>
-                                        <div className="sm:col-span-2 space-y-1.5">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Location</label>
-                                            <input type="text" placeholder="City, State" className="input-field" value={exp.location || ""} onChange={(e) => updateItem('experience', exp.id, 'location', e.target.value)} />
-                                        </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Description & Achievements</label>
-                                        <div className="relative">
-                                            <textarea placeholder="• Developed scalable systems..." className="textarea-field h-36 custom-scrollbar" value={exp.description || ""} onChange={(e) => updateItem('experience', exp.id, 'description', e.target.value)} />
-                                            <button onClick={() => handleAIEnhance('experience', exp.description, 'experience', exp.id)} disabled={loading} className="ai-btn-sm absolute bottom-3 right-3 shadow-lg">
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-center px-1">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Achievements & Impact</label>
+                                            <button onClick={() => handleAIEnhance('experience', exp.description, 'experience', exp.id)} className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-1.5">
                                                 <Sparkles size={12} /> AI Rewrite
                                             </button>
                                         </div>
+                                        <textarea
+                                            placeholder="• Scaled core platform to 1M+ active users..."
+                                            className="textarea-field h-40 custom-scrollbar text-sm"
+                                            value={exp.description || ""}
+                                            onChange={(e) => updateItem('experience', exp.id, 'description', e.target.value)}
+                                        />
                                     </div>
                                 </div>
                             ))}
                         </div>
-
-                        <button onClick={addExperience} className="add-btn py-3.5 hover:shadow-lg hover:shadow-purple-500/5 group border-white/5 bg-white/[0.02]">
-                            <Plus size={18} className="group-hover:rotate-90 transition-transform duration-300" />
-                            <span>Add New Experience</span>
-                        </button>
                     </div>
                 );
+
             case 3: // Projects
                 return (
-                    <div className="space-y-6 animate-slide-up">
-                        <div className="flex items-center gap-3 bg-white/5 p-5 rounded-2xl border border-white/10">
-                            <div className="p-2.5 bg-emerald-500/20 rounded-xl text-emerald-400">
-                                <Code2 size={22} />
+                    <div className="space-y-8 animate-spring">
+                        <header className="flex justify-between items-end">
+                            <div className="space-y-2">
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Notable <span className="text-primary">Projects</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Case studies of your expertise</p>
                             </div>
-                            <div>
-                                <h3 className="font-bold text-white leading-tight">Personal Projects</h3>
-                                <p className="text-[11px] text-gray-500 font-medium">Showcase your best work</p>
-                            </div>
-                        </div>
+                            <button onClick={addProject} className="ai-btn-sm py-2">
+                                <Plus size={16} /> Add Project
+                            </button>
+                        </header>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             {resumeData.projects.map((proj, index) => (
                                 <div key={proj.id} className="card-input group">
-                                    <div className="flex justify-between items-center mb-5">
-                                        <div className="flex items-center gap-2">
-                                            <span className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold text-gray-400 border border-white/5">
-                                                {index + 1}
-                                            </span>
-                                            <h4 className="font-bold text-sm text-gray-300">Project</h4>
+                                    <div className="flex justify-between items-center mb-6">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-xs font-black text-primary border border-primary/20">
+                                                0{index + 1}
+                                            </div>
+                                            <h4 className="font-black text-xs uppercase tracking-widest text-foreground">Project Profile</h4>
                                         </div>
-                                        <button onClick={() => removeItem('projects', proj.id)} className="delete-btn opacity-0 group-hover:opacity-100 transition-all">
-                                            <Trash2 size={16} />
+                                        <button onClick={() => removeItem('projects', proj.id)} className="delete-btn">
+                                            <Trash2 size={18} />
                                         </button>
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-4 mb-4">
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Project Name</label>
-                                            <input type="text" placeholder="e.g. AI Portfolio" className="input-field" value={proj.name || ""} onChange={(e) => updateItem('projects', proj.id, 'name', e.target.value)} />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Project Name</label>
+                                            <input type="text" placeholder="e.g. AI Content Engine" className="input-field" value={proj.name || ""} onChange={(e) => updateItem('projects', proj.id, 'name', e.target.value)} />
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Tech Stack</label>
-                                            <input type="text" placeholder="e.g. React, Tailwind, OpenAI" className="input-field" value={proj.techStack || ""} onChange={(e) => updateItem('projects', proj.id, 'techStack', e.target.value)} />
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Live Link / GitHub</label>
-                                            <div className="relative">
-                                                <ExternalLink size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
-                                                <input type="text" placeholder="https://github.com/..." className="input-field pl-9" value={proj.link || ""} onChange={(e) => updateItem('projects', proj.id, 'link', e.target.value)} />
-                                            </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Tech Stack</label>
+                                            <input type="text" placeholder="e.g. Next.js, OpenAI, PostgreSQL" className="input-field" value={proj.techStack || ""} onChange={(e) => updateItem('projects', proj.id, 'techStack', e.target.value)} />
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Project Description</label>
-                                        <div className="relative">
-                                            <textarea placeholder="Describe what you built and how..." className="textarea-field h-32 custom-scrollbar" value={proj.description || ""} onChange={(e) => updateItem('projects', proj.id, 'description', e.target.value)} />
-                                            <button onClick={() => handleAIEnhance('projects', proj.description, 'projects', proj.id)} disabled={loading} className="ai-btn-sm absolute bottom-3 right-3 shadow-lg">
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-center px-1">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Outcome & Contribution</label>
+                                            <button onClick={() => handleAIEnhance('projects', proj.description, 'projects', proj.id)} className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-1.5">
                                                 <Sparkles size={12} /> AI Rewrite
                                             </button>
                                         </div>
+                                        <textarea
+                                            placeholder="Decreased processing time by 45% by implementing a custom caching layer..."
+                                            className="textarea-field h-32 custom-scrollbar text-sm"
+                                            value={proj.description || ""}
+                                            onChange={(e) => updateItem('projects', proj.id, 'description', e.target.value)}
+                                        />
                                     </div>
                                 </div>
                             ))}
                         </div>
-
-                        <button onClick={addProject} className="add-btn py-3.5 hover:shadow-lg hover:shadow-purple-500/5 group border-white/5 bg-white/[0.02]">
-                            <Plus size={18} className="group-hover:rotate-90 transition-transform duration-300" />
-                            <span>Add New Project</span>
-                        </button>
                     </div>
                 );
+
             case 4: // Education
                 return (
-                    <div className="space-y-6 animate-slide-up">
-                        <div className="flex items-center gap-3 bg-white/5 p-5 rounded-2xl border border-white/10">
-                            <div className="p-2.5 bg-purple-500/20 rounded-xl text-purple-400">
-                                <GraduationCap size={22} />
+                    <div className="space-y-8 animate-spring">
+                        <header className="flex justify-between items-end">
+                            <div className="space-y-2">
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Academic <span className="text-primary">Path</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Your educational foundation</p>
                             </div>
-                            <div>
-                                <h3 className="font-bold text-white leading-tight">Education</h3>
-                                <p className="text-[11px] text-gray-500 font-medium">Your academic background</p>
-                            </div>
-                        </div>
+                            <button onClick={addEducation} className="ai-btn-sm py-2">
+                                <Plus size={16} /> Add School
+                            </button>
+                        </header>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             {resumeData.education.map((edu, index) => (
                                 <div key={edu.id} className="card-input group">
-                                    <div className="flex justify-between items-center mb-5">
-                                        <div className="flex items-center gap-2">
-                                            <span className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold text-gray-400 border border-white/5">
-                                                {index + 1}
-                                            </span>
-                                            <h4 className="font-bold text-sm text-gray-300">Education</h4>
+                                    <div className="flex justify-between items-center mb-6">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-xs font-black text-primary border border-primary/20">
+                                                0{index + 1}
+                                            </div>
+                                            <h4 className="font-black text-xs uppercase tracking-widest text-foreground">Scholar Info</h4>
                                         </div>
-                                        <button onClick={() => removeItem('education', edu.id)} className="delete-btn opacity-0 group-hover:opacity-100 transition-all">
-                                            <Trash2 size={16} />
+                                        <button onClick={() => removeItem('education', edu.id)} className="delete-btn">
+                                            <Trash2 size={18} />
                                         </button>
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-4">
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Degree / Field of Study</label>
-                                            <input type="text" placeholder="e.g. B.S. in Computer Science" className="input-field" value={edu.degree || ""} onChange={(e) => updateItem('education', edu.id, 'degree', e.target.value)} />
+                                    <div className="space-y-6">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Degree & Major</label>
+                                            <input type="text" placeholder="e.g. Master of Computer Science" className="input-field" value={edu.degree || ""} onChange={(e) => updateItem('education', edu.id, 'degree', e.target.value)} />
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">School / University</label>
-                                            <input type="text" placeholder="e.g. Stanford University" className="input-field" value={edu.school || ""} onChange={(e) => updateItem('education', edu.id, 'school', e.target.value)} />
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Institution</label>
+                                            <input type="text" placeholder="e.g. MIT" className="input-field" value={edu.school || ""} onChange={(e) => updateItem('education', edu.id, 'school', e.target.value)} />
                                         </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-1.5">
-                                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">Graduation Year</label>
-                                                <input type="text" placeholder="e.g. 2023" className="input-field" value={edu.year || ""} onChange={(e) => updateItem('education', edu.id, 'year', e.target.value)} />
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Graduation Year</label>
+                                                <input type="text" placeholder="e.g. 2022" className="input-field" value={edu.year || ""} onChange={(e) => updateItem('education', edu.id, 'year', e.target.value)} />
                                             </div>
-                                            <div className="space-y-1.5">
-                                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider ml-1">GPA / Grade</label>
-                                                <input type="text" placeholder="e.g. 3.9/4.0" className="input-field" value={edu.grade || ""} onChange={(e) => updateItem('education', edu.id, 'grade', e.target.value)} />
+                                            <div className="space-y-2">
+                                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">GPA / Honors</label>
+                                                <input type="text" placeholder="e.g. 3.9 / Cum Laude" className="input-field" value={edu.grade || ""} onChange={(e) => updateItem('education', edu.id, 'grade', e.target.value)} />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-
-                        <button onClick={addEducation} className="add-btn py-3.5 hover:shadow-lg hover:shadow-purple-500/5 group border-white/5 bg-white/[0.02]">
-                            <Plus size={18} className="group-hover:rotate-90 transition-transform duration-300" />
-                            <span>Add Education</span>
-                        </button>
                     </div>
                 );
+
             case 5: // Skills
                 return (
-                    <div className="space-y-6 animate-slide-up">
-                        <div className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/10">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2.5 bg-orange-500/20 rounded-xl text-orange-400">
-                                    <Code2 size={22} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-white leading-tight">Technical Skills</h3>
-                                    <p className="text-[11px] text-gray-500 font-medium">List your core competencies</p>
-                                </div>
+                    <div className="space-y-8 animate-spring">
+                        <header className="flex justify-between items-end">
+                            <div className="space-y-2">
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Core <span className="text-primary">Skills</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Your technical toolkit</p>
                             </div>
-                            <button onClick={() => handleAIEnhance('skills', resumeData.skills, 'skills')} disabled={loading} className="ai-btn scale-90">
-                                <Sparkles size={14} /> {loading ? "..." : "Optimize"}
+                            <button onClick={() => handleAIEnhance('skills', resumeData.skills, 'skills')} disabled={loading} className="ai-btn py-2">
+                                <Sparkles size={16} /> {loading ? "Optimizing..." : "Analyze for ATS"}
                             </button>
-                        </div>
+                        </header>
 
-                        <div className="space-y-4">
-                            <div className="relative group">
-                                <textarea className="textarea-field h-52 custom-scrollbar font-mono text-sm" placeholder="e.g. Languages: JavaScript, Python, C++
-Frameworks: React, Node.js, Express
-Tools: Git, Docker, Kubernetes..." value={resumeData.skills} onChange={(e) => handleSimpleChange('skills', e.target.value)} />
-                            </div>
-                            <div className="flex items-start gap-3 p-4 bg-purple-500/5 rounded-xl border border-purple-500/10">
-                                <Wand2 size={16} className="text-purple-400 mt-0.5 shrink-0" />
-                                <p className="text-[11px] text-purple-300/80 leading-relaxed font-medium">
-                                    <span className="text-purple-400 font-bold uppercase tracking-wider text-[9px] block mb-1">ATS Tip</span>
-                                    Group your skills by categories (e.g. Languages, Tools) to help parsing algorithms identify your expertise faster.
-                                </p>
+                        <div className="space-y-6">
+                            <textarea
+                                className="textarea-field h-64 custom-scrollbar font-mono text-base leading-relaxed"
+                                placeholder="Languages: JavaScript, Python, Rust\nFrameworks: React, Next.js, Node.js\nCore: Distributed Systems, AWS, CI/CD"
+                                value={resumeData.skills}
+                                onChange={(e) => handleSimpleChange('skills', e.target.value)}
+                            />
+
+                            <div className="p-6 bg-primary/5 rounded-[28px] border border-primary/10 flex items-start gap-5">
+                                <div className="p-3 bg-primary/10 rounded-2xl text-primary">
+                                    <Wand2 size={24} />
+                                </div>
+                                <div className="space-y-1">
+                                    <h4 className="text-xs font-black uppercase tracking-widest text-primary">ATS Optimization Tip</h4>
+                                    <p className="text-sm text-foreground/70 leading-relaxed italic">
+                                        Structure your skills by categories to help parsers rank you higher for specific job descriptions.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 );
+
             case 6: // Extras
                 return (
-                    <div className="space-y-8 animate-slide-up">
-                        {/* Certifications */}
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3 mb-2">
-                                <Award size={18} className="text-yellow-500" />
-                                <h3 className="font-bold text-gray-200">Certifications</h3>
+                    <div className="space-y-12 animate-spring">
+                        <header className="space-y-2">
+                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Extra <span className="text-primary">Details</span></h2>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">The finishing touches that set you apart</p>
+                        </header>
+
+                        <div className="space-y-6">
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-primary/10 rounded-xl text-primary">
+                                        <Award size={20} />
+                                    </div>
+                                    <h3 className="text-sm font-black uppercase tracking-widest text-foreground">Certifications</h3>
+                                </div>
+                                <button onClick={addCertification} className="ai-btn-sm py-2">
+                                    <Plus size={16} /> Add Cert
+                                </button>
                             </div>
-                            <div className="space-y-3">
+
+                            <div className="space-y-4">
                                 {resumeData.certifications.map((cert) => (
-                                    <div key={cert.id} className="flex gap-3 group items-end bg-white/[0.02] p-3 rounded-xl border border-white/5">
-                                        <div className="flex-1 space-y-1.5">
-                                            <label className="text-[9px] font-bold text-gray-600 uppercase tracking-widest ml-1">Certificate Name</label>
-                                            <input type="text" placeholder="e.g. AWS Solutions Architect" className="input-field py-2 text-sm" value={cert.name || ""} onChange={(e) => updateItem('certifications', cert.id, 'name', e.target.value)} />
+                                    <div key={cert.id} className="card-input group flex items-end gap-4">
+                                        <div className="flex-1 space-y-2">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Certificate Name</label>
+                                            <input type="text" placeholder="e.g. AWS Solutions Architect" className="input-field" value={cert.name || ""} onChange={(e) => updateItem('certifications', cert.id, 'name', e.target.value)} />
                                         </div>
-                                        <div className="w-1/3 space-y-1.5">
-                                            <label className="text-[9px] font-bold text-gray-600 uppercase tracking-widest ml-1">Year/Platform</label>
-                                            <input type="text" placeholder="2023" className="input-field py-2 text-sm" value={cert.year || ""} onChange={(e) => updateItem('certifications', cert.id, 'year', e.target.value)} />
+                                        <div className="w-1/3 space-y-2">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Year</label>
+                                            <input type="text" placeholder="2023" className="input-field" value={cert.year || ""} onChange={(e) => updateItem('certifications', cert.id, 'year', e.target.value)} />
                                         </div>
-                                        <button onClick={() => removeItem('certifications', cert.id)} className="p-2.5 text-gray-600 hover:text-red-400 transition-colors">
-                                            <Trash2 size={16} />
+                                        <button onClick={() => removeItem('certifications', cert.id)} className="delete-btn mb-1.5">
+                                            <Trash2 size={18} />
                                         </button>
                                     </div>
                                 ))}
                             </div>
-                            <button onClick={addCertification} className="flex items-center gap-2 text-[11px] font-bold text-purple-400 hover:text-purple-300 transition-colors ml-1 uppercase tracking-wider">
-                                <Plus size={14} fill="currentColor" /> Add Certificate
-                            </button>
                         </div>
 
-                        {/* Achievements */}
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3 mb-2">
-                                <Sparkles size={18} className="text-purple-400" />
-                                <h3 className="font-bold text-gray-200">Key Achievements</h3>
+                        <div className="space-y-6">
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-primary/10 rounded-xl text-primary">
+                                        <Sparkles size={20} />
+                                    </div>
+                                    <h3 className="text-sm font-black uppercase tracking-widest text-foreground">Key Achievements</h3>
+                                </div>
+                                <button onClick={addAchievement} className="ai-btn-sm py-2">
+                                    <Plus size={16} /> Add Win
+                                </button>
                             </div>
-                            <div className="space-y-3">
+
+                            <div className="space-y-4">
                                 {resumeData.achievements.map((ach) => (
-                                    <div key={ach.id} className="flex gap-3 group items-center bg-white/[0.02] p-3 rounded-xl border border-white/5">
+                                    <div key={ach.id} className="card-input group flex items-center gap-4">
                                         <div className="flex-1">
-                                            <input type="text" placeholder="e.g. Reduced latency by 40%..." className="input-field py-2 text-sm" value={ach.title || ""} onChange={(e) => updateItem('achievements', ach.id, 'title', e.target.value)} />
+                                            <input type="text" placeholder="e.g. Increased revenue by 25% through A/B testing..." className="input-field" value={ach.title || ""} onChange={(e) => updateItem('achievements', ach.id, 'title', e.target.value)} />
                                         </div>
-                                        <button onClick={() => removeItem('achievements', ach.id)} className="p-2.5 text-gray-600 hover:text-red-400 transition-colors">
-                                            <Trash2 size={16} />
+                                        <button onClick={() => removeItem('achievements', ach.id)} className="delete-btn">
+                                            <Trash2 size={18} />
                                         </button>
                                     </div>
                                 ))}
                             </div>
-                            <button onClick={addAchievement} className="flex items-center gap-2 text-[11px] font-bold text-purple-400 hover:text-purple-300 transition-colors ml-1 uppercase tracking-wider">
-                                <Plus size={14} fill="currentColor" /> Add Achievement
-                            </button>
                         </div>
                     </div>
                 );
+
             case 7: // Finish / Templates
                 return (
-                    <div className="space-y-8 animate-slide-up">
-                        <div className="flex items-center gap-3 bg-white/5 p-5 rounded-2xl border border-white/10">
-                            <div className="p-2.5 bg-emerald-500/20 rounded-xl text-emerald-400">
-                                <Layout size={22} />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-white leading-tight">Pick a Template</h3>
-                                <p className="text-[11px] text-gray-500 font-medium">Select the best look for your resume</p>
-                            </div>
-                        </div>
+                    <div className="space-y-8 animate-spring">
+                        <header className="space-y-2">
+                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Ready for <span className="text-primary">Impact</span></h2>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Select a layout and claim your future</p>
+                        </header>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {[
-                                { id: 'classic', name: 'Standard ATS', desc: 'Maximum Parsing Rate', color: 'slate' },
-                                { id: 'modern', name: 'Modern Clean', desc: 'Perfect for High-Tech', color: 'indigo' },
-                                { id: 'minimal', name: 'Minimalist', desc: 'Focus on Experience', color: 'emerald' }
+                                { id: 'classic', name: 'Standard ATS', desc: 'Maximum Parsing Rate', icon: Layout },
+                                { id: 'modern', name: 'Modern Clean', desc: 'Perfect for High-Tech', icon: Layout },
+                                { id: 'minimal', name: 'Minimalist', desc: 'Focus on Experience', icon: Layout }
                             ].map(t => (
                                 <div
                                     key={t.id}
                                     onClick={() => setSelectedTemplate(t.id)}
-                                    className={`relative p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 group ${selectedTemplate === t.id ? 'border-purple-500 bg-purple-500/10 shadow-[0_0_20px_rgba(168,85,247,0.15)]' : 'border-white/5 bg-white/[0.02] hover:border-white/20'}`}
+                                    className={`relative p-6 rounded-[32px] border-2 cursor-pointer transition-all duration-500 group overflow-hidden ${selectedTemplate === t.id ? 'border-primary bg-primary/10 shadow-[0_20px_50px_rgba(var(--primary),0.2)] scale-[1.02]' : 'border-border bg-card/40 hover:border-primary/30 hover:bg-card/60'}`}
                                 >
                                     {selectedTemplate === t.id && (
-                                        <div className="absolute -top-3 -right-3 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center shadow-lg border-4 border-[#09090b]">
-                                            <Sparkles size={14} className="text-white" />
+                                        <div className="absolute top-4 right-4 text-primary animate-in fade-in zoom-in duration-300">
+                                            <CheckCircle2 size={24} fill="currentColor" className="text-primary-foreground stroke-primary" />
                                         </div>
                                     )}
-                                    <div className={`h-28 rounded-xl mb-4 flex items-center justify-center transition-all group-hover:scale-105 ${selectedTemplate === t.id ? 'bg-purple-500/20' : 'bg-white/5'}`}>
-                                        <Layout size={32} className={selectedTemplate === t.id ? "text-purple-400" : "text-gray-600"} />
+
+                                    <div className={`w-full aspect-video rounded-2xl mb-6 flex items-center justify-center transition-all duration-500 group-hover:scale-105 ${selectedTemplate === t.id ? 'bg-primary/20' : 'bg-secondary/50'}`}>
+                                        <t.icon size={48} strokeWidth={1} className={selectedTemplate === t.id ? "text-primary" : "text-muted-foreground/30"} />
                                     </div>
-                                    <p className="font-bold text-sm text-center mb-1">{t.name}</p>
-                                    <p className="text-[10px] text-center text-gray-500 font-medium uppercase tracking-wider">{t.desc}</p>
+
+                                    <div className="space-y-1">
+                                        <h4 className="font-black text-sm uppercase tracking-widest text-foreground">{t.name}</h4>
+                                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">{t.desc}</p>
+                                    </div>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="pt-4">
+                        <div className="pt-8 space-y-4">
                             <button
                                 onClick={handleDownloadPDF}
                                 disabled={loading}
-                                className={`w-full py-5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-lg shadow-[0_10px_30px_rgba(139,92,246,0.25)] hover:shadow-[0_15px_40px_rgba(139,92,246,0.35)] hover:-translate-y-1 transition-all active:scale-95 flex justify-center items-center gap-3 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                className={`w-full py-6 rounded-[24px] bg-gradient-to-r from-primary to-indigo-600 text-primary-foreground font-black text-xl shadow-[0_20px_40px_rgba(var(--primary),0.3)] hover:shadow-[0_25px_50px_rgba(var(--primary),0.4)] hover:-translate-y-1.5 transition-all active:scale-[0.98] flex justify-center items-center gap-4 ${loading ? 'opacity-70 cursor-wait' : ''}`}
                             >
                                 {loading ? (
                                     <>
-                                        <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                                        <span>Crafting PDF...</span>
+                                        <div className="w-6 h-6 border-4 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
+                                        <span>Forging Excellence...</span>
                                     </>
                                 ) : (
                                     <>
-                                        <Download size={22} strokeWidth={3} />
-                                        <span>Download Resume</span>
+                                        <Download size={28} strokeWidth={3} />
+                                        <span>Download Performance Resume</span>
                                     </>
                                 )}
                             </button>
-                            <p className="text-center text-[10px] text-gray-500 mt-4 font-medium uppercase tracking-[0.2em]">Validated for ATS performance</p>
+                            <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">
+                                <Sparkles size={12} className="text-primary" /> Validated for ATS Performance <Sparkles size={12} className="text-primary" />
+                            </div>
                         </div>
                     </div>
                 );
+
             default:
                 return null;
         }
     };
 
+    const renderTemplate = () => {
+        const { personal, summary, experience, projects, education, skills, certifications, achievements } = resumeData;
+
+        return (
+            <div className="p-12 space-y-10 text-slate-800 font-sans leading-relaxed">
+                <header className="border-b-4 border-slate-900 pb-8">
+                    <h1 className="text-5xl font-black uppercase tracking-tighter mb-4">{personal.fullName || 'YOUR NAME'}</h1>
+                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold uppercase tracking-widest text-slate-500">
+                        {personal.jobTitle && <span className="text-slate-900">{personal.jobTitle}</span>}
+                        {personal.email && <span>{personal.email}</span>}
+                        {personal.phone && <span>{personal.phone}</span>}
+                        {personal.location && <span>{personal.location}</span>}
+                    </div>
+                </header>
+
+                {summary && (
+                    <section className="space-y-4">
+                        <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Professional Profile</h2>
+                        <p className="text-lg italic leading-relaxed">{summary}</p>
+                    </section>
+                )}
+
+                <div className="grid grid-cols-3 gap-12">
+                    <div className="col-span-2 space-y-12">
+                        {experience.length > 0 && (
+                            <section className="space-y-6">
+                                <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Experience</h2>
+                                {experience.map(exp => (
+                                    <div key={exp.id} className="space-y-2">
+                                        <div className="flex justify-between items-baseline">
+                                            <h3 className="text-xl font-black text-slate-900">{exp.title}</h3>
+                                            <span className="text-sm font-black text-slate-400">{exp.startDate} — {exp.endDate}</span>
+                                        </div>
+                                        <p className="text-md font-bold text-primary italic uppercase tracking-wider">{exp.company}</p>
+                                        <p className="whitespace-pre-line text-slate-600 leading-relaxed">{exp.description}</p>
+                                    </div>
+                                ))}
+                            </section>
+                        )}
+
+                        {projects.length > 0 && (
+                            <section className="space-y-6">
+                                <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Key Projects</h2>
+                                {projects.map(proj => (
+                                    <div key={proj.id} className="space-y-2">
+                                        <div className="flex justify-between items-baseline">
+                                            <h3 className="text-lg font-black text-slate-900">{proj.name}</h3>
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{proj.techStack}</span>
+                                        </div>
+                                        <p className="text-slate-600 leading-relaxed italic">{proj.description}</p>
+                                    </div>
+                                ))}
+                            </section>
+                        )}
+                    </div>
+
+                    <div className="space-y-12">
+                        {skills ? (
+                            <section className="space-y-6">
+                                <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Skills</h2>
+                                <p className="text-sm font-bold text-slate-600 leading-loose uppercase tracking-widest whitespace-pre-line">{skills}</p>
+                            </section>
+                        ) : null}
+
+                        {education.length > 0 && (
+                            <section className="space-y-6">
+                                <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Education</h2>
+                                {education.map(edu => (
+                                    <div key={edu.id}>
+                                        <h3 className="text-md font-black text-slate-900">{edu.degree}</h3>
+                                        <p className="text-sm font-bold text-slate-500">{edu.school}</p>
+                                        <p className="text-xs font-black text-primary uppercase tracking-widest mt-1">{edu.year} · {edu.grade}</p>
+                                    </div>
+                                ))}
+                            </section>
+                        )}
+
+                        {(certifications.length > 0 || achievements.length > 0) && (
+                            <section className="space-y-6">
+                                <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Extras</h2>
+                                <div className="space-y-4">
+                                    {certifications.map(cert => (
+                                        <div key={cert.id} className="text-slate-600">
+                                            <p className="text-sm font-black">{cert.name}</p>
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{cert.year}</p>
+                                        </div>
+                                    ))}
+                                    {achievements.map(ach => (
+                                        <div key={ach.id} className="text-slate-600 italic text-sm">
+                                            • {ach.title}
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
-        <div className="min-h-screen bg-black text-white flex flex-col md:flex-row font-inter">
-            <style>{`
-                .glass-card {
-                    background: rgba(255, 255, 255, 0.03);
-                    backdrop-filter: blur(12px);
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    border-radius: 1rem;
-                }
-                .section-title { 
-                    font-size: 1.1rem; 
-                    font-weight: 700; 
-                    color: #e2e8f0; 
-                    margin-bottom: 1.25rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                }
-                .input-field { 
-                    width: 100%; 
-                    background: rgba(255, 255, 255, 0.03); 
-                    border: 1px solid rgba(255, 255, 255, 0.1); 
-                    border-radius: 0.75rem; 
-                    padding: 0.875rem 1rem; 
-                    color: #f8fafc; 
-                    outline: none; 
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    font-size: 0.95rem;
-                }
-                .input-field:focus { 
-                    border-color: #8b5cf6; 
-                    background: rgba(255, 255, 255, 0.06);
-                    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
-                }
-                .textarea-field { 
-                    width: 100%; 
-                    background: rgba(255, 255, 255, 0.03); 
-                    border: 1px solid rgba(255, 255, 255, 0.1); 
-                    border-radius: 0.75rem; 
-                    padding: 1rem; 
-                    color: #f8fafc; 
-                    outline: none; 
-                    resize: none; 
-                    transition: all 0.3s ease; 
-                    font-size: 0.95rem; 
-                    line-height: 1.6; 
-                }
-                .textarea-field:focus { 
-                    border-color: #8b5cf6;
-                    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
-                }
-                .card-input { 
-                    padding: 1.5rem; 
-                    background: rgba(255, 255, 255, 0.02); 
-                    border: 1px solid rgba(255, 255, 255, 0.06); 
-                    border-radius: 1rem; 
-                    margin-bottom: 1.5rem; 
-                    position: relative;
-                    transition: transform 0.2s ease;
-                }
-                .card-input:hover {
-                    border-color: rgba(255, 255, 255, 0.12);
-                }
-                .ai-btn { 
-                    background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%); 
-                    border-radius: 0.75rem; 
-                    padding: 0.625rem 1.25rem; 
-                    font-size: 0.85rem; 
-                    display: flex; 
-                    align-items: center; 
-                    gap: 0.5rem; 
-                    font-weight: 600;
-                    color: white;
-                    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-                    transition: all 0.3s ease;
-                }
-                .ai-btn:hover {
-                    transform: translateY(-1px);
-                    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
-                }
-                .ai-btn-sm { 
-                    background: rgba(139, 92, 246, 0.1); 
-                    border: 1px solid rgba(139, 92, 246, 0.2); 
-                    border-radius: 0.5rem; 
-                    padding: 0.4rem 0.75rem; 
-                    font-size: 0.75rem; 
-                    display: flex; 
-                    align-items: center; 
-                    gap: 0.375rem; 
-                    color: #c4b5fd;
-                    transition: all 0.2s ease;
-                }
-                .ai-btn-sm:hover {
-                    background: rgba(139, 92, 246, 0.2);
-                    border-color: rgba(139, 92, 246, 0.4);
-                }
-                .add-btn { 
-                    width: 100%; 
-                    padding: 1rem; 
-                    border: 2px dashed rgba(255, 255, 255, 0.1); 
-                    border-radius: 0.75rem; 
-                    color: #94a3b8; 
-                    display: flex; 
-                    justify-content: center; 
-                    align-items: center; 
-                    gap: 0.5rem; 
-                    transition: all 0.3s ease;
-                    font-weight: 500;
-                }
-                .add-btn:hover { 
-                    border-color: #8b5cf6; 
-                    color: #c4b5fd; 
-                    background: rgba(139, 92, 246, 0.04); 
-                }
-                .delete-btn { 
-                    color: #94a3b8; 
-                    padding: 0.5rem; 
-                    border-radius: 0.5rem; 
-                    transition: all 0.2s ease; 
-                }
-                .delete-btn:hover { 
-                    color: #ef4444;
-                    background: rgba(239, 68, 68, 0.1); 
-                }
-                
-                /* SCROLLBAR */
-                .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-                .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-                .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+        <div className="min-h-screen bg-background text-foreground flex flex-col transition-colors duration-300">
+            <Navbar />
 
-                @keyframes slide-up {
-                    from { opacity: 0; transform: translateY(10px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .animate-slide-up { animation: slide-up 0.4s ease-out forwards; }
-            `}</style>
+            <div className="flex flex-col md:flex-row flex-1 pt-16">
+                {/* AMBIENT BACKGROUND ELEMENTS */}
+                <div className="fixed inset-0 pointer-events-none opacity-40">
+                    <div className="blob bg-primary/20 top-[-10%] left-[-10%] w-[60%] h-[60%]" />
+                    <div className="blob bg-indigo-600/20 bottom-[-10%] right-[-10%] w-[60%] h-[60%] animate-pulse" />
+                </div>
 
-            {/* LEFT PANEL: WIZARD */}
-            <div className="w-full md:w-[45%] lg:w-[40%] border-r border-white/10 flex flex-col h-screen bg-[#09090b] relative z-20">
-                <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between bg-[#09090b]/80 backdrop-blur-md sticky top-0 z-30">
-                    <div className="flex items-center gap-4">
-                        <button onClick={() => navigate('/dashboard')} className="p-2 hover:bg-white/10 rounded-xl transition-all active:scale-90 border border-transparent hover:border-white/10">
-                            <ChevronLeft size={20} />
+                {/* LEFT SIDE: STEPS & EDITOR */}
+                <div
+                    className="w-full md:w-1/2 flex flex-col h-[calc(100vh-64px)] border-r border-border relative z-10 backdrop-blur-md"
+                    style={{ backgroundColor: 'color-mix(in srgb, var(--background), transparent 50%)' }}
+                >
+                    <header className="p-8 border-b border-border flex justify-between items-center bg-card/30 sticky top-0 z-30 backdrop-blur-xl">
+                        <button onClick={() => navigate('/dashboard')} className="p-3 rounded-2xl bg-secondary border border-border hover:bg-accent transition-all active:scale-90">
+                            <ChevronLeft size={20} className="text-foreground" />
                         </button>
-                        <div>
-                            <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Resume Builder</h1>
-                            <div className="flex items-center gap-2 mt-0.5">
-                                <div className="h-1 w-1 rounded-full bg-purple-500"></div>
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Step {activeStep + 1} of {steps.length}: {steps[activeStep].title}</p>
+                        <div className="flex flex-col items-center">
+                            <h2 className="text-sm font-black italic uppercase tracking-widest text-primary leading-none mb-1">Resume <span className="text-foreground">Forge</span></h2>
+                            <div className="flex gap-1.5">
+                                {steps.map((_, i) => (
+                                    <div key={i} className={`step-dot ${i === activeStep ? 'step-dot-active' : 'step-dot-inactive'}`} />
+                                ))}
+                            </div>
+                        </div>
+                        <div className="w-11" /> {/* Spacer instead of toggle */}
+                    </header>
+
+                    <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+                        <div className="max-w-xl mx-auto py-4">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activeStep}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="min-h-[500px]"
+                                >
+                                    {renderEditor()}
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
+                    </div>
+
+                    <div className="p-8 border-t border-border flex justify-between bg-card/30 backdrop-blur-xl sticky bottom-0 z-30">
+                        <button
+                            onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
+                            disabled={activeStep === 0}
+                            className={`flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all font-bold text-sm uppercase tracking-widest ${activeStep === 0 ? 'opacity-0 pointer-events-none' : 'border-border text-muted-foreground hover:bg-secondary'}`}
+                        >
+                            <ChevronLeft size={18} /> Back
+                        </button>
+
+                        <button
+                            onClick={() => setActiveStep(prev => Math.min(steps.length - 1, prev + 1))}
+                            className={`bg-primary text-primary-foreground px-8 py-3 rounded-2xl font-bold flex items-center gap-2 group transition-all hover:opacity-90 active:scale-95 ${activeStep === steps.length - 1 ? 'hidden' : ''}`}
+                        >
+                            <span>{activeStep === steps.length - 2 ? 'Finalize' : 'Next Step'}</span>
+                            <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* RIGHT PANEL: LIVE PREVIEW */}
+                <div
+                    className={`
+                        ${activeStep === 7 ? 'fixed inset-0 z-[60] backdrop-blur-xl p-6 pt-24 custom-scrollbar overflow-y-auto' : 'hidden'} 
+                        md:static md:flex md:flex-1 md:bg-secondary/30 md:h-[calc(100vh-64px)] md:flex-col md:relative md:z-0 md:overflow-hidden
+                    `}
+                    style={activeStep === 7 ? { backgroundColor: 'color-mix(in srgb, var(--background), transparent 5%)' } : {}}
+                >
+                    <div className="p-8 border-b border-border bg-card/50 backdrop-blur-sm flex justify-between items-center relative z-10 w-full hidden md:flex">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
+                                <Layout size={18} />
+                            </div>
+                            <h3 className="text-xs font-black uppercase tracking-widest text-foreground">Live Preview <span className="text-muted-foreground opacity-50 ml-1">· Real-time</span></h3>
+                        </div>
+
+                        {activeStep === 7 && (
+                            <div className="flex gap-3">
+                                <button onClick={handleDownloadPDF} disabled={loading} className="ai-btn px-6">
+                                    <Download size={18} className={loading ? 'animate-bounce' : ''} />
+                                    <span>{loading ? 'Forging PDF...' : 'Download Resume'}</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Mobile Close Button (Step 7) */}
+                    {activeStep === 7 && (
+                        <button
+                            onClick={() => setActiveStep(6)}
+                            className="md:hidden absolute top-6 right-6 p-3 bg-secondary/80 hover:bg-secondary rounded-2xl text-foreground z-[70] backdrop-blur-md border border-border active:scale-95 transition-all"
+                        >
+                            <X size={24} />
+                        </button>
+                    )}
+
+
+                    <div className="flex-1 overflow-y-auto p-4 md:p-12 custom-scrollbar bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_100%)] from-primary/5 w-full flex justify-center">
+                        <div className={`
+                        preview-container origin-top
+                        ${activeStep === 7 ? 'scale-100 mt-12 mb-24' : 'scale-[0.4] sm:scale-[0.5] md:scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] 2xl:scale-100'} 
+                        shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]
+                    `}>
+                            <div id="resume-preview" className="bg-white">
+                                {renderTemplate()}
                             </div>
                         </div>
                     </div>
-                    {activeStep === 7 && (
-                        <button onClick={handleDownloadPDF} disabled={loading} className="md:hidden ai-btn py-2 px-4">
-                            <Download size={16} />
-                        </button>
-                    )}
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-gradient-to-b from-[#09090b] to-black">
-                    <AnimatePresence mode="wait">
+                {/* AI SUGGESTION MODAL */}
+                <AnimatePresence>
+                    {aiSuggestion && (
                         <motion.div
-                            key={activeStep}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 10 }}
-                            transition={{ duration: 0.2, ease: "easeOut" }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-md"
+                            style={{ backgroundColor: 'color-mix(in srgb, var(--background), transparent 20%)' }}
                         >
-                            {renderEditor()}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
-
-                <div className="p-5 border-t border-white/10 flex justify-between bg-[#09090b]/80 backdrop-blur-md sticky bottom-0 z-30">
-                    <button
-                        onClick={() => setActiveStep(p => Math.max(0, p - 1))}
-                        disabled={activeStep === 0}
-                        className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-semibold transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
-                    >
-                        Back
-                    </button>
-
-                    <div className="flex gap-1.5 items-center">
-                        {steps.map((_, i) => (
-                            <div
-                                key={i}
-                                className={`h-1 rounded-full transition-all duration-300 ${i === activeStep ? 'w-6 bg-purple-500' : 'w-1 bg-white/10'}`}
-                            />
-                        ))}
-                    </div>
-
-                    <button
-                        onClick={() => setActiveStep(p => Math.min(steps.length - 1, p + 1))}
-                        disabled={activeStep === steps.length - 1}
-                        className="px-7 py-2.5 rounded-xl bg-white text-black font-bold text-sm shadow-lg shadow-white/5 hover:bg-gray-200 transition-all active:scale-95 disabled:opacity-20 flex items-center gap-2"
-                    >
-                        {activeStep === steps.length - 2 ? 'Preview' : 'Next'}
-                        <ChevronRight size={16} />
-                    </button>
-                </div>
-            </div>
-
-            {/* RIGHT PANEL: LIVE PREVIEW */}
-            <div className={`
-                ${activeStep === 7 ? 'fixed inset-0 z-[60] bg-black/90 backdrop-blur-xl p-6 flex flex-col items-center custom-scrollbar overflow-y-auto' : 'hidden'} 
-                md:static md:flex md:flex-1 md:bg-[#0c0c0e] md:items-start md:justify-center md:pt-16 md:pb-32 md:px-12 md:overflow-y-auto custom-scrollbar relative
-            `}>
-                {/* Mobile Close Button (only visible on step 7 mobile) */}
-                {activeStep === 7 && (
-                    <button
-                        onClick={() => setActiveStep(6)}
-                        className="md:hidden absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 rounded-2xl text-white z-[70] backdrop-blur-md border border-white/10 active:scale-95 transition-all"
-                    >
-                        <Trash2 size={24} className="rotate-45" />
-                    </button>
-                )}
-
-                <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10 hidden md:flex items-center gap-4 bg-[#1a1a1c]/80 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/5 shadow-2xl">
-                    <div className="flex items-center gap-2 pr-4 border-r border-white/10">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase">Live Preview</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Layout size={14} className="text-purple-400" />
-                        <span className="text-[10px] font-black tracking-widest text-white uppercase">{selectedTemplate}</span>
-                    </div>
-                </div>
-
-                <div
-                    ref={previewRef}
-                    id="resume-preview"
-                    key={selectedTemplate}
-                    className={`
-                        w-[794px] bg-white text-black shadow-[0_40px_100px_rgba(0,0,0,0.5)] origin-top 
-                        scale-[0.35] sm:scale-[0.5] md:scale-[0.55] lg:scale-[0.72] xl:scale-[0.88] 
-                        transition-all duration-500 ease-out
-                        pb-16
-                    `}
-                    style={{
-                        minHeight: '1123px',
-                        fontFamily: selectedTemplate === 'modern' ? 'ui-sans-serif, system-ui, sans-serif' : selectedTemplate === 'classic' ? 'Garamond, Times New Roman, serif' : 'JetBrains Mono, monospace'
-                    }}
-                >
-                    {/* --- TEMPLATE RENDERER --- */}
-
-                    {(() => {
-                        const styles = {
-                            classic: {
-                                layout: "single",
-                                container: "font-serif text-[#111827] bg-[#ffffff] w-[794px] min-h-[1123px] overflow-hidden p-[20mm] shadow-none",
-                                header: "text-center mb-10 border-b-2 border-[#111827] pb-8",
-                                name: "text-4xl font-bold uppercase tracking-[0.15em] mb-3 text-[#111827]",
-                                title: "text-lg italic text-[#4b5563] mb-4 font-medium",
-                                meta: "flex justify-center flex-wrap text-[13px] text-[#374151] gap-x-6 gap-y-2 font-medium italic",
-                                sectionTitle: "text-[15px] font-bold uppercase tracking-[0.2em] border-b border-[#9ca3af] mb-4 pb-1.5 mt-8 text-[#111827]",
-                                body: "text-[13.5px] leading-[1.6] text-justify text-[#374151]",
-                                subTitle: "font-bold text-[#111827] text-[14.5px]",
-                                metaInfo: "italic text-[#4b5563] text-[13px] font-medium",
-                                date: "text-[#4b5563] font-serif italic text-[13px]"
-                            },
-                            modern: {
-                                layout: "double",
-                                container: "font-sans text-[#0f172a] bg-[#ffffff] flex flex-row flex-nowrap w-[794px] min-h-[1123px] shadow-none",
-                                sidebar: "w-[260px] flex-shrink-0 bg-[#0f172a] text-[#ffffff] p-8 flex flex-col gap-8",
-                                main: "w-[534px] flex-shrink-0 p-10 bg-[#ffffff] flex flex-col gap-10",
-                                header: "mb-2",
-                                name: "text-[32px] font-black tracking-tighter leading-tight mb-2 text-[#ffffff]",
-                                title: "text-sm text-[#818cf8] font-bold uppercase tracking-[0.15em] leading-relaxed",
-                                meta: "flex-col gap-4 text-[12px] font-medium text-[#cbd5e1]",
-                                sectionTitle: "text-lg font-black text-[#0f172a] mb-6 pb-2 border-b-4 border-[#4f46e5] inline-block",
-                                sidebarTitle: "text-[11px] font-black uppercase tracking-[0.25em] text-[#a5b4fc] mb-5 border-b border-white/10 pb-2",
-                                body: "text-[13px] leading-[1.7] text-[#475569] font-medium",
-                                subTitle: "font-bold text-[#0f172a] text-[15px] flex justify-between items-start gap-4",
-                                metaInfo: "text-[#4f46e5] font-bold text-[11px] uppercase tracking-[0.1em] mt-1",
-                                date: "text-[#94a3b8] font-bold text-[10px] uppercase shrink-0 mt-1"
-                            },
-                            minimal: {
-                                layout: "single",
-                                container: "font-mono text-[#1f2937] bg-[#ffffff] p-16 w-[794px] min-h-[1123px] shadow-none",
-                                header: "mb-12 text-left",
-                                name: "text-[28px] font-bold tracking-tight text-[#000000] mb-3",
-                                title: "text-xs uppercase tracking-[0.3em] text-[#6b7280] mb-8 font-bold",
-                                meta: "flex-col text-[11px] text-[#4b5563] gap-2 items-start font-medium",
-                                sectionTitle: "text-[11px] font-black uppercase tracking-[0.3em] text-[#9ca3af] mb-8 mt-12 flex items-center gap-4 before:h-px before:flex-1 before:bg-gray-100 after:h-px after:flex-1 after:bg-gray-100",
-                                body: "text-[12px] leading-[1.8] text-[#4b5563]",
-                                subTitle: "font-bold text-[#000000] text-[13px] uppercase tracking-wide",
-                                metaInfo: "text-[#6b7280] text-[11px] font-medium",
-                                date: "text-[#9ca3af] text-[11px] font-bold"
-                            }
-                        };
-                        const t = styles[selectedTemplate] || styles.classic;
-
-                        if (t.layout === "double") {
-                            return (
-                                <div className={t.container}>
-                                    {/* SIDEBAR */}
-                                    <aside className={t.sidebar}>
-                                        <div className={t.header}>
-                                            <h1 className={t.name}>{resumeData.personal.fullName || "YOUR NAME"}</h1>
-                                            <p className={t.title}>{resumeData.personal.jobTitle || "TARGET TITLE"}</p>
+                            <motion.div
+                                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                                animate={{ scale: 1, opacity: 1, y: 0 }}
+                                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                                className="bg-card border border-border rounded-[32px] w-full max-w-2xl overflow-hidden shadow-2xl"
+                            >
+                                <div className="p-8 border-b border-border flex items-center justify-between bg-gradient-to-br from-primary/10 via-transparent to-transparent">
+                                    <div className="flex items-center gap-4">
+                                        <div className="p-4 bg-primary/20 rounded-2xl text-primary">
+                                            <Sparkles size={28} />
                                         </div>
-
-                                        <section className="mb-0">
-                                            <h3 className={t.sidebarTitle}>Contact</h3>
-                                            <div className={`flex ${t.meta}`}>
-                                                {resumeData.personal.email && (
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-5 h-5 rounded-full bg-[#1e293b] flex items-center justify-center border border-white/5"><Mail size={10} color="#ffffff" strokeWidth={3} /></div>
-                                                        <span className="text-[#ffffff] truncate">{resumeData.personal.email}</span>
-                                                    </div>
-                                                )}
-                                                {resumeData.personal.phone && (
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-5 h-5 rounded-full bg-[#1e293b] flex items-center justify-center border border-white/5"><Phone size={10} color="#ffffff" strokeWidth={3} /></div>
-                                                        <span className="text-[#ffffff]">{resumeData.personal.phone}</span>
-                                                    </div>
-                                                )}
-                                                {resumeData.personal.location && (
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-5 h-5 rounded-full bg-[#1e293b] flex items-center justify-center border border-white/5"><MapPin size={10} color="#ffffff" strokeWidth={3} /></div>
-                                                        <span className="text-[#ffffff]">{resumeData.personal.location}</span>
-                                                    </div>
-                                                )}
-                                                {resumeData.personal.linkedin && (
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-5 h-5 rounded-full bg-[#1e293b] flex items-center justify-center border border-white/5"><Linkedin size={10} color="#ffffff" strokeWidth={3} /></div>
-                                                        <a href={resumeData.personal.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#818cf8] hover:underline font-bold transition-all">LinkedIn</a>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </section>
-
-                                        {resumeData.skills && (
-                                            <section className="mb-0">
-                                                <h3 className={t.sidebarTitle}>Skills</h3>
-                                                <p className="text-[12px] leading-6 text-[#cbd5e1] uppercase tracking-wider whitespace-pre-line font-bold antialiased">{resumeData.skills}</p>
-                                            </section>
-                                        )}
-
-                                        {resumeData.education.length > 0 && (
-                                            <section className="mb-0">
-                                                <h3 className={t.sidebarTitle}>Education</h3>
-                                                {resumeData.education.map(edu => (
-                                                    <div key={edu.id} className="mb-5 last:mb-0 text-[#ffffff]">
-                                                        <div className="text-[13px] font-black leading-tight mb-1">{edu.degree}</div>
-                                                        <div className="text-[11px] text-[#94a3b8] font-bold italic mb-1">{edu.school}</div>
-                                                        <div className="text-[10px] text-[#818cf8] font-black tracking-widest">{edu.year}</div>
-                                                    </div>
-                                                ))}
-                                            </section>
-                                        )}
-                                    </aside>
-
-                                    {/* MAIN CONTENT */}
-                                    <main className={t.main}>
-                                        {/* SUMMARY */}
-                                        {resumeData.summary && (
-                                            <section>
-                                                <h2 className={t.sectionTitle}>Profile</h2>
-                                                <p className={`${t.body} whitespace-pre-line text-justify`}>{resumeData.summary}</p>
-                                            </section>
-                                        )}
-
-                                        {/* EXPERIENCE */}
-                                        {resumeData.experience.length > 0 && (
-                                            <section>
-                                                <h2 className={t.sectionTitle}>Experience</h2>
-                                                <div className="space-y-8">
-                                                    {resumeData.experience.map(exp => (
-                                                        <div key={exp.id} className="text-[#0f172a]">
-                                                            <div className={t.subTitle}>
-                                                                <span className="text-[#0f172a] font-black">{exp.title}</span>
-                                                                <span className={t.date}>{exp.startDate} – {exp.endDate}</span>
-                                                            </div>
-                                                            <div className={t.metaInfo}>{exp.company} | {exp.location}</div>
-                                                            <p className={`${t.body} mt-3 whitespace-pre-line text-[#475569] antialiased`}>{exp.description}</p>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </section>
-                                        )}
-
-                                        {/* PROJECTS */}
-                                        {resumeData.projects.length > 0 && (
-                                            <section>
-                                                <h2 className={t.sectionTitle}>Projects</h2>
-                                                <div className="space-y-6">
-                                                    {resumeData.projects.map(proj => (
-                                                        <div key={proj.id}>
-                                                            <div className={t.subTitle}>
-                                                                <span className="font-black">{proj.name}</span>
-                                                                {proj.link && <a href={proj.link} target="_blank" rel="noopener noreferrer" className="text-[10px] text-indigo-600 font-bold uppercase underline tracking-tighter">View Live</a>}
-                                                            </div>
-                                                            <div className="text-[11px] font-bold text-[#64748b] mb-2 uppercase tracking-wide">{proj.techStack}</div>
-                                                            <p className={t.body} style={{ color: '#475569' }}>{proj.description}</p>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </section>
-                                        )}
-                                    </main>
-                                </div>
-                            );
-                        }
-
-                        // SINGLE COLUMN LAYOUT (Classic / Minimal)
-                        return (
-                            <div className={t.container} style={{ boxSizing: 'border-box' }}>
-                                {/* HEADER */}
-                                <header className={t.header}>
-                                    <h1 className={t.name}>{resumeData.personal.fullName || "YOUR NAME"}</h1>
-                                    <p className={t.title}>{resumeData.personal.jobTitle || "Target Job Title"}</p>
-
-                                    <div className={`flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-4 px-10 ${t.meta}`}>
-                                        {resumeData.personal.email && (
-                                            <div className="flex items-center gap-1.5">
-                                                <Mail size={12} className="opacity-70" />
-                                                <span>{resumeData.personal.email}</span>
-                                            </div>
-                                        )}
-                                        {resumeData.personal.phone && (
-                                            <div className="flex items-center gap-1.5">
-                                                <Phone size={12} className="opacity-70" />
-                                                <span>{resumeData.personal.phone}</span>
-                                            </div>
-                                        )}
-                                        {resumeData.personal.location && (
-                                            <div className="flex items-center gap-1.5">
-                                                <MapPin size={12} className="opacity-70" />
-                                                <span>{resumeData.personal.location}</span>
-                                            </div>
-                                        )}
-                                        {resumeData.personal.linkedin && (
-                                            <div className="flex items-center gap-1.5 border-b border-black/10">
-                                                <Linkedin size={12} className="opacity-70" />
-                                                <a href={resumeData.personal.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">LinkedIn</a>
-                                            </div>
-                                        )}
-                                        {resumeData.personal.github && (
-                                            <div className="flex items-center gap-1.5 border-b border-black/10">
-                                                <Github size={12} className="opacity-70" />
-                                                <a href={resumeData.personal.github} target="_blank" rel="noopener noreferrer" className="hover:underline">Portfolio</a>
-                                            </div>
-                                        )}
+                                        <div>
+                                            <h2 className="text-2xl font-black italic tracking-tighter uppercase">AI <span className="text-primary">Optimization</span></h2>
+                                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black">Enhancing your {aiSuggestion.type}</p>
+                                        </div>
                                     </div>
-                                </header>
-
-                                {/* SUMMARY */}
-                                {resumeData.summary && (
-                                    <section className="mb-0">
-                                        <h2 className={t.sectionTitle}>Summary</h2>
-                                        <p className={`${t.body} whitespace-pre-line text-justify`}>{resumeData.summary}</p>
-                                    </section>
-                                )}
-
-                                {/* SKILLS */}
-                                {resumeData.skills && (
-                                    <section className="mb-0">
-                                        <h2 className={t.sectionTitle}>Technical Skills</h2>
-                                        <p className={`${t.body} whitespace-pre-line font-bold antialiased leading-relaxed`}>{resumeData.skills}</p>
-                                    </section>
-                                )}
-
-                                {/* EXPERIENCE */}
-                                {resumeData.experience.length > 0 && (
-                                    <section className="mb-0">
-                                        <h2 className={t.sectionTitle}>Experience</h2>
-                                        <div className="space-y-6">
-                                            {resumeData.experience.map(exp => (
-                                                <div key={exp.id}>
-                                                    <div className="flex justify-between items-baseline mb-1">
-                                                        <h3 className={t.subTitle}>{exp.title}</h3>
-                                                        <span className={t.date}>{exp.startDate} – {exp.endDate}</span>
-                                                    </div>
-                                                    <div className={t.metaInfo + " mb-2 font-bold opacity-90"}>{exp.company} | {exp.location}</div>
-                                                    <p className={`${t.body} whitespace-pre-line`}>{exp.description}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </section>
-                                )}
-
-                                {/* PROJECTS */}
-                                {resumeData.projects.length > 0 && (
-                                    <section className="mb-0">
-                                        <h2 className={t.sectionTitle}>Projects</h2>
-                                        <div className="space-y-6">
-                                            {resumeData.projects.map(proj => (
-                                                <div key={proj.id}>
-                                                    <div className="flex justify-between items-baseline mb-1">
-                                                        <h3 className={t.subTitle}>
-                                                            {proj.name}
-                                                        </h3>
-                                                        {proj.link && <a href={proj.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 font-bold hover:underline">Link</a>}
-                                                    </div>
-                                                    <div className="text-[11px] font-bold text-[#64748b] mb-2 uppercase tracking-wide">{proj.techStack}</div>
-                                                    <p className={t.body}>{proj.description}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </section>
-                                )}
-
-                                {/* EDUCATION */}
-                                {resumeData.education.length > 0 && (
-                                    <section className="mb-0">
-                                        <h2 className={t.sectionTitle}>Education</h2>
-                                        <div className="space-y-4">
-                                            {resumeData.education.map(edu => (
-                                                <div key={edu.id} className="flex justify-between items-start">
-                                                    <div>
-                                                        <h3 className={t.subTitle}>{edu.degree}</h3>
-                                                        <div className="text-[13px] text-[#4b5563] font-bold italic">{edu.school}</div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <div className={t.date}>{edu.year}</div>
-                                                        {edu.grade && <div className="text-xs font-black text-[#64748b] mt-1">{edu.grade}</div>}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </section>
-                                )}
-
-                                {/* EXTRAS */}
-                                {(resumeData.certifications.length > 0 || resumeData.achievements.length > 0) && (
-                                    <section className="mb-0">
-                                        <h2 className={t.sectionTitle}>Additional</h2>
-                                        <div className="grid grid-cols-2 gap-x-12">
-                                            {resumeData.certifications.length > 0 && (
-                                                <div>
-                                                    <h3 className="text-[11px] font-black uppercase mb-3 opacity-60 flex items-center gap-2">
-                                                        <Award size={10} strokeWidth={3} /> Certifications
-                                                    </h3>
-                                                    <ul className={`list-none space-y-2 ${t.body}`}>
-                                                        {resumeData.certifications.map(cert => (
-                                                            <li key={cert.id} className="flex flex-col">
-                                                                <span className="font-bold text-[#111827] leading-tight mb-0.5">{cert.name}</span>
-                                                                <span className="opacity-60 text-[10px] font-black">{cert.year}</span>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                            {resumeData.achievements.length > 0 && (
-                                                <div>
-                                                    <h3 className="text-[11px] font-black uppercase mb-3 opacity-60 flex items-center gap-2">
-                                                        <Sparkles size={10} strokeWidth={3} /> Key Achievements
-                                                    </h3>
-                                                    <ul className={`list-none space-y-2 ${t.body}`}>
-                                                        {resumeData.achievements.map(ach => (
-                                                            <li key={ach.id} className="flex items-start gap-2 before:content-['•'] before:text-purple-500 before:font-black">
-                                                                <span className="leading-relaxed">{ach.title}</span>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </section>
-                                )}
-                            </div>
-                        );
-                    })()}
-
-                </div>
-            </div>
-            {/* AI SUGGESTION MODAL */}
-            <AnimatePresence>
-                {aiSuggestion && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="bg-[#18181b] border border-white/10 rounded-3xl w-full max-w-lg overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)]"
-                        >
-                            <div className="p-8 border-b border-white/5 flex items-center justify-between bg-gradient-to-br from-purple-500/10 via-transparent to-transparent">
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-purple-500/20 rounded-2xl text-purple-400">
-                                        <Sparkles size={24} />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white">AI Optimization</h2>
-                                        <p className="text-[10px] text-purple-400/80 uppercase tracking-[0.2em] font-black">Enhancing: {aiSuggestion.type}</p>
-                                    </div>
-                                </div>
-                                <button onClick={() => setAiSuggestion(null)} className="p-2 hover:bg-white/5 rounded-full transition-colors opacity-50 hover:opacity-100">
-                                    <Trash2 size={20} className="rotate-45" />
-                                </button>
-                            </div>
-
-                            <div className="p-8 space-y-8 custom-scrollbar max-h-[60vh] overflow-y-auto">
-                                <div className="space-y-3">
-                                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">Original Draft</label>
-                                    <div className="p-5 bg-white/[0.02] rounded-2xl text-sm text-gray-400 border border-white/5 italic leading-relaxed">
-                                        "{aiSuggestion.original}"
-                                    </div>
+                                    <button onClick={() => setAiSuggestion(null)} className="p-2 hover:bg-secondary rounded-full transition-colors">
+                                        <Trash2 size={24} className="rotate-45 text-muted-foreground" />
+                                    </button>
                                 </div>
 
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center ml-1">
-                                        <label className="text-[10px] font-black text-purple-400 uppercase tracking-[0.2em]">AI Refinement</label>
-                                        <span className="text-[10px] text-emerald-400 font-bold bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">ATS Optimized</span>
-                                    </div>
-                                    <div className="p-6 bg-purple-500/5 rounded-2xl text-white text-[15px] leading-relaxed border border-purple-500/20 ring-1 ring-purple-500/10 whitespace-pre-line shadow-inner">
-                                        {aiSuggestion.enhanced}
+                                <div className="p-8 space-y-8 custom-scrollbar max-h-[60vh] overflow-y-auto">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Original Version</label>
+                                            <div className="p-5 bg-background border border-border rounded-2xl text-sm text-muted-foreground italic leading-relaxed">
+                                                "{aiSuggestion.original}"
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <div className="flex justify-between items-center ml-1">
+                                                <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Optimized Result</label>
+                                                <span className="text-[10px] text-emerald-500 font-bold bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">ATS Ready</span>
+                                            </div>
+                                            <div className="p-6 bg-primary/5 rounded-2xl text-foreground text-[15px] leading-relaxed border border-primary/20 shadow-inner whitespace-pre-line font-medium">
+                                                {aiSuggestion.enhanced}
+                                            </div>
+                                        </div>
                                     </div>
 
                                     {aiSuggestion.warning && (
-                                        <div className="mt-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-start gap-3">
-                                            <div className="p-1 bg-amber-500/20 rounded-lg shrink-0 mt-0.5">
-                                                <Award size={14} className="text-amber-400" />
+                                        <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-start gap-4">
+                                            <div className="p-2 bg-amber-500/20 rounded-xl shrink-0">
+                                                <Award size={18} className="text-amber-400" />
                                             </div>
-                                            <p className="text-[11px] text-amber-200/80 leading-relaxed font-medium">{aiSuggestion.warning}</p>
+                                            <p className="text-xs text-amber-500/90 leading-relaxed font-medium">{aiSuggestion.warning}</p>
                                         </div>
                                     )}
                                 </div>
-                            </div>
 
-                            <div className="p-6 bg-white/[0.02] border-t border-white/5 flex gap-4">
-                                <button
-                                    onClick={() => setAiSuggestion(null)}
-                                    className="flex-1 py-4 rounded-2xl border border-white/10 hover:bg-white/5 transition-all text-sm font-bold text-gray-400"
-                                >
-                                    Dismiss
-                                </button>
-                                <button
-                                    onClick={applyAISuggestion}
-                                    className="flex-[2] py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:shadow-lg hover:shadow-purple-500/20 transition-all text-sm font-black text-white active:scale-95 flex items-center justify-center gap-2"
-                                >
-                                    Apply Refinement <ChevronRight size={16} strokeWidth={3} />
-                                </button>
-                            </div>
+                                <div className="p-8 bg-secondary/30 border-t border-border flex gap-4">
+                                    <button
+                                        onClick={() => setAiSuggestion(null)}
+                                        className="flex-1 py-4 rounded-2xl border border-border hover:bg-secondary transition-all text-sm font-bold text-muted-foreground"
+                                    >
+                                        Dismiss Changes
+                                    </button>
+                                    <button
+                                        onClick={applyAISuggestion}
+                                        className="flex-[1.5] py-4 rounded-2xl bg-primary text-primary-foreground font-black shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 flex items-center justify-center gap-2"
+                                    >
+                                        Apply Optimization <ChevronRight size={18} />
+                                    </button>
+                                </div>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    )}
+                </AnimatePresence>
+            </div>
         </div>
     );
 }

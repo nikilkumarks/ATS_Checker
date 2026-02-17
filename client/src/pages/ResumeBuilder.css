@@ -1,0 +1,75 @@
+@reference "tailwindcss";
+
+@layer components {
+
+    .glass-card {
+        @apply bg-white/10 backdrop-blur-md border border-gray-700 rounded-2xl;
+    }
+
+    .section-title {
+        @apply text-lg font-bold text-white mb-5 flex items-center gap-2;
+    }
+
+    .input-field {
+        @apply w-full bg-gray-800/60 border border-gray-700 rounded-xl px-4 py-3 text-white outline-none transition-all placeholder:text-gray-400 focus:border-purple-500/50 focus:bg-gray-800 focus:ring-4 focus:ring-purple-500/10;
+    }
+
+    .textarea-field {
+        @apply w-full bg-gray-800/60 border border-gray-700 rounded-xl p-4 text-white outline-none transition-all placeholder:text-gray-400 focus:border-purple-500/50 focus:bg-gray-800 focus:ring-4 focus:ring-purple-500/10 resize-none leading-relaxed;
+    }
+
+    .card-input {
+        @apply p-6 bg-gray-800/40 border border-gray-700 rounded-2xl mb-6 relative transition-all hover:border-purple-500/20 hover:bg-gray-800/60;
+    }
+
+    .ai-btn {
+        @apply bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-purple-500/20 transition-all hover:-translate-y-0.5 hover:shadow-purple-500/30 active:scale-95 flex items-center gap-2;
+    }
+
+    .ai-btn-sm {
+        @apply bg-purple-600/10 border border-purple-600/20 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-400 transition-all hover:bg-purple-600 hover:text-white flex items-center gap-2;
+    }
+
+    .add-btn {
+        @apply w-full py-4 border-2 border-dashed border-gray-700 rounded-2xl flex items-center justify-center gap-3 text-gray-400 font-black uppercase tracking-widest text-xs transition-all hover:border-purple-500/40 hover:text-purple-400 hover:bg-purple-500/5;
+    }
+
+    .delete-btn {
+        @apply p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all;
+    }
+
+    .preview-container {
+        @apply w-full max-w-[850px] mx-auto bg-white shadow-2xl rounded-sm overflow-hidden transform origin-top transition-all duration-500;
+    }
+
+    .step-dot {
+        @apply w-1.5 h-1.5 rounded-full transition-all duration-300;
+    }
+
+    .step-dot-active {
+        @apply w-6 bg-purple-600;
+    }
+
+    .step-dot-inactive {
+        @apply bg-gray-600;
+    }
+
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.2);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.4);
+}

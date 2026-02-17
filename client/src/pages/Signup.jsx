@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { signupApi } from "../api/authApi";
 import { Link } from "react-router-dom";
+import { User, Mail, Lock, UserPlus, Github } from "lucide-react";
+import Navbar from "../components/Navbar";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -43,105 +45,114 @@ export default function Signup() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#0e0e10] flex items-center justify-center px-4">
-      
-      {/* 🌌 Animated Background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/20 via-indigo-600/10 to-purple-600/20 animate-gradient" />
+    <div className="relative min-h-screen flex items-center justify-center px-4 bg-background transition-colors duration-300">
+      <Navbar />
 
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-500/20 rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-10 right-10 w-56 h-56 bg-purple-500/20 rounded-full blur-3xl animate-float-fast" />
+      {/* AMBIENT BACKGROUND ELEMENTS */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="blob bg-primary/20 top-[-10%] left-[-10%] w-[60%] h-[60%]" />
+        <div className="blob bg-indigo-600/20 bottom-[-10%] right-[-10%] w-[60%] h-[60%] animate-pulse" />
       </div>
 
-      {/* 🧊 Glass Card */}
-      <form
-        onSubmit={handleSubmit}
-        className="relative bg-white/5 backdrop-blur-xl p-8 rounded-2xl w-full max-w-md border border-white/10 shadow-2xl animate-scale-in"
-      >
-        {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-white tracking-tight">
+      <div className="w-full max-w-md animate-fade-up">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-block text-3xl font-black italic tracking-tighter uppercase text-foreground mb-4">
+            ATS <span className="text-primary">Checker</span>
+          </Link>
+          <h2 className="text-2xl font-bold text-foreground">
             Create Your Account
           </h2>
-          <p className="text-sm text-gray-400 mt-2">
-            Build ATS-optimized resumes, check scores, and get{" "}
-            <span className="text-white">job-ready insights</span>.
+          <p className="text-muted-foreground mt-2">
+            Start building your career with AI assistance.
           </p>
         </div>
 
-        {/* Error */}
-        {error && (
-          <p className="mb-4 text-sm text-red-400 animate-pulse">
-            {error}
+        {/* glass Card */}
+        <div className="glass p-8 rounded-3xl shadow-2xl border border-border bg-card/50">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-sm text-center">
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-500 text-sm text-center">
+                {success}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div className="relative group">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary transition-colors" size={18} />
+                <input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Full name"
+                  className="input-field pl-12"
+                  required
+                />
+              </div>
+
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary transition-colors" size={18} />
+                <input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Email address"
+                  className="input-field pl-12"
+                  required
+                />
+              </div>
+
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary transition-colors" size={18} />
+                <input
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Create a password"
+                  className="input-field pl-12"
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full flex items-center justify-center gap-2 mt-4"
+            >
+              {loading ? "Creating account..." : <><UserPlus size={18} /> Get Started</>}
+            </button>
+
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
+              <div className="relative flex justify-center text-xs uppercase"><span className="bg-background px-2 text-muted-foreground">Or sign up with</span></div>
+            </div>
+
+            <button type="button" className="btn-outline w-full flex items-center justify-center gap-2 py-2.5">
+              <Github size={18} /> GitHub
+            </button>
+          </form>
+
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link to="/login" className="text-primary font-semibold hover:underline decoration-2 underline-offset-4">
+              Login here
+            </Link>
           </p>
-        )}
+        </div>
 
-        {/* Success */}
-        {success && (
-          <p className="mb-4 text-sm text-green-400 animate-pulse">
-            {success}
-          </p>
-        )}
-
-        {/* Inputs */}
-        <input
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Full name"
-          className="input transition-all duration-300 focus:ring-2 focus:ring-emerald-500/40"
-          required
-        />
-
-        <input
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email address"
-          className="input mt-4 transition-all duration-300 focus:ring-2 focus:ring-emerald-500/40"
-          required
-        />
-
-        <input
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Create a strong password"
-          className="input mt-4 transition-all duration-300 focus:ring-2 focus:ring-emerald-500/40"
-          required
-        />
-
-        {/* Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="relative btn-primary mt-6 w-full overflow-hidden group disabled:opacity-50"
-        >
-          <span className="relative z-10">
-            {loading ? "Creating..." : "Get Started"}
-          </span>
-          <span className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-        </button>
-
-        {/* Navigation */}
-        <p className="mt-6 text-sm text-gray-400 text-center">
-          Already have an account?{" "}
-          <Link
-            to="/login"
-            className="text-emerald-400 hover:underline"
-          >
-            Login
-          </Link>
+        <p className="mt-8 text-center text-xs text-muted-foreground/60 px-10">
+          By signing up, you agree to our Terms of Service & Privacy Policy.
         </p>
-
-        {/* Trust Footer */}
-        <p className="mt-4 text-[11px] text-gray-500 text-center leading-relaxed">
-          Designed for modern ATS platforms used by recruiters worldwide
-        </p>
-      </form>
+      </div>
     </div>
   );
 }
+
