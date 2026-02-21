@@ -5,7 +5,7 @@ import {
     Wand2, ChevronRight, ChevronLeft, Download, Plus, Trash2, Layout,
     User, Briefcase, GraduationCap, Code2, FolderGit2, Award, Globe, Languages,
     Mail, Phone, MapPin, Linkedin, Github, ExternalLink, Sparkles, X, CheckCircle2,
-    Sun, Moon
+    Sun, Moon, Activity
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -33,25 +33,29 @@ export default function ResumeBuilder() {
         summary: "",
         skills: "",
         experience: [
-            { id: 1, title: "Software Engineer", company: "Tech Solutions", location: "New York, NY", startDate: "Jan 2022", endDate: "Present", description: "• Developed scalable web applications using React and Node.js.\n• Optimized database queries improving performance by 30%." }
+            { id: 1, title: "Senior Software Engineer", company: "Tata Consultancy Services (TCS)", location: "Bangalore, India", startDate: "Jun 2021", endDate: "Present", description: "• Led development of a high-traffic e-commerce platform using React.js and Node.js.\n• Mentored a team of 5 junior developers and improved code quality through rigorous PR reviews." }
         ],
         projects: [
-            { id: 1, name: "ATS Resume Builder", techStack: "React, Node.js, MongoDB", description: "Built an AI-powered resume builder that improved resume screening efficiency." }
+            { id: 1, name: "Smart City Traffic Management", techStack: "Python, IoT, TensorFlow", description: "Developed an AI-based system to optimize traffic flow in Mumbai using real-time sensor data." }
         ],
         education: [
-            { id: 1, degree: "B.Tech Computer Science", school: "State University", year: "2022", grade: "3.8 GPA" }
+            { id: 1, degree: "B.Tech in Computer Science", school: "Indian Institute of Technology (IIT) Delhi", year: "2021", grade: "9.2 CGPA" }
         ],
-        certifications: [],
-        achievements: [],
+        certifications: [
+            { id: 1, name: "AWS Certified Solutions Architect", year: "2023" }
+        ],
+        achievements: [
+            { id: 1, title: "Winner of All-India Smart City Hackathon 2022" }
+        ],
         languages: []
     });
 
     const steps = [
-        { title: "Header", icon: <User size={18} />, key: "personal" },
+        { title: "Contact", icon: <User size={18} />, key: "personal" },
         { title: "Summary", icon: <Briefcase size={18} />, key: "summary" },
-        { title: "Experience", icon: <Briefcase size={18} />, key: "experience" },
+        { title: "Jobs", icon: <Briefcase size={18} />, key: "experience" },
         { title: "Projects", icon: <FolderGit2 size={18} />, key: "projects" },
-        { title: "Education", icon: <GraduationCap size={18} />, key: "education" },
+        { title: "School", icon: <GraduationCap size={18} />, key: "education" },
         { title: "Skills", icon: <Code2 size={18} />, key: "skills" },
         { title: "Extras", icon: <Award size={18} />, key: "extras" },
         { title: "Finish", icon: <Layout size={18} />, key: "template" }
@@ -273,8 +277,8 @@ export default function ResumeBuilder() {
                 return (
                     <div className="space-y-8 animate-spring">
                         <header className="space-y-2">
-                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Personal <span className="text-primary">Details</span></h2>
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">The foundation of your resume</p>
+                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">About <span className="text-primary">You</span></h2>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Basics for your contact info</p>
                         </header>
 
                         <div className="space-y-6">
@@ -333,8 +337,8 @@ export default function ResumeBuilder() {
                     <div className="space-y-8 animate-spring">
                         <header className="flex justify-between items-end">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Professional <span className="text-primary">Bio</span></h2>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Your 30-second elevator pitch</p>
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Your <span className="text-primary">Summary</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Explain what you do best</p>
                             </div>
                             <button onClick={() => handleAIEnhance('summary', resumeData.summary, 'summary')} disabled={loading} className="ai-btn py-2">
                                 <Sparkles size={16} /> {loading ? "Optimizing..." : "AI Optimize"}
@@ -360,8 +364,8 @@ export default function ResumeBuilder() {
                     <div className="space-y-8 animate-spring">
                         <header className="flex justify-between items-end">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Work <span className="text-primary">History</span></h2>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Proof of your professional impact</p>
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Job <span className="text-primary">History</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Write about your past work</p>
                             </div>
                             <button onClick={addExperience} className="ai-btn-sm py-2">
                                 <Plus size={16} /> Add Role
@@ -427,8 +431,8 @@ export default function ResumeBuilder() {
                     <div className="space-y-8 animate-spring">
                         <header className="flex justify-between items-end">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Notable <span className="text-primary">Projects</span></h2>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Case studies of your expertise</p>
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Your <span className="text-primary">Projects</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Show off what you built</p>
                             </div>
                             <button onClick={addProject} className="ai-btn-sm py-2">
                                 <Plus size={16} /> Add Project
@@ -486,8 +490,8 @@ export default function ResumeBuilder() {
                     <div className="space-y-8 animate-spring">
                         <header className="flex justify-between items-end">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Academic <span className="text-primary">Path</span></h2>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Your educational foundation</p>
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">School <span className="text-primary">Info</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Where you studied</p>
                             </div>
                             <button onClick={addEducation} className="ai-btn-sm py-2">
                                 <Plus size={16} /> Add School
@@ -540,8 +544,8 @@ export default function ResumeBuilder() {
                     <div className="space-y-8 animate-spring">
                         <header className="flex justify-between items-end">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Core <span className="text-primary">Skills</span></h2>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Your technical toolkit</p>
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Your <span className="text-primary">Skills</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">List what you can do</p>
                             </div>
                             <button onClick={() => handleAIEnhance('skills', resumeData.skills, 'skills')} disabled={loading} className="ai-btn py-2">
                                 <Sparkles size={16} /> {loading ? "Optimizing..." : "Analyze for ATS"}
@@ -710,97 +714,244 @@ export default function ResumeBuilder() {
     const renderTemplate = () => {
         const { personal, summary, experience, projects, education, skills, certifications, achievements } = resumeData;
 
-        return (
-            <div className="p-12 space-y-10 text-slate-800 font-sans leading-relaxed">
-                <header className="border-b-4 border-slate-900 pb-8">
-                    <h1 className="text-5xl font-black uppercase tracking-tighter mb-4">{personal.fullName || 'YOUR NAME'}</h1>
-                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold uppercase tracking-widest text-slate-500">
-                        {personal.jobTitle && <span className="text-slate-900">{personal.jobTitle}</span>}
-                        {personal.email && <span>{personal.email}</span>}
-                        {personal.phone && <span>{personal.phone}</span>}
-                        {personal.location && <span>{personal.location}</span>}
-                    </div>
-                </header>
+        const LayoutHeader = () => (
+            <header className={`border-b-2 pb-5 ${theme === 'dark' ? 'border-primary/30' : 'border-slate-900'}`}>
+                <h1 className="text-3xl font-black uppercase tracking-tighter mb-2 leading-none">{personal.fullName || 'YOUR NAME'}</h1>
+                <div className={`flex flex-wrap gap-x-4 gap-y-1 text-[8px] font-bold uppercase tracking-widest ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                    {personal.jobTitle && <span className={theme === 'dark' ? 'text-primary' : 'text-slate-900'}>{personal.jobTitle}</span>}
+                    {personal.email && <span>{personal.email}</span>}
+                    {personal.phone && <span>{personal.phone}</span>}
+                    {personal.location && <span>{personal.location}</span>}
+                    {personal.linkedin && <span className="lowercase opacity-50">{personal.linkedin}</span>}
+                    {personal.github && <span className="lowercase opacity-50">{personal.github}</span>}
+                </div>
+            </header>
+        );
 
-                {summary && (
-                    <section className="space-y-4">
-                        <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Professional Profile</h2>
-                        <p className="text-lg italic leading-relaxed">{summary}</p>
-                    </section>
-                )}
+        const Section = ({ title, children }) => (
+            <section className="space-y-2">
+                <h2 className="text-[9px] font-black uppercase tracking-[0.2em] border-l-4 border-primary pl-2">{title}</h2>
+                <div className="space-y-3">{children}</div>
+            </section>
+        );
 
-                <div className="grid grid-cols-3 gap-12">
-                    <div className="col-span-2 space-y-12">
-                        {experience.length > 0 && (
-                            <section className="space-y-6">
-                                <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Experience</h2>
-                                {experience.map(exp => (
-                                    <div key={exp.id} className="space-y-2">
-                                        <div className="flex justify-between items-baseline">
-                                            <h3 className="text-xl font-black text-slate-900">{exp.title}</h3>
-                                            <span className="text-sm font-black text-slate-400">{exp.startDate} — {exp.endDate}</span>
-                                        </div>
-                                        <p className="text-md font-bold text-primary italic uppercase tracking-wider">{exp.company}</p>
-                                        <p className="whitespace-pre-line text-slate-600 leading-relaxed">{exp.description}</p>
-                                    </div>
-                                ))}
-                            </section>
+        if (selectedTemplate === 'modern') {
+            return (
+                <div className={`w-full h-full flex transition-colors duration-500 ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>
+                    <div className={`w-[30%] p-6 space-y-6 h-full ${theme === 'dark' ? 'bg-zinc-900 border-r border-white/5' : 'bg-slate-50 border-r border-slate-200'}`}>
+                        <div>
+                            <h1 className="text-2xl font-black uppercase tracking-tighter leading-none">{personal.fullName || 'NAME'}</h1>
+                            <p className="text-[9px] font-black uppercase tracking-widest text-primary mt-1">{personal.jobTitle}</p>
+                        </div>
+
+                        <div className="space-y-3 pt-2">
+                            <h3 className="text-[8px] font-black uppercase tracking-widest opacity-40">Contact</h3>
+                            <div className="space-y-1 text-[8px] font-bold break-words uppercase">
+                                <p className="truncate">{personal.email}</p>
+                                <p>{personal.phone}</p>
+                                <p className="truncate">{personal.location}</p>
+                                {personal.linkedin && <p className="truncate lowercase text-[7px] opacity-40">{personal.linkedin}</p>}
+                                {personal.github && <p className="truncate lowercase text-[7px] opacity-40">{personal.github}</p>}
+                            </div>
+                        </div>
+
+                        {skills && (
+                            <div className="space-y-3">
+                                <h3 className="text-[8px] font-black uppercase tracking-widest opacity-40">Expertise</h3>
+                                <p className="text-[8px] font-bold leading-relaxed uppercase tracking-widest whitespace-pre-line">{skills}</p>
+                            </div>
                         )}
-
-                        {projects.length > 0 && (
-                            <section className="space-y-6">
-                                <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Key Projects</h2>
-                                {projects.map(proj => (
-                                    <div key={proj.id} className="space-y-2">
-                                        <div className="flex justify-between items-baseline">
-                                            <h3 className="text-lg font-black text-slate-900">{proj.name}</h3>
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{proj.techStack}</span>
-                                        </div>
-                                        <p className="text-slate-600 leading-relaxed italic">{proj.description}</p>
-                                    </div>
-                                ))}
-                            </section>
-                        )}
-                    </div>
-
-                    <div className="space-y-12">
-                        {skills ? (
-                            <section className="space-y-6">
-                                <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Skills</h2>
-                                <p className="text-sm font-bold text-slate-600 leading-loose uppercase tracking-widest whitespace-pre-line">{skills}</p>
-                            </section>
-                        ) : null}
 
                         {education.length > 0 && (
-                            <section className="space-y-6">
-                                <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Education</h2>
+                            <div className="space-y-3">
+                                <h3 className="text-[8px] font-black uppercase tracking-widest opacity-40">Education</h3>
                                 {education.map(edu => (
-                                    <div key={edu.id}>
-                                        <h3 className="text-md font-black text-slate-900">{edu.degree}</h3>
-                                        <p className="text-sm font-bold text-slate-500">{edu.school}</p>
-                                        <p className="text-xs font-black text-primary uppercase tracking-widest mt-1">{edu.year} · {edu.grade}</p>
+                                    <div key={edu.id} className="space-y-0.5">
+                                        <p className="text-[9px] font-black leading-tight uppercase">{edu.degree}</p>
+                                        <p className="text-[8px] font-bold opacity-50 uppercase">{edu.school} · {edu.year}</p>
+                                        {edu.grade && <p className="text-[7px] font-black text-primary uppercase">{edu.grade}</p>}
                                     </div>
                                 ))}
-                            </section>
+                            </div>
                         )}
+                    </div>
+                    <div className="flex-1 p-8 space-y-6 overflow-y-auto custom-scrollbar h-full">
+                        {summary && <p className="text-[10px] italic leading-relaxed opacity-70 border-b border-border/10 pb-3">{summary}</p>}
 
-                        {(certifications.length > 0 || achievements.length > 0) && (
-                            <section className="space-y-6">
-                                <h2 className="text-xl font-black uppercase tracking-widest border-l-4 border-primary pl-4">Extras</h2>
-                                <div className="space-y-4">
-                                    {certifications.map(cert => (
-                                        <div key={cert.id} className="text-slate-600">
-                                            <p className="text-sm font-black">{cert.name}</p>
-                                            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{cert.year}</p>
-                                        </div>
-                                    ))}
-                                    {achievements.map(ach => (
-                                        <div key={ach.id} className="text-slate-600 italic text-sm">
-                                            • {ach.title}
+                        {experience.length > 0 && (
+                            <Section title="Experience">
+                                <div className="space-y-3">
+                                    {experience.map(exp => (
+                                        <div key={exp.id} className="space-y-1">
+                                            <h4 className="font-black uppercase text-[10px] tracking-widest">{exp.title}</h4>
+                                            <p className="text-[8px] font-black text-primary uppercase">{exp.company} | {exp.startDate} — {exp.endDate}</p>
+                                            <p className="text-[9px] leading-relaxed opacity-70 whitespace-pre-line">{exp.description}</p>
                                         </div>
                                     ))}
                                 </div>
-                            </section>
+                            </Section>
+                        )}
+
+                        {projects.length > 0 && (
+                            <Section title="Selected Projects">
+                                <div className="space-y-3">
+                                    {projects.map(proj => (
+                                        <div key={proj.id} className="space-y-0.5">
+                                            <h4 className="font-black uppercase text-[9px] tracking-widest">{proj.name}</h4>
+                                            <p className="text-[8px] font-bold text-primary uppercase">{proj.techStack}</p>
+                                            <p className="text-[9px] leading-relaxed opacity-70 whitespace-pre-line">{proj.description}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Section>
+                        )}
+
+                        {(certifications.length > 0 || achievements.length > 0) && (
+                            <Section title="Honors & Certs">
+                                <div className="space-y-1 text-[9px] font-bold opacity-70 italic leading-tight">
+                                    {certifications.map(c => <p key={c.id}>• {c.name} ({c.year})</p>)}
+                                    {achievements.map(a => <p key={a.id}>• {a.title}</p>)}
+                                </div>
+                            </Section>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        if (selectedTemplate === 'minimal') {
+            return (
+                <div className={`p-[15mm] space-y-5 font-serif w-full h-full text-center transition-colors duration-500 overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>
+                    <header className="space-y-2">
+                        <h1 className="text-3xl font-light tracking-[0.2em] uppercase">{personal.fullName || 'YOUR NAME'}</h1>
+                        <div className="flex justify-center flex-wrap gap-x-4 gap-y-1 text-[7px] uppercase tracking-[0.3em] opacity-40">
+                            <span>{personal.location}</span>
+                            <span>{personal.email}</span>
+                            <span>{personal.phone}</span>
+                            {personal.linkedin && <span>{personal.linkedin}</span>}
+                        </div>
+                    </header>
+                    <div className="max-w-2xl mx-auto space-y-5 text-left pb-10">
+                        {summary && <p className="text-[9px] italic leading-relaxed text-center opacity-60 border-y border-border/10 py-3">{summary}</p>}
+
+                        {experience.length > 0 && (
+                            <div className="space-y-3">
+                                <h3 className="text-[8px] font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-0.5">Experience</h3>
+                                {experience.map(exp => (
+                                    <div key={exp.id} className="space-y-1">
+                                        <div className="flex justify-between items-center">
+                                            <h4 className="font-bold text-[10px] uppercase tracking-widest">{exp.title} | <span className="text-primary/70">{exp.company}</span></h4>
+                                            <span className="text-[7px] uppercase tracking-widest opacity-40">{exp.startDate} — {exp.endDate}</span>
+                                        </div>
+                                        <p className="text-[9px] leading-normal opacity-70 whitespace-pre-line">{exp.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {projects.length > 0 && (
+                            <div className="space-y-3">
+                                <h3 className="text-[8px] font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-0.5">Key Projects</h3>
+                                {projects.map(proj => (
+                                    <div key={proj.id} className="space-y-0.5">
+                                        <div className="flex justify-between items-baseline">
+                                            <h4 className="font-bold text-[9px] uppercase tracking-widest">{proj.name}</h4>
+                                            <span className="text-[7px] uppercase tracking-widest opacity-40">{proj.techStack}</span>
+                                        </div>
+                                        <p className="text-[8px] leading-relaxed opacity-60 italic whitespace-pre-line">{proj.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="grid grid-cols-2 gap-8 pt-4 border-t border-border/10">
+                            {education.length > 0 && (
+                                <div className="space-y-3">
+                                    <h3 className="text-[8px] font-black uppercase tracking-widest text-primary">Education</h3>
+                                    {education.map(edu => (
+                                        <div key={edu.id} className="space-y-0.5">
+                                            <p className="text-[9px] font-bold uppercase">{edu.degree}</p>
+                                            <p className="text-[7px] opacity-50 uppercase tracking-widest">{edu.school} | {edu.year} | {edu.grade}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            <div className="space-y-3">
+                                <h3 className="text-[8px] font-black uppercase tracking-widest text-primary">Details</h3>
+                                <div className="space-y-2">
+                                    {skills && <p className="text-[8px] leading-tight uppercase tracking-widest opacity-50">{skills}</p>}
+                                    <div className="space-y-0.5 opacity-40 italic text-[7px]">
+                                        {achievements.slice(0, 3).map(a => <p key={a.id}>• {a.title}</p>)}
+                                        {certifications.slice(0, 2).map(c => <p key={c.id}>• {c.name}</p>)}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // CLASSIC / DEFAULT
+        return (
+            <div className={`p-[15mm] space-y-6 font-sans leading-relaxed transition-colors duration-500 w-full h-full overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>
+                <LayoutHeader />
+                {summary && <p className="text-[10px] italic leading-relaxed border-b border-border/10 pb-3">{summary}</p>}
+                <div className="grid grid-cols-3 gap-8 pb-10">
+                    <div className="col-span-2 space-y-6">
+                        <Section title="Professional Experience">
+                            <div className="space-y-4">
+                                {experience.map(exp => (
+                                    <div key={exp.id} className="space-y-1">
+                                        <div className="flex justify-between items-baseline">
+                                            <h3 className="text-[11px] font-black uppercase tracking-tight">{exp.title}</h3>
+                                            <span className="text-[8px] font-black opacity-30 uppercase">{exp.startDate} — {exp.endDate}</span>
+                                        </div>
+                                        <p className="text-[9px] font-black text-primary uppercase italic leading-none">{exp.company} | {exp.location}</p>
+                                        <p className="text-[9px] leading-relaxed opacity-70 whitespace-pre-line">{exp.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </Section>
+
+                        {projects.length > 0 && (
+                            <Section title="Featured Projects">
+                                <div className="space-y-3">
+                                    {projects.map(proj => (
+                                        <div key={proj.id} className="space-y-0.5">
+                                            <div className="flex justify-between items-baseline">
+                                                <h4 className="font-black text-[10px] uppercase tracking-wider">{proj.name}</h4>
+                                                <span className="text-[8px] font-bold text-primary uppercase opacity-60">{proj.techStack}</span>
+                                            </div>
+                                            <p className="text-[9px] leading-snug opacity-60 whitespace-pre-line">{proj.description}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Section>
+                        )}
+                    </div>
+                    <div className="space-y-6">
+                        <Section title="Skills">
+                            <p className="text-[8px] font-bold leading-normal uppercase tracking-widest whitespace-pre-line opacity-60">{skills}</p>
+                        </Section>
+                        <Section title="Education">
+                            <div className="space-y-2">
+                                {education.map(edu => (
+                                    <div key={edu.id} className="space-y-0.5">
+                                        <h4 className="text-[10px] font-black uppercase leading-tight">{edu.degree}</h4>
+                                        <p className="text-[8px] font-bold opacity-50 uppercase">{edu.school}</p>
+                                        <p className="text-[8px] font-black text-primary uppercase tracking-widest">{edu.year} · {edu.grade}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </Section>
+                        {(certifications.length > 0 || achievements.length > 0) && (
+                            <Section title="Honors">
+                                <div className="space-y-1.5 text-[8px] font-bold opacity-40 uppercase tracking-tighter leading-tight">
+                                    {certifications.map(c => <p key={c.id}>• {c.name}</p>)}
+                                    {achievements.map(a => <p key={a.id}>• {a.title}</p>)}
+                                </div>
+                            </Section>
                         )}
                     </div>
                 </div>
@@ -809,202 +960,202 @@ export default function ResumeBuilder() {
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground flex flex-col transition-colors duration-300">
+        <div className="min-h-screen bg-background text-foreground flex flex-col transition-all duration-500 overflow-hidden">
             <Navbar />
 
-            <div className="flex flex-col md:flex-row flex-1 pt-16">
-                {/* AMBIENT BACKGROUND ELEMENTS */}
-                <div className="fixed inset-0 pointer-events-none opacity-40">
-                    <div className="blob bg-primary/20 top-[-10%] left-[-10%] w-[60%] h-[60%]" />
-                    <div className="blob bg-indigo-600/20 bottom-[-10%] right-[-10%] w-[60%] h-[60%] animate-pulse" />
+            <div className="flex flex-1 pt-16 h-[calc(100vh)] overflow-hidden relative">
+                {/* PREMUIM AMBIENT BACKGROUND */}
+                <div className="fixed inset-0 pointer-events-none">
+                    <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full animate-pulse" />
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full" />
                 </div>
 
-                {/* LEFT SIDE: STEPS & EDITOR */}
-                <div
-                    className="w-full md:w-1/2 flex flex-col h-[calc(100vh-64px)] border-r border-border relative z-10 backdrop-blur-md"
-                    style={{ backgroundColor: 'color-mix(in srgb, var(--background), transparent 50%)' }}
-                >
-                    <header className="p-8 border-b border-border flex justify-between items-center bg-card/30 sticky top-0 z-30 backdrop-blur-xl">
-                        <button onClick={() => navigate('/dashboard')} className="p-3 rounded-2xl bg-secondary border border-border hover:bg-accent transition-all active:scale-90">
-                            <ChevronLeft size={20} className="text-foreground" />
-                        </button>
-                        <div className="flex flex-col items-center">
-                            <h2 className="text-sm font-black italic uppercase tracking-widest text-primary leading-none mb-1">Resume <span className="text-foreground">Forge</span></h2>
-                            <div className="flex gap-1.5">
-                                {steps.map((_, i) => (
-                                    <div key={i} className={`step-dot ${i === activeStep ? 'step-dot-active' : 'step-dot-inactive'}`} />
-                                ))}
-                            </div>
-                        </div>
-                        <div className="w-11" /> {/* Spacer instead of toggle */}
-                    </header>
+                {/* SIDEBAR REMOVED FOR FULL WIDTH EXPERIENCE */}
 
-                    <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-                        <div className="max-w-xl mx-auto py-4">
+                {/* CENTER AREA: FULL-WIDTH EDITOR */}
+                <div className="flex-[1.2] flex flex-col relative z-10 bg-background/40 backdrop-blur-md overflow-hidden border-r border-border/30">
+
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-0 md:p-12">
+                        <div className="w-full px-8 md:px-16">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeStep}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: 20 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="min-h-[500px]"
+                                    initial={{ opacity: 0, scale: 0.98, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 1.02, y: -20 }}
+                                    transition={{ duration: 0.4, ease: "circOut" }}
+                                    className="min-h-[600px]"
                                 >
+                                    <div className="p-1 w-fit rounded-full bg-primary/10 border border-primary/20 mb-8 flex items-center gap-3 pr-5">
+                                        <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-black">
+                                            {activeStep + 1}
+                                        </div>
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Workspace Section</span>
+                                    </div>
+
                                     {renderEditor()}
                                 </motion.div>
                             </AnimatePresence>
                         </div>
                     </div>
 
-                    <div className="p-8 border-t border-border flex justify-between bg-card/30 backdrop-blur-xl sticky bottom-0 z-30">
+                    <footer className="p-8 bg-card/20 border-t border-border/50 backdrop-blur-3xl flex justify-between items-center shrink-0">
+                        <button
+                            onClick={() => navigate('/dashboard')}
+                            className="px-8 py-5 rounded-2xl border border-border/50 hover:bg-background text-[10px] font-black uppercase tracking-widest text-muted-foreground transition-all flex items-center justify-center gap-2 group mr-4"
+                        >
+                            <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Exit
+                        </button>
+
                         <button
                             onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
                             disabled={activeStep === 0}
-                            className={`flex items-center gap-2 px-6 py-3 rounded-2xl border transition-all font-bold text-sm uppercase tracking-widest ${activeStep === 0 ? 'opacity-0 pointer-events-none' : 'border-border text-muted-foreground hover:bg-secondary'}`}
+                            className={`px-8 py-5 rounded-2xl border transition-all font-black text-[10px] uppercase tracking-[0.2em] ${activeStep === 0
+                                ? 'opacity-30 cursor-not-allowed hidden'
+                                : 'border-border text-muted-foreground hover:bg-secondary hover:text-foreground active:scale-95'
+                                }`}
                         >
-                            <ChevronLeft size={18} /> Back
+                            Back
                         </button>
 
-                        <button
-                            onClick={() => setActiveStep(prev => Math.min(steps.length - 1, prev + 1))}
-                            className={`bg-primary text-primary-foreground px-8 py-3 rounded-2xl font-bold flex items-center gap-2 group transition-all hover:opacity-90 active:scale-95 ${activeStep === steps.length - 1 ? 'hidden' : ''}`}
-                        >
-                            <span>{activeStep === steps.length - 2 ? 'Finalize' : 'Next Step'}</span>
-                            <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
-                    </div>
-                </div>
-
-                {/* RIGHT PANEL: LIVE PREVIEW */}
-                <div
-                    className={`
-                        ${activeStep === 7 ? 'fixed inset-0 z-[60] backdrop-blur-xl p-6 pt-24 custom-scrollbar overflow-y-auto' : 'hidden'} 
-                        md:static md:flex md:flex-1 md:bg-secondary/30 md:h-[calc(100vh-64px)] md:flex-col md:relative md:z-0 md:overflow-hidden
-                    `}
-                    style={activeStep === 7 ? { backgroundColor: 'color-mix(in srgb, var(--background), transparent 5%)' } : {}}
-                >
-                    <div className="p-8 border-b border-border bg-card/50 backdrop-blur-sm flex justify-between items-center relative z-10 w-full hidden md:flex">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
-                                <Layout size={18} />
+                        <div className="hidden md:flex flex-col items-center gap-1.5">
+                            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-40">Session Progress</span>
+                            <div className="flex gap-2">
+                                {steps.map((_, i) => (
+                                    <div key={i} className={`w-2 h-2 rounded-full transition-all duration-700 ${i <= activeStep ? 'bg-primary scale-110 shadow-[0_0_10px_rgba(var(--primary),0.5)]' : 'bg-muted'}`} />
+                                ))}
                             </div>
-                            <h3 className="text-xs font-black uppercase tracking-widest text-foreground">Live Preview <span className="text-muted-foreground opacity-50 ml-1">· Real-time</span></h3>
                         </div>
 
-                        {activeStep === 7 && (
-                            <div className="flex gap-3">
-                                <button onClick={handleDownloadPDF} disabled={loading} className="ai-btn px-6">
-                                    <Download size={18} className={loading ? 'animate-bounce' : ''} />
-                                    <span>{loading ? 'Forging PDF...' : 'Download Resume'}</span>
+                        {activeStep < steps.length - 1 ? (
+                            <button
+                                onClick={() => setActiveStep(prev => Math.min(steps.length - 1, prev + 1))}
+                                className="bg-primary text-primary-foreground px-12 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-primary/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-4 group"
+                            >
+                                <span>{activeStep === steps.length - 2 ? 'Finish Build' : 'Next Part'}</span>
+                                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleDownloadPDF}
+                                disabled={loading}
+                                className="bg-emerald-600 text-white px-12 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-emerald-600/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-4 group"
+                            >
+                                <Download size={18} className={loading ? 'animate-bounce' : ''} />
+                                <span>{loading ? 'Forging PDF...' : 'Get Resume'}</span>
+                            </button>
+                        )}
+                    </footer>
+                </div>
+
+                {/* RIGHT PANEL: FULL-HEIGHT PREVIEW */}
+                <div className="flex-1 bg-[#0a0a0c] hidden lg:flex flex-col relative z-20 overflow-hidden border-l border-white/5">
+                    {/* AMBIENT GLOW BEHIND SHEET */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-12 flex items-start justify-center relative">
+                        {/* PHYSICAL A4 PAPER PREVIEW */}
+                        <div className="a4-sheet-container">
+                            <div className="relative group transition-all duration-700 hover:-translate-y-4">
+                                {/* REALISTIC PAPER DEPTH SHADOWS */}
+                                <div className="absolute top-10 left-10 right-10 bottom-0 bg-black/60 blur-[100px] opacity-50 group-hover:opacity-70 transition-opacity" />
+                                <div className="absolute top-4 left-4 right-4 bottom-0 bg-black/40 blur-[40px]" />
+
+                                <div className="a4-sheet overflow-hidden bg-white relative z-10 ring-1 ring-white/10">
+                                    {/* PHYSICAL PAPER GRAIN */}
+                                    <div className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
+
+                                    {/* DOCUMENT SHINE REFLECTION */}
+                                    <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-white/0 via-white/5 to-white/10" />
+
+                                    <div id="resume-preview" className={`${theme === 'dark' ? 'bg-zinc-900 text-white' : 'bg-white text-slate-900'} w-full h-full origin-top transition-transform duration-500`}>
+                                        {renderTemplate()}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* AI SUGGESTION MODAL */}
+            <AnimatePresence>
+                {aiSuggestion && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-md"
+                        style={{ backgroundColor: 'color-mix(in srgb, var(--background), transparent 20%)' }}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="bg-card border border-border rounded-[32px] w-full max-w-2xl overflow-hidden shadow-2xl"
+                        >
+                            <div className="p-8 border-b border-border flex items-center justify-between bg-gradient-to-br from-primary/10 via-transparent to-transparent">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-4 bg-primary/20 rounded-2xl text-primary">
+                                        <Sparkles size={28} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-2xl font-black italic tracking-tighter uppercase">AI <span className="text-primary">Optimization</span></h2>
+                                        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black">Enhancing your {aiSuggestion.type}</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setAiSuggestion(null)} className="p-2 hover:bg-secondary rounded-full transition-colors">
+                                    <Trash2 size={24} className="rotate-45 text-muted-foreground" />
                                 </button>
                             </div>
-                        )}
-                    </div>
 
-                    {/* Mobile Close Button (Step 7) */}
-                    {activeStep === 7 && (
-                        <button
-                            onClick={() => setActiveStep(6)}
-                            className="md:hidden absolute top-6 right-6 p-3 bg-secondary/80 hover:bg-secondary rounded-2xl text-foreground z-[70] backdrop-blur-md border border-border active:scale-95 transition-all"
-                        >
-                            <X size={24} />
-                        </button>
-                    )}
+                            <div className="p-8 space-y-8 custom-scrollbar max-h-[60vh] overflow-y-auto">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Original Version</label>
+                                        <div className="p-5 bg-background border border-border rounded-2xl text-sm text-muted-foreground italic leading-relaxed">
+                                            "{aiSuggestion.original}"
+                                        </div>
+                                    </div>
 
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-center ml-1">
+                                            <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Optimized Result</label>
+                                            <span className="text-[10px] text-emerald-500 font-bold bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">ATS Ready</span>
+                                        </div>
+                                        <div className="p-6 bg-primary/5 rounded-2xl text-foreground text-[15px] leading-relaxed border border-primary/20 shadow-inner whitespace-pre-line font-medium">
+                                            {aiSuggestion.enhanced}
+                                        </div>
+                                    </div>
+                                </div>
 
-                    <div className="flex-1 overflow-y-auto p-4 md:p-12 custom-scrollbar bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_100%)] from-primary/5 w-full flex justify-center">
-                        <div className={`
-                        preview-container origin-top
-                        ${activeStep === 7 ? 'scale-100 mt-12 mb-24' : 'scale-[0.4] sm:scale-[0.5] md:scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] 2xl:scale-100'} 
-                        shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]
-                    `}>
-                            <div id="resume-preview" className="bg-white">
-                                {renderTemplate()}
+                                {aiSuggestion.warning && (
+                                    <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-start gap-4">
+                                        <div className="p-2 bg-amber-500/20 rounded-xl shrink-0">
+                                            <Award size={18} className="text-amber-400" />
+                                        </div>
+                                        <p className="text-xs text-amber-500/90 leading-relaxed font-medium">{aiSuggestion.warning}</p>
+                                    </div>
+                                )}
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-                {/* AI SUGGESTION MODAL */}
-                <AnimatePresence>
-                    {aiSuggestion && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-md"
-                            style={{ backgroundColor: 'color-mix(in srgb, var(--background), transparent 20%)' }}
-                        >
-                            <motion.div
-                                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                                animate={{ scale: 1, opacity: 1, y: 0 }}
-                                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                                className="bg-card border border-border rounded-[32px] w-full max-w-2xl overflow-hidden shadow-2xl"
-                            >
-                                <div className="p-8 border-b border-border flex items-center justify-between bg-gradient-to-br from-primary/10 via-transparent to-transparent">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-4 bg-primary/20 rounded-2xl text-primary">
-                                            <Sparkles size={28} />
-                                        </div>
-                                        <div>
-                                            <h2 className="text-2xl font-black italic tracking-tighter uppercase">AI <span className="text-primary">Optimization</span></h2>
-                                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black">Enhancing your {aiSuggestion.type}</p>
-                                        </div>
-                                    </div>
-                                    <button onClick={() => setAiSuggestion(null)} className="p-2 hover:bg-secondary rounded-full transition-colors">
-                                        <Trash2 size={24} className="rotate-45 text-muted-foreground" />
-                                    </button>
-                                </div>
-
-                                <div className="p-8 space-y-8 custom-scrollbar max-h-[60vh] overflow-y-auto">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-3">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Original Version</label>
-                                            <div className="p-5 bg-background border border-border rounded-2xl text-sm text-muted-foreground italic leading-relaxed">
-                                                "{aiSuggestion.original}"
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-3">
-                                            <div className="flex justify-between items-center ml-1">
-                                                <label className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Optimized Result</label>
-                                                <span className="text-[10px] text-emerald-500 font-bold bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/20">ATS Ready</span>
-                                            </div>
-                                            <div className="p-6 bg-primary/5 rounded-2xl text-foreground text-[15px] leading-relaxed border border-primary/20 shadow-inner whitespace-pre-line font-medium">
-                                                {aiSuggestion.enhanced}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {aiSuggestion.warning && (
-                                        <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-start gap-4">
-                                            <div className="p-2 bg-amber-500/20 rounded-xl shrink-0">
-                                                <Award size={18} className="text-amber-400" />
-                                            </div>
-                                            <p className="text-xs text-amber-500/90 leading-relaxed font-medium">{aiSuggestion.warning}</p>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="p-8 bg-secondary/30 border-t border-border flex gap-4">
-                                    <button
-                                        onClick={() => setAiSuggestion(null)}
-                                        className="flex-1 py-4 rounded-2xl border border-border hover:bg-secondary transition-all text-sm font-bold text-muted-foreground"
-                                    >
-                                        Dismiss Changes
-                                    </button>
-                                    <button
-                                        onClick={applyAISuggestion}
-                                        className="flex-[1.5] py-4 rounded-2xl bg-primary text-primary-foreground font-black shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 flex items-center justify-center gap-2"
-                                    >
-                                        Apply Optimization <ChevronRight size={18} />
-                                    </button>
-                                </div>
-                            </motion.div>
+                            <div className="p-8 bg-secondary/30 border-t border-border flex gap-4">
+                                <button
+                                    onClick={() => setAiSuggestion(null)}
+                                    className="flex-1 py-4 rounded-2xl border border-border hover:bg-secondary transition-all text-sm font-bold text-muted-foreground"
+                                >
+                                    Dismiss Changes
+                                </button>
+                                <button
+                                    onClick={applyAISuggestion}
+                                    className="flex-[1.5] py-4 rounded-2xl bg-primary text-primary-foreground font-black shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 flex items-center justify-center gap-2"
+                                >
+                                    Apply Optimization <ChevronRight size={18} />
+                                </button>
+                            </div>
                         </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

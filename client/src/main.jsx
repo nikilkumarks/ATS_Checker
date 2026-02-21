@@ -4,13 +4,16 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from './context/ThemeContext';
+import { ToggleProvider } from './context/ToggleContext';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <ThemeProvider>
-      <StrictMode>
-        <App />
-      </StrictMode>
+      <ToggleProvider>
+        <StrictMode>
+          <App />
+        </StrictMode>
+      </ToggleProvider>
     </ThemeProvider>
   </BrowserRouter>
 )

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Zap, Sun, Moon, Layout, Activity, User, LogOut } from "lucide-react";
+import { Zap, Sun, Moon, Layout, Activity, User, LogOut, Settings as SettingsIcon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar() {
@@ -27,7 +27,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
         {/* Logo Section */}
-        <Link to="/" className="flex items-center gap-3 active:scale-95 transition-transform group">
+        <Link
+          to={token ? "/dashboard" : "/"}
+          className="flex items-center gap-3 active:scale-95 transition-transform group"
+        >
           <div className="p-2.5 bg-primary rounded-xl shadow-lg shadow-primary/20 rotate-3 group-hover:rotate-0 transition-all duration-500">
             <Zap size={22} fill="currentColor" className="text-primary-foreground" />
           </div>
@@ -36,47 +39,52 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Navigation Pill - Desktop */}
-        <div className="hidden md:flex items-center gap-1 bg-secondary/30 dark:bg-secondary/10 p-1.5 rounded-2xl border border-border/50 backdrop-blur-md">
-          {[
-            { path: "/resume-builder", icon: Layout, label: "Forge" },
-            { path: "/ats-scanner", icon: Activity, label: "Scanner" },
-            { path: "/dashboard", icon: User, label: "Portal" }
-          ].map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${location.pathname === item.path
-                ? "bg-background text-primary shadow-sm border border-border/50"
-                : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                }`}
-            >
-              <item.icon size={14} /> {item.label}
-            </Link>
-          ))}
-        </div>
+        {/* Navigation Pill - Desktop (Visible only when logged in) */}
+        {token && (
+          <div className="hidden md:flex items-center gap-1 bg-secondary/30 dark:bg-secondary/10 p-1.5 rounded-2xl border border-border/50 backdrop-blur-md">
+            {[
+              { path: "/resume-builder", icon: Layout, label: "Forge" },
+              { path: "/ats-scanner", icon: Activity, label: "Scanner" },
+              { path: "/dashboard", icon: User, label: "Home" },
+              { path: "/settings", icon: SettingsIcon, label: "Settings" }
+            ].map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${location.pathname === item.path
+                  ? "bg-background text-primary shadow-sm border border-border/50"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                  }`}
+              >
+                <item.icon size={14} /> {item.label}
+              </Link>
+            ))}
+          </div>
+        )}
 
         {/* Actions/Theme Toggle */}
         <div className="flex items-center gap-4">
 
-          {/* Enhanced Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="group relative flex items-center h-9 w-16 px-1.5 bg-secondary/80 dark:bg-secondary/40 rounded-2xl border border-border/50 hover:border-primary/50 transition-all duration-500 overflow-hidden"
-            aria-label="Toggle Theme"
-          >
-            <div
-              className={`flex items-center justify-center w-6 h-6 rounded-xl shadow-lg transition-all duration-500 ease-spring ${theme === 'dark'
-                ? 'translate-x-7 bg-indigo-600 text-white'
-                : 'bg-amber-400 text-amber-900'
-                }`}
+          {/* Enhanced Theme Toggle (Only visible and functional for logged-in users) */}
+          {token && (
+            <button
+              onClick={toggleTheme}
+              className="group relative flex items-center h-9 w-16 px-1.5 bg-secondary/80 dark:bg-secondary/40 rounded-2xl border border-border/50 hover:border-primary/50 transition-all duration-500 overflow-hidden"
+              aria-label="Toggle Theme"
             >
-              {theme === 'dark' ? <Moon size={14} fill="currentColor" /> : <Sun size={14} fill="currentColor" />}
-            </div>
+              <div
+                className={`flex items-center justify-center w-6 h-6 rounded-xl shadow-lg transition-all duration-500 ease-spring ${theme === 'dark'
+                  ? 'translate-x-7 bg-indigo-600 text-white'
+                  : 'bg-amber-400 text-amber-900'
+                  }`}
+              >
+                {theme === 'dark' ? <Moon size={14} fill="currentColor" /> : <Sun size={14} fill="currentColor" />}
+              </div>
 
-            {/* Background elements for toggle */}
-            <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity bg-primary" />
-          </button>
+              {/* Background elements for toggle */}
+              <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity bg-primary" />
+            </button>
+          )}
 
           <div className="h-6 w-px bg-border/50 mx-1 hidden sm:block" />
 

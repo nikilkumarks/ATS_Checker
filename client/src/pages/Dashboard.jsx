@@ -16,7 +16,9 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
+import { useToggle } from "../context/ToggleContext";
 import Navbar from "../components/Navbar";
+import { Sparkles } from "lucide-react";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -24,6 +26,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const { toggles } = useToggle();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -108,8 +111,17 @@ export default function Dashboard() {
                 <Sparkles size={12} className="text-primary" />
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Intelligence Portal</span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.8] mb-2">
+              <h1 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.8] mb-2 flex items-center gap-4 flex-wrap">
                 Welcome, <span className="text-primary">{user?.name?.split(' ')[0] || "Leader"}</span>
+                {toggles.newDashboard && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="text-xs font-black px-4 py-1.5 bg-indigo-600 text-white rounded-full uppercase tracking-widest italic"
+                  >
+                    Beta UI
+                  </motion.span>
+                )}
               </h1>
               <p className="text-muted-foreground font-bold uppercase tracking-[0.3em] text-[10px] opacity-60">
                 Your ATS performance is optimized and ready for deployment

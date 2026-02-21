@@ -48,94 +48,113 @@ export default function Login() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 bg-background transition-colors duration-300">
+    <div className="relative min-h-screen flex items-center justify-center px-4 bg-[#050505] overflow-hidden">
       <Navbar />
 
       {/* AMBIENT BACKGROUND ELEMENTS */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="blob bg-primary/20 top-[-10%] left-[-10%] w-[60%] h-[60%]" />
-        <div className="blob bg-indigo-600/20 bottom-[-10%] right-[-10%] w-[60%] h-[60%] animate-pulse" />
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none" />
       </div>
 
-      <div className="w-full max-w-md animate-fade-up">
+      <div className="w-full max-w-md relative z-10">
         {/* Logo/Header */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-block text-3xl font-black italic tracking-tighter uppercase text-foreground mb-4">
-            ATS <span className="text-primary">Checker</span>
+        <div className="text-center mb-10">
+          <Link to="/" className="inline-flex items-center gap-3 mb-6 transition-transform hover:scale-105">
+            <div className="p-3 bg-primary rounded-2xl shadow-xl shadow-primary/20 rotate-3">
+              <LogIn size={28} fill="currentColor" className="text-primary-foreground" />
+            </div>
+            <span className="text-4xl font-black italic tracking-tighter uppercase text-white">
+              ATS <span className="text-primary">Checker</span>
+            </span>
           </Link>
-          <h2 className="text-2xl font-bold text-foreground">
-            Welcome Back
+          <h2 className="text-2xl font-black uppercase tracking-tighter text-white/90">
+            Authentication <span className="text-primary">Required</span>
           </h2>
-          <p className="text-muted-foreground mt-2">
-            Continue your journey to a dream job.
+          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black mt-2 opacity-60">
+            Enter your credentials to access the forge
           </p>
         </div>
 
-        {/* glass Card */}
-        <div className="glass p-8 rounded-2xl shadow-2xl border border-border bg-card/50">
-          <form onSubmit={handleSubmit} className="space-y-5">
+        {/* cinematic Card */}
+        <div className="bg-zinc-900/50 backdrop-blur-3xl p-10 rounded-[40px] shadow-2xl border border-white/5 relative overflow-hidden group">
+          {/* Interior Glow */}
+          <div className="absolute -top-24 -left-24 w-48 h-48 bg-primary/10 blur-[60px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
+
+          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
             {error && (
-              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-sm text-center animate-pulse">
+              <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-widest text-center animate-shake">
                 {error}
               </div>
             )}
 
             <div className="space-y-4">
-              <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary transition-colors" size={18} />
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="Email address"
-                  className="input-field pl-12"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
+              <div className="space-y-2">
+                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Secure Channel ID</label>
+                <div className="relative group/input">
+                  <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within/input:text-primary transition-colors" size={18} />
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="user@example.com"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-4 text-white outline-none transition-all placeholder:text-white/10 focus:border-primary/50 focus:bg-white/10 focus:ring-8 focus:ring-primary/5"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
 
-              <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary transition-colors" size={18} />
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                  className="input-field pl-12"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
+              <div className="space-y-2">
+                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Access Protocol</label>
+                <div className="relative group/input">
+                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within/input:text-primary transition-colors" size={18} />
+                  <input
+                    name="password"
+                    type="password"
+                    placeholder="••••••••"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-4 text-white outline-none transition-all placeholder:text-white/10 focus:border-primary/50 focus:bg-white/10 focus:ring-8 focus:ring-primary/5"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full flex items-center justify-center gap-2"
+              className={`w-full py-5 rounded-2xl bg-gradient-to-r from-primary to-indigo-600 text-primary-foreground font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3 ${loading ? 'opacity-70 cursor-wait' : ''}`}
             >
-              {loading ? "Signing in..." : <><LogIn size={18} /> Sign In</>}
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <><LogIn size={18} strokeWidth={3} /> Initialize Session</>
+              )}
             </button>
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
-              <div className="relative flex justify-center text-xs uppercase"><span className="bg-background px-2 text-muted-foreground">Or continue with</span></div>
+            <div className="relative my-8">
+              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-white/5" /></div>
+              <div className="relative flex justify-center text-[8px] font-black uppercase tracking-widest text-muted-foreground/40"><span className="bg-[#0a0a0c] px-4">Alternate Gateways</span></div>
             </div>
 
-            <button type="button" className="btn-outline w-full flex items-center justify-center gap-2 py-2.5">
-              <Github size={18} /> GitHub
+            <button type="button" className="w-full py-4 border border-white/10 rounded-2xl flex items-center justify-center gap-3 text-white/60 hover:text-white hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest">
+              <Github size={18} /> Continue with GitHub
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-primary font-semibold hover:underline decoration-2 underline-offset-4">
-              Create one for free
+          <p className="mt-10 text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            New Operator?{" "}
+            <Link to="/signup" className="text-primary hover:underline underline-offset-4 decoration-2">
+              Deploy Account
             </Link>
           </p>
         </div>
 
-        <p className="mt-8 text-center text-xs text-muted-foreground/60 px-10">
-          By signing in, you agree to our Terms of Service & Privacy Policy.
+        <p className="mt-8 text-center text-[8px] font-black uppercase tracking-[0.4em] text-muted-foreground/20 px-10">
+          Encrypted Connection · Secure Infrastructure · Standard Protocol
         </p>
       </div>
     </div>
