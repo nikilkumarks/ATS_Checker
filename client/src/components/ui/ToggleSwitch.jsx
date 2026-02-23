@@ -11,12 +11,12 @@ const ToggleSwitch = ({
     className = ""
 }) => {
     return (
-        <div className={`group flex items-center justify-between gap-6 py-5 px-1 rounded-2xl transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/5 ${className}`}>
+        <div className={`group flex items-center justify-between gap-6 py-5 px-1 rounded-2xl transition-all duration-300 hover:bg-secondary/30 ${className}`}>
             <div className="flex items-center gap-4">
                 {Icon && (
                     <div className={`p-3 rounded-2xl transition-all duration-500 ${isOn
-                            ? 'bg-primary/20 text-primary scale-110 rotate-3'
-                            : 'bg-secondary/50 text-muted-foreground group-hover:bg-secondary group-hover:text-foreground'
+                        ? 'bg-primary/20 text-primary scale-110 rotate-3'
+                        : 'bg-secondary/50 text-muted-foreground group-hover:bg-secondary group-hover:text-foreground'
                         }`}>
                         <Icon size={22} strokeWidth={2.5} />
                     </div>
@@ -41,8 +41,8 @@ const ToggleSwitch = ({
                 whileTap={{ scale: 0.9, rotate: isOn ? -2 : 2 }}
                 whileHover={{ scale: 1.05 }}
                 className={`relative w-14 h-8 flex items-center rounded-full p-1.5 transition-all duration-500 outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-primary ${isOn
-                        ? 'bg-gradient-to-r from-primary to-indigo-600 shadow-lg shadow-primary/30'
-                        : 'bg-secondary/80 dark:bg-zinc-800 border border-border/50'
+                    ? 'bg-gradient-to-r from-primary to-indigo-600 shadow-lg shadow-primary/30'
+                    : 'bg-secondary border border-border/50'
                     } ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}
                 aria-checked={isOn}
                 role="switch"

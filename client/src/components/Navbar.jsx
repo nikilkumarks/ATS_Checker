@@ -17,12 +17,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 w-full z-50 backdrop-blur-xl border-b border-border/50 transition-all duration-500"
-      style={{
-        backgroundColor: theme === 'dark'
-          ? 'color-mix(in srgb, var(--background), transparent 60%)'
-          : 'color-mix(in srgb, var(--background), transparent 40%)'
-      }}
+      className="fixed top-0 w-full z-50 backdrop-blur-xl border-b border-border/50 bg-background/60 transition-all duration-500"
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
