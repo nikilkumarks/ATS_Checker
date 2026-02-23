@@ -45,7 +45,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 bg-[#050505] overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center px-4 bg-background text-foreground overflow-hidden">
       <Navbar />
 
       {/* AMBIENT BACKGROUND ELEMENTS */}
@@ -62,11 +62,11 @@ export default function Signup() {
             <div className="p-3 bg-primary rounded-2xl shadow-xl shadow-primary/20 -rotate-3">
               <UserPlus size={28} fill="currentColor" className="text-primary-foreground" />
             </div>
-            <span className="text-4xl font-black italic tracking-tighter uppercase text-white">
+            <span className="text-4xl font-black italic tracking-tighter uppercase text-foreground">
               ATS <span className="text-primary">Checker</span>
             </span>
           </Link>
-          <h2 className="text-2xl font-black uppercase tracking-tighter text-white/90">
+          <h2 className="text-2xl font-black uppercase tracking-tighter text-foreground/90">
             Join the <span className="text-primary">Network</span>
           </h2>
           <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black mt-2 opacity-60">
@@ -75,7 +75,7 @@ export default function Signup() {
         </div>
 
         {/* glass Card */}
-        <div className="bg-zinc-900/50 backdrop-blur-3xl p-10 rounded-[40px] shadow-2xl border border-white/5 relative overflow-hidden group">
+        <div className="bg-card/50 backdrop-blur-3xl p-10 rounded-[40px] shadow-2xl border border-border/50 relative overflow-hidden group">
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-[60px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
 
           <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
@@ -100,7 +100,7 @@ export default function Signup() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Full Operator Name"
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-4 text-white outline-none transition-all placeholder:text-white/10 focus:border-primary/50 focus:bg-white/10 focus:ring-8 focus:ring-primary/5"
+                    className="w-full bg-secondary/30 border border-border/50 rounded-2xl pl-14 pr-6 py-4 text-foreground outline-none transition-all placeholder:text-muted-foreground/30 focus:border-primary/50 focus:bg-background focus:ring-8 focus:ring-primary/5"
                     required
                   />
                 </div>
@@ -153,7 +153,7 @@ export default function Signup() {
 
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-white/5" /></div>
-              <div className="relative flex justify-center text-[8px] font-black uppercase tracking-widest text-muted-foreground/40"><span className="bg-[#0a0a0c] px-4">Direct Verification</span></div>
+              <div className="relative flex justify-center text-[8px] font-black uppercase tracking-widest text-muted-foreground/40"><span className="bg-background px-4">Direct Verification</span></div>
             </div>
 
             <button type="button" className="w-full py-4 border border-white/10 rounded-2xl flex items-center justify-center gap-3 text-white/60 hover:text-white hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest">

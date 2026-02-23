@@ -14,14 +14,14 @@ import {
 
 export default function Landing() {
   return (
-    <div className="bg-[#050505] text-white min-h-screen overflow-x-hidden">
+    <div className="bg-background text-foreground min-h-screen overflow-x-hidden">
       <Navbar />
 
       {/* AMBIENT BACKGROUND ELEMENTS */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-primary/10 blur-[140px] rounded-full animate-glow" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 blur-[140px] rounded-full animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02] dark:opacity-[0.04] pointer-events-none" />
       </div>
 
       {/* HERO SECTION */}
@@ -38,7 +38,7 @@ export default function Landing() {
           <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-[0.85] mb-10 animate-fade-up [animation-delay:100ms]">
             Forge <span className="text-primary not-italic">ATS-Proof</span>
             <br />
-            <span className="text-white/20">Protocols</span>
+            <span className="text-foreground/20">Protocols</span>
           </h1>
 
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed mb-16 animate-fade-up [animation-delay:200ms]">
@@ -58,13 +58,13 @@ export default function Landing() {
 
             <Link
               to="/login"
-              className="px-10 py-5 border border-white/10 bg-white/5 backdrop-blur-xl text-white font-black text-xs uppercase tracking-[0.3em] rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-3"
+              className="px-10 py-5 border border-border/50 bg-secondary/30 backdrop-blur-xl text-foreground font-black text-xs uppercase tracking-[0.3em] rounded-2xl hover:bg-secondary/50 transition-all flex items-center justify-center gap-3"
             >
               Access Portal
             </Link>
           </div>
 
-          <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-40 animate-fade-up [animation-delay:400ms]">
+          <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-60 dark:opacity-40 animate-fade-up [animation-delay:400ms]">
             {[
               { label: "Active Nodes", val: "12.4k+" },
               { label: "Success Rate", val: "98.2%" },
@@ -72,8 +72,8 @@ export default function Landing() {
               { label: "Global Reach", val: "Tier 1" }
             ].map(stat => (
               <div key={stat.label} className="flex flex-col items-center">
-                <span className="text-2xl font-black text-white">{stat.val}</span>
-                <span className="text-[10px] uppercase tracking-widest font-bold mt-1">{stat.label}</span>
+                <span className="text-2xl font-black text-foreground">{stat.val}</span>
+                <span className="text-[10px] uppercase tracking-widest font-bold mt-1 text-muted-foreground">{stat.label}</span>
               </div>
             ))}
           </div>
@@ -81,7 +81,7 @@ export default function Landing() {
       </section>
 
       {/* CORE CAPABILITIES */}
-      <section className="py-32 relative z-10 bg-gradient-to-b from-transparent via-[#080808] to-transparent">
+      <section className="py-32 relative z-10 bg-gradient-to-b from-transparent via-background to-transparent">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-20 animate-fade-up">
             <div className="text-left">
@@ -179,7 +179,7 @@ export default function Landing() {
       </section>
 
       {/* FOOTER */}
-      <footer className="py-20 border-t border-white/5 relative z-10 bg-[#070707]">
+      <footer className="py-20 border-t border-white/5 relative z-10 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-12 mb-20">
             <div className="col-span-2">

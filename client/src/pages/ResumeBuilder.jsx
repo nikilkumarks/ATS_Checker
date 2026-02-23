@@ -960,23 +960,24 @@ export default function ResumeBuilder() {
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground flex flex-col transition-all duration-500 overflow-hidden">
+        <div className="min-h-screen bg-[#000000] text-white selection:bg-primary/30 transition-colors duration-300 overflow-x-hidden">
             <Navbar />
 
             <div className="flex flex-1 pt-16 h-[calc(100vh)] overflow-hidden relative">
                 {/* PREMUIM AMBIENT BACKGROUND */}
-                <div className="fixed inset-0 pointer-events-none">
-                    <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full animate-pulse" />
-                    <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full" />
+                <div className="fixed inset-0 pointer-events-none z-0">
+                    <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-primary/5 blur-[140px] rounded-full animate-glow" />
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/5 blur-[140px] rounded-full animate-pulse" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02] pointer-events-none" />
                 </div>
 
                 {/* SIDEBAR REMOVED FOR FULL WIDTH EXPERIENCE */}
 
                 {/* CENTER AREA: FULL-WIDTH EDITOR */}
-                <div className="flex-[1.2] flex flex-col relative z-10 bg-background/40 backdrop-blur-md overflow-hidden border-r border-border/30">
+                <div className="flex-[1.2] flex flex-col relative z-10 bg-transparent overflow-hidden border-r border-white/5">
 
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-0 md:p-12">
-                        <div className="w-full px-8 md:px-16">
+                        <div className="w-full px-8 md:px-16 pb-20">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeStep}
@@ -986,11 +987,14 @@ export default function ResumeBuilder() {
                                     transition={{ duration: 0.4, ease: "circOut" }}
                                     className="min-h-[600px]"
                                 >
-                                    <div className="p-1 w-fit rounded-full bg-primary/10 border border-primary/20 mb-8 flex items-center gap-3 pr-5">
-                                        <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-black">
+                                    <div className="p-1 w-fit rounded-full bg-white/5 border border-white/10 mb-10 flex items-center gap-3 pr-5 backdrop-blur-md">
+                                        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[10px] font-black shadow-lg shadow-primary/20">
                                             {activeStep + 1}
                                         </div>
-                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Workspace Section</span>
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary leading-none mb-0.5">Workspace</span>
+                                            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white/30 leading-none">Sector {activeStep + 1}</span>
+                                        </div>
                                     </div>
 
                                     {renderEditor()}
@@ -999,57 +1003,60 @@ export default function ResumeBuilder() {
                         </div>
                     </div>
 
-                    <footer className="p-8 bg-card/20 border-t border-border/50 backdrop-blur-3xl flex justify-between items-center shrink-0">
+                    <footer className="p-8 bg-card/60 border-t border-border/50 backdrop-blur-3xl flex justify-between items-center shrink-0 shadow-2xl relative z-20">
                         <button
                             onClick={() => navigate('/dashboard')}
-                            className="px-8 py-5 rounded-2xl border border-border/50 hover:bg-background text-[10px] font-black uppercase tracking-widest text-muted-foreground transition-all flex items-center justify-center gap-2 group mr-4"
+                            className="px-10 py-5 rounded-2xl border border-border/50 bg-secondary/30 hover:bg-secondary/50 text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-3 group mr-4"
                         >
-                            <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Exit
+                            <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Abort
                         </button>
 
-                        <button
-                            onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
-                            disabled={activeStep === 0}
-                            className={`px-8 py-5 rounded-2xl border transition-all font-black text-[10px] uppercase tracking-[0.2em] ${activeStep === 0
-                                ? 'opacity-30 cursor-not-allowed hidden'
-                                : 'border-border text-muted-foreground hover:bg-secondary hover:text-foreground active:scale-95'
-                                }`}
-                        >
-                            Back
-                        </button>
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
+                                disabled={activeStep === 0}
+                                className={`px-10 py-5 rounded-2xl border transition-all font-black text-[9px] uppercase tracking-[0.4em] ${activeStep === 0
+                                    ? 'opacity-0 pointer-events-none'
+                                    : 'border-border/50 text-muted-foreground hover:bg-secondary/30 hover:text-foreground active:scale-95'
+                                    }`}
+                            >
+                                Revert
+                            </button>
 
-                        <div className="hidden md:flex flex-col items-center gap-1.5">
-                            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-40">Session Progress</span>
-                            <div className="flex gap-2">
-                                {steps.map((_, i) => (
-                                    <div key={i} className={`w-2 h-2 rounded-full transition-all duration-700 ${i <= activeStep ? 'bg-primary scale-110 shadow-[0_0_10px_rgba(var(--primary),0.5)]' : 'bg-muted'}`} />
-                                ))}
+                            <div className="hidden lg:flex flex-col items-center gap-2.5 mx-8">
+                                <div className="flex gap-2">
+                                    {steps.map((_, i) => (
+                                        <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-700 ${i <= activeStep ? 'bg-primary scale-125 shadow-[0_0_12px_rgba(var(--primary),0.6)]' : 'bg-border/50'}`} />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
 
-                        {activeStep < steps.length - 1 ? (
-                            <button
-                                onClick={() => setActiveStep(prev => Math.min(steps.length - 1, prev + 1))}
-                                className="bg-primary text-primary-foreground px-12 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-primary/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-4 group"
-                            >
-                                <span>{activeStep === steps.length - 2 ? 'Finish Build' : 'Next Part'}</span>
-                                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                            </button>
-                        ) : (
-                            <button
-                                onClick={handleDownloadPDF}
-                                disabled={loading}
-                                className="bg-emerald-600 text-white px-12 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-emerald-600/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-4 group"
-                            >
-                                <Download size={18} className={loading ? 'animate-bounce' : ''} />
-                                <span>{loading ? 'Forging PDF...' : 'Get Resume'}</span>
-                            </button>
-                        )}
+                            {activeStep < steps.length - 1 ? (
+                                <button
+                                    onClick={() => setActiveStep(prev => Math.min(steps.length - 1, prev + 1))}
+                                    className="bg-primary text-primary-foreground px-14 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] shadow-2xl shadow-primary/20 hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-4 group relative overflow-hidden"
+                                >
+                                    <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                                    <span className="relative z-10">{activeStep === steps.length - 2 ? 'Finalize Forge' : 'Continue'}</span>
+                                    <ChevronRight size={16} strokeWidth={3} className="group-hover:translate-x-1 transition-transform relative z-10" />
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={handleDownloadPDF}
+                                    disabled={loading}
+                                    className="bg-emerald-600 text-white px-14 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] shadow-2xl shadow-emerald-600/30 hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-4 group relative overflow-hidden"
+                                >
+                                    <div className="absolute inset-0 bg-white/10 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
+                                    <Download size={18} strokeWidth={3} className={loading ? 'animate-bounce' : ''} />
+                                    <span>{loading ? 'Forging...' : 'Extract Resume'}</span>
+                                </button>
+                            )}
+                        </div>
                     </footer>
                 </div>
 
                 {/* RIGHT PANEL: FULL-HEIGHT PREVIEW */}
-                <div className="flex-1 bg-[#0a0a0c] hidden lg:flex flex-col relative z-20 overflow-hidden border-l border-white/5">
+                <div className="flex-1 bg-background hidden lg:flex flex-col relative z-20 overflow-hidden border-l border-border/50">
                     {/* AMBIENT GLOW BEHIND SHEET */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -1061,7 +1068,7 @@ export default function ResumeBuilder() {
                                 <div className="absolute top-10 left-10 right-10 bottom-0 bg-black/60 blur-[100px] opacity-50 group-hover:opacity-70 transition-opacity" />
                                 <div className="absolute top-4 left-4 right-4 bottom-0 bg-black/40 blur-[40px]" />
 
-                                <div className="a4-sheet overflow-hidden bg-white relative z-10 ring-1 ring-white/10">
+                                <div className="a4-sheet overflow-hidden bg-white relative z-10 ring-1 ring-border/10">
                                     {/* PHYSICAL PAPER GRAIN */}
                                     <div className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
 
