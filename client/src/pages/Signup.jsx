@@ -92,14 +92,14 @@ export default function Signup() {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Entity Name</label>
+                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
                 <div className="relative group/input">
                   <User className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within/input:text-primary transition-colors" size={18} />
                   <input
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Full Operator Name"
+                    placeholder="Enter your name"
                     className="w-full bg-secondary/30 border border-border/50 rounded-2xl pl-14 pr-6 py-4 text-foreground outline-none transition-all placeholder:text-muted-foreground/30 focus:border-primary/50 focus:bg-background focus:ring-8 focus:ring-primary/5"
                     required
                   />
@@ -107,7 +107,7 @@ export default function Signup() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Contact Frequency</label>
+                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
                 <div className="relative group/input">
                   <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within/input:text-primary transition-colors" size={18} />
                   <input
@@ -123,7 +123,7 @@ export default function Signup() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Secure Passkey</label>
+                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Password</label>
                 <div className="relative group/input">
                   <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within/input:text-primary transition-colors" size={18} />
                   <input

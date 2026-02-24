@@ -19,31 +19,33 @@ export default function Landing() {
 
       {/* AMBIENT BACKGROUND ELEMENTS */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-primary/10 blur-[140px] rounded-full animate-glow" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 blur-[140px] rounded-full animate-pulse" />
+        <div className="blob top-[-10%] left-[-10%] w-[70%] h-[70%] bg-primary/15" />
+        <div className="blob bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/15" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02] dark:opacity-[0.04] pointer-events-none" />
       </div>
+
 
       {/* HERO SECTION */}
       <section className="relative pt-40 pb-32 z-10">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 text-primary text-[10px] font-black tracking-[0.3em] uppercase mb-10 animate-fade-up">
+          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-foreground/5 border border-foreground/10 text-primary text-[10px] font-black tracking-[0.3em] uppercase mb-10 animate-fade-up">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
-            Sector 7 · High-Yield Recruitment Forge
+            AI-Powered Career Tools
           </div>
 
           <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-[0.85] mb-10 animate-fade-up [animation-delay:100ms]">
-            Forge <span className="text-primary not-italic">ATS-Proof</span>
+            Get <span className="text-primary not-italic">Hired</span>
             <br />
-            <span className="text-foreground/20">Protocols</span>
+            <span className="text-foreground/10 dark:text-foreground/20">Faster</span>
           </h1>
 
+
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed mb-16 animate-fade-up [animation-delay:200ms]">
-            Deploy high-converting resumes optimized for algorithmic dominance.
-            Instantly bypass automated filtering with our precision scoring engine.
+            Build professional resumes that beat automated filters.
+            Instantly check your score and get more interviews with our smart scanner.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-6 animate-fade-up [animation-delay:300ms]">
@@ -51,25 +53,25 @@ export default function Landing() {
               to="/signup"
               className="group relative px-10 py-5 bg-primary text-primary-foreground font-black text-xs uppercase tracking-[0.3em] rounded-2xl overflow-hidden shadow-2xl shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-4"
             >
-              Initialize Deployment
+              Get Started Now
               <ArrowRight size={18} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
               <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
             </Link>
 
             <Link
               to="/login"
-              className="px-10 py-5 border border-border/50 bg-secondary/30 backdrop-blur-xl text-foreground font-black text-xs uppercase tracking-[0.3em] rounded-2xl hover:bg-secondary/50 transition-all flex items-center justify-center gap-3"
+              className="px-10 py-5 border border-border/50 bg-secondary/50 dark:bg-secondary/30 backdrop-blur-xl text-foreground font-black text-xs uppercase tracking-[0.3em] rounded-2xl hover:bg-secondary/80 transition-all flex items-center justify-center gap-3"
             >
-              Access Portal
+              Member Login
             </Link>
           </div>
 
           <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-60 dark:opacity-40 animate-fade-up [animation-delay:400ms]">
             {[
-              { label: "Active Nodes", val: "12.4k+" },
+              { label: "Happy Users", val: "12.4k+" },
               { label: "Success Rate", val: "98.2%" },
-              { label: "Scan Latency", val: " < 2ms" },
-              { label: "Global Reach", val: "Tier 1" }
+              { label: "Scan Time", val: " < 1s" },
+              { label: "Top Ratings", val: "5 Stars" }
             ].map(stat => (
               <div key={stat.label} className="flex flex-col items-center">
                 <span className="text-2xl font-black text-foreground">{stat.val}</span>
@@ -86,44 +88,44 @@ export default function Landing() {
           <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-20 animate-fade-up">
             <div className="text-left">
               <h2 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter mb-4">
-                Core <span className="text-primary italic">Capabilities</span>
+                Key <span className="text-primary italic">Features</span>
               </h2>
               <p className="text-muted-foreground max-w-md font-medium">
-                Advanced career weaponry designed for the digital job market.
+                Modern tools designed to help you land your dream job faster.
               </p>
             </div>
-            <div className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 pb-2"> System Status: Operational </div>
+            <div className="text-[10px] font-black uppercase tracking-[0.5em] text-foreground/20 pb-2"> Status: Active </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-10">
             {[
               {
                 icon: <PenTool size={32} />,
-                title: "Resume Forge",
-                desc: "Real-time construction of high-density resumes using battle-tested architectural patterns.",
+                title: "Resume Builder",
+                desc: "Build high-quality resumes instantly with proven professional templates.",
                 color: "from-primary/20 to-indigo-600/20"
               },
               {
                 icon: <Scan size={32} />,
-                title: "ATS Pulse",
-                desc: "High-frequency analysis against proprietary tracking algorithms to identify protocol gaps.",
+                title: "ATS Scanner",
+                desc: "Check your resume against automated filters to find and fix potential issues.",
                 color: "from-blue-600/20 to-cyan-500/20"
               },
               {
                 icon: <ShieldCheck size={32} />,
-                title: "Clearance",
-                desc: "End-to-end encryption for your professional history and achievement documents.",
+                title: "Secure Data",
+                desc: "Your personal information is safe and encrypted with our secure platform.",
                 color: "from-emerald-600/20 to-teal-500/20"
               }
             ].map((item, index) => (
               <div
                 key={item.title}
-                className="group relative p-10 rounded-[40px] bg-zinc-900/40 backdrop-blur-3xl border border-white/5 hover:border-primary/40 transition-all duration-500 overflow-hidden"
+                className="group relative p-10 rounded-[40px] glass hover:border-primary/40 transition-all duration-500 overflow-hidden"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-700`} />
 
                 <div className="relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 text-primary">
+                  <div className="w-16 h-16 rounded-2xl bg-secondary/80 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 text-primary border border-border/50">
                     {item.icon}
                   </div>
                   <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-4">{item.title}</h3>
@@ -163,23 +165,23 @@ export default function Landing() {
 
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase mb-10 leading-none">
-            Ready for <span className="text-primary">Extraction?</span>
+            Ready to <span className="text-primary">Start?</span>
           </h2>
           <p className="text-muted-foreground text-lg md:text-xl font-medium mb-16 opacity-70">
-            Thousands of professionals have already secured their next mission.
-            Don't leave your career metrics to chance.
+            Join thousands of professionals who have already improved their careers.
+            Start getting the interviews you deserve today.
           </p>
           <Link
             to="/signup"
-            className="inline-flex items-center gap-4 px-12 py-6 bg-white text-black font-black text-xs uppercase tracking-[0.4em] rounded-2xl hover:scale-105 transition-all shadow-2xl shadow-white/10 active:scale-95 group"
+            className="inline-flex items-center gap-4 px-12 py-6 bg-foreground text-background font-black text-xs uppercase tracking-[0.4em] rounded-2xl hover:scale-105 transition-all shadow-2xl shadow-foreground/10 active:scale-95 group"
           >
-            Deploy Now <ArrowRight size={20} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+            Start Now <ArrowRight size={20} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="py-20 border-t border-white/5 relative z-10 bg-background">
+      <footer className="py-20 border-t border-border/50 relative z-10 bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-12 mb-20">
             <div className="col-span-2">
@@ -192,38 +194,38 @@ export default function Landing() {
                 </span>
               </Link>
               <p className="text-muted-foreground text-sm font-medium leading-relaxed max-w-xs opacity-50">
-                Next-generation career optimization protocols. Built for the modern forge.
+                Professional tools for the modern job seeker. Simple, fast, and effective.
               </p>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-white/20">Protocols</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-foreground/20">Features</h4>
               <div className="flex flex-col gap-3 text-xs font-black uppercase tracking-widest text-muted-foreground/60">
-                <Link to="/resume-builder" className="hover:text-primary transition-colors">Forge</Link>
-                <Link to="/ats-scanner" className="hover:text-primary transition-colors">Scanning</Link>
-                <Link to="/settings" className="hover:text-primary transition-colors">Infrastructure</Link>
+                <Link to="/resume-builder" className="hover:text-primary transition-colors">Builder</Link>
+                <Link to="/ats-scanner" className="hover:text-primary transition-colors">Scanner</Link>
+                <Link to="/settings" className="hover:text-primary transition-colors">Settings</Link>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-white/20">Social Connect</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-foreground/20">Company</h4>
               <div className="flex flex-col gap-3 text-xs font-black uppercase tracking-widest text-muted-foreground/60">
-                <a href="#" className="hover:text-primary transition-colors">Command Center</a>
-                <a href="#" className="hover:text-primary transition-colors">Direct Frequency</a>
-                <a href="#" className="hover:text-primary transition-colors">Network Status</a>
+                <a href="#" className="hover:text-primary transition-colors">About Us</a>
+                <a href="#" className="hover:text-primary transition-colors">Contact</a>
+                <a href="#" className="hover:text-primary transition-colors">Support</a>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center pt-10 border-t border-white/5 gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-center pt-10 border-t border-border/50 gap-6">
             <p className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground/30">
-              &copy; {new Date().getFullYear()} ATS Checker Operational System
+              &copy; {new Date().getFullYear()} ATS Checker. All rights reserved.
             </p>
 
             <div className="flex gap-8 text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground/30">
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Protocol</a>
-              <a href="#" className="hover:text-white transition-colors">Terminal</a>
+              <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
+              <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+              <a href="#" className="hover:text-foreground transition-colors">Cookies</a>
             </div>
           </div>
         </div>

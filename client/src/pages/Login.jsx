@@ -53,9 +53,9 @@ export default function Login() {
 
       {/* AMBIENT BACKGROUND ELEMENTS */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none" />
+        <div className="blob top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10" />
+        <div className="blob bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02] dark:opacity-[0.03] pointer-events-none" />
       </div>
 
       <div className="w-full max-w-md relative z-10">
@@ -70,15 +70,15 @@ export default function Login() {
             </span>
           </Link>
           <h2 className="text-2xl font-black uppercase tracking-tighter text-foreground/90">
-            Authentication <span className="text-primary">Required</span>
+            Welcome <span className="text-primary">Back</span>
           </h2>
           <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black mt-2 opacity-60">
-            Enter your credentials to access the forge
+            Enter your details to log in
           </p>
         </div>
 
         {/* cinematic Card */}
-        <div className="bg-card/50 backdrop-blur-3xl p-10 rounded-[40px] shadow-2xl border border-border/50 relative overflow-hidden group">
+        <div className="glass p-10 rounded-[40px] shadow-2xl relative overflow-hidden group">
           {/* Interior Glow */}
           <div className="absolute -top-24 -left-24 w-48 h-48 bg-primary/10 blur-[60px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
 
@@ -91,7 +91,7 @@ export default function Login() {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Secure Channel ID</label>
+                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
                 <div className="relative group/input">
                   <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within/input:text-primary transition-colors" size={18} />
                   <input
@@ -107,14 +107,14 @@ export default function Login() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Access Protocol</label>
+                <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Password</label>
                 <div className="relative group/input">
                   <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within/input:text-primary transition-colors" size={18} />
                   <input
                     name="password"
                     type="password"
                     placeholder="••••••••"
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-4 text-white outline-none transition-all placeholder:text-white/10 focus:border-primary/50 focus:bg-white/10 focus:ring-8 focus:ring-primary/5"
+                    className="w-full bg-secondary/30 border border-border/50 rounded-2xl pl-14 pr-6 py-4 text-foreground outline-none transition-all placeholder:text-muted-foreground/30 focus:border-primary/50 focus:bg-background focus:ring-8 focus:ring-primary/5"
                     value={formData.password}
                     onChange={handleChange}
                     required
@@ -131,30 +131,30 @@ export default function Login() {
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <><LogIn size={18} strokeWidth={3} /> Initialize Session</>
+                <><LogIn size={18} strokeWidth={3} /> Login</>
               )}
             </button>
 
             <div className="relative my-8">
-              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-white/5" /></div>
-              <div className="relative flex justify-center text-[8px] font-black uppercase tracking-widest text-muted-foreground/40"><span className="bg-background px-4">Alternate Gateways</span></div>
+              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border/50" /></div>
+              <div className="relative flex justify-center text-[8px] font-black uppercase tracking-widest text-muted-foreground/40"><span className="bg-background px-4">Or Login With</span></div>
             </div>
 
-            <button type="button" className="w-full py-4 border border-white/10 rounded-2xl flex items-center justify-center gap-3 text-white/60 hover:text-white hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest">
-              <Github size={18} /> Continue with GitHub
+            <button type="button" className="w-full py-4 border border-border/50 rounded-2xl flex items-center justify-center gap-3 text-foreground/60 hover:text-foreground hover:bg-secondary/50 transition-all text-[10px] font-black uppercase tracking-widest">
+              <Github size={18} /> GitHub
             </button>
           </form>
 
           <p className="mt-10 text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-            New Operator?{" "}
+            Don't have an account?{" "}
             <Link to="/signup" className="text-primary hover:underline underline-offset-4 decoration-2">
-              Deploy Account
+              Sign Up
             </Link>
           </p>
         </div>
 
         <p className="mt-8 text-center text-[8px] font-black uppercase tracking-[0.4em] text-muted-foreground/20 px-10">
-          Encrypted Connection · Secure Infrastructure · Standard Protocol
+          Secure Login · Privacy Protected
         </p>
       </div>
     </div>
