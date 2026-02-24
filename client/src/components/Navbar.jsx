@@ -60,26 +60,24 @@ export default function Navbar() {
         {/* Actions/Theme Toggle */}
         <div className="flex items-center gap-4">
 
-          {/* Enhanced Theme Toggle (Only visible and functional for logged-in users) */}
-          {token && (
-            <button
-              onClick={toggleTheme}
-              className="group relative flex items-center h-9 w-16 px-1.5 bg-secondary/80 dark:bg-secondary/40 rounded-2xl border border-border/50 hover:border-primary/50 transition-all duration-500 overflow-hidden"
-              aria-label="Toggle Theme"
+          {/* Enhanced Theme Toggle (Always visible) */}
+          <button
+            onClick={toggleTheme}
+            className="group relative flex items-center h-9 w-16 px-1.5 bg-secondary/80 dark:bg-secondary/40 rounded-2xl border border-border/50 hover:border-primary/50 transition-all duration-500 overflow-hidden"
+            aria-label="Toggle Theme"
+          >
+            <div
+              className={`flex items-center justify-center w-6 h-6 rounded-xl shadow-lg transition-all duration-500 ease-spring ${theme === 'dark'
+                ? 'translate-x-7 bg-indigo-600 text-white'
+                : 'bg-amber-400 text-amber-900'
+                }`}
             >
-              <div
-                className={`flex items-center justify-center w-6 h-6 rounded-xl shadow-lg transition-all duration-500 ease-spring ${theme === 'dark'
-                  ? 'translate-x-7 bg-indigo-600 text-white'
-                  : 'bg-amber-400 text-amber-900'
-                  }`}
-              >
-                {theme === 'dark' ? <Moon size={14} fill="currentColor" /> : <Sun size={14} fill="currentColor" />}
-              </div>
+              {theme === 'dark' ? <Moon size={14} fill="currentColor" /> : <Sun size={14} fill="currentColor" />}
+            </div>
 
-              {/* Background elements for toggle */}
-              <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity bg-primary" />
-            </button>
-          )}
+            {/* Background elements for toggle */}
+            <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity bg-primary" />
+          </button>
 
           <div className="h-6 w-px bg-border/50 mx-1 hidden sm:block" />
 
