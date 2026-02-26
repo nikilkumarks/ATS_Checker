@@ -55,7 +55,7 @@ export default function Landing() {
             >
               Get Started Now
               <ArrowRight size={18} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
-              <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+              <div className="absolute inset-0 bg-primary-foreground/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
             </Link>
 
             <Link

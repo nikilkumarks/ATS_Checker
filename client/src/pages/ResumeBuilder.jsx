@@ -690,12 +690,12 @@ export default function ResumeBuilder() {
                                 {loading ? (
                                     <>
                                         <div className="w-6 h-6 border-4 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
-                                        <span>Forging Excellence...</span>
+                                        <span>Building Your Resume...</span>
                                     </>
                                 ) : (
                                     <>
                                         <Download size={28} strokeWidth={3} />
-                                        <span>Download Performance Resume</span>
+                                        <span>Download Resume</span>
                                     </>
                                 )}
                             </button>
