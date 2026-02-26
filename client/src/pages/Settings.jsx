@@ -28,65 +28,41 @@ const Settings = () => {
 
     const sections = [
         {
-            id: "personal",
-            title: "App Theme",
-            icon: User,
+            id: "visuals",
+            title: "Appearance",
+            icon: Moon,
             items: [
                 {
                     id: "darkMode",
                     label: "Dark Mode",
                     description: "Switch between light and dark backgrounds",
                     icon: Moon,
-                },
+                }
+            ]
+        },
+        {
+            id: "updates",
+            title: "Alerts",
+            icon: Bell,
+            items: [
                 {
-                    id: "locationAccess",
-                    label: "Location",
-                    description: "Help us find jobs in your current city",
+                    id: "emailNotifications",
+                    label: "Email Messages",
+                    description: "Get updates about your resume scans",
+                    icon: Bell,
+                }
+            ]
+        },
+        {
+            id: "account",
+            title: "Account",
+            icon: User,
+            items: [
+                {
+                    id: "publicProfile",
+                    label: "Share Profile",
+                    description: "Make your resume link public to recruiters",
                     icon: Globe,
-                }
-            ]
-        },
-        {
-            id: "security",
-            title: "Security",
-            icon: ShieldCheck,
-            items: [
-                {
-                    id: "biometric",
-                    label: "Fingerprint Login",
-                    description: "Login faster using your fingerprint",
-                    icon: Fingerprint,
-                },
-                {
-                    id: "autoPay",
-                    label: "Auto Payment",
-                    description: "Automatically pay for premium resume checks",
-                    icon: CreditCard,
-                }
-            ]
-        },
-        {
-            id: "labs",
-            title: "Future Features",
-            icon: Cpu,
-            items: [
-                {
-                    id: "newDashboard",
-                    label: "New Home Page",
-                    description: "Try our experimental home screen layout",
-                    icon: Layout,
-                },
-                {
-                    id: "aiResumeFeature",
-                    label: "AI Power Scan",
-                    description: "Use deep AI to find hidden resume mistakes",
-                    icon: Sparkles,
-                },
-                {
-                    id: "betaPaymentUI",
-                    label: "New Checkout",
-                    description: "Help us test a faster way to pay",
-                    icon: Zap,
                 }
             ]
         }
@@ -117,12 +93,12 @@ const Settings = () => {
                     >
                         <div className="p-5 bg-secondary/30 backdrop-blur-3xl rounded-[32px] border border-border/50 text-primary shadow-2xl relative group w-fit">
                             <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <SettingsIcon size={32} className="relative z-10" />
+                            <User size={32} className="relative z-10" />
                         </div>
                         <div>
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary/30 rounded-full border border-border/50 mb-3 backdrop-blur-md">
-                                <Fingerprint size={12} className="text-primary" />
-                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Connected to Account</span>
+                                <User size={12} className="text-primary" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Your Account</span>
                             </div>
                             <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-[0.8] mb-1">
                                 App <span className="text-primary not-italic">Settings</span>
@@ -156,10 +132,10 @@ const Settings = () => {
                     {/* Sidebar Tabs - Desktop */}
                     <aside className="lg:col-span-3 space-y-3 hidden lg:block">
                         {[
-                            { id: "all", icon: Layout, label: "Core" },
-                            { id: "personal", icon: User, label: "Visuals" },
-                            { id: "security", icon: ShieldCheck, label: "Security" },
-                            { id: "labs", icon: Cpu, label: "Beta" }
+                            { id: "all", icon: Layout, label: "Show All" },
+                            { id: "visuals", icon: Moon, label: "Theme" },
+                            { id: "updates", icon: Bell, label: "Alerts" },
+                            { id: "account", icon: User, label: "Account" }
                         ].map((tab) => (
                             <button
                                 key={tab.id}
