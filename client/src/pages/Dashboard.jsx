@@ -108,7 +108,7 @@ export default function Dashboard() {
             <div className="space-y-3">
               <div className="flex items-center gap-2 px-3 py-1 bg-secondary/50 w-fit rounded-full border border-border/50 backdrop-blur-md">
                 <Sparkles size={12} className="text-primary" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Intelligence Terminal</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Your Success Dashboard</span>
               </div>
               <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-[0.8] mb-2 flex items-center gap-4 flex-wrap">
                 Welcome, <span className="text-primary not-italic">{user?.name?.split(' ')[0] || "Operator"}</span>
@@ -123,7 +123,7 @@ export default function Dashboard() {
                 )}
               </h1>
               <p className="text-muted-foreground font-black uppercase tracking-[0.4em] text-[10px] opacity-40 ml-1">
-                Extraction protocols operational · System Status: Tier 1
+                Everything is ready to go · System Status: Online
               </p>
             </div>
           </div>
@@ -145,13 +145,13 @@ export default function Dashboard() {
                 <div className="w-16 h-16 rounded-[24px] bg-secondary/50 flex items-center justify-center mb-8 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500 shadow-xl group-hover:shadow-primary/20">
                   <Plus size={32} strokeWidth={3} />
                 </div>
-                <h3 className="text-4xl font-black mb-4 italic tracking-tighter uppercase leading-none">Resume <span className="text-foreground/20">Forge</span></h3>
+                <h3 className="text-4xl font-black mb-4 italic tracking-tighter uppercase leading-none">Resume <span className="text-foreground/20">Builder</span></h3>
                 <p className="text-muted-foreground text-base font-medium leading-relaxed mb-8 opacity-70">
-                  Construct high-yield, ATS-ready resumes via automated forge protocols.
+                  Create professional, ATS-ready resumes in minutes with our builder.
                 </p>
               </div>
               <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-primary transition-colors">
-                Initialize Forge <ChevronRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+                Start Building <ChevronRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
           </motion.div>
@@ -167,16 +167,16 @@ export default function Dashboard() {
               <div className="absolute -top-10 -left-10 w-32 h-32 bg-emerald-500/10 blur-[50px] rounded-full group-hover:bg-emerald-500/20 transition-all" />
 
               <div className="relative z-10">
-                <div className="w-16 h-16 rounded-[24px] bg-white/5 flex items-center justify-center mb-8 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500 shadow-xl group-hover:shadow-emerald-500/20">
+                <div className="w-16 h-16 rounded-[24px] bg-secondary/50 flex items-center justify-center mb-8 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500 shadow-xl group-hover:shadow-emerald-500/20">
                   <Zap size={32} strokeWidth={3} />
                 </div>
-                <h3 className="text-4xl font-black mb-4 italic tracking-tighter uppercase leading-none">ATS <span className="text-white/20">Scanner</span></h3>
+                <h3 className="text-4xl font-black mb-4 italic tracking-tighter uppercase leading-none">ATS <span className="opacity-20">Scanner</span></h3>
                 <p className="text-muted-foreground text-base font-medium leading-relaxed mb-8 opacity-70">
-                  Deploy pulse-scanning against proprietary tracking algorithms.
+                  Compare your resume against job descriptions to see how you match up.
                 </p>
               </div>
               <div className="relative z-10 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500 transition-colors">
-                Initialize Scan <ChevronRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+                Check Score <ChevronRight size={14} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
           </motion.div>
@@ -193,16 +193,16 @@ export default function Dashboard() {
             <div>
               <h3 className="text-[10px] font-black flex items-center gap-3 uppercase tracking-[0.4em] text-primary mb-4">
                 <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                Operational History
+                Recent Activity
               </h3>
-              <h4 className="text-3xl font-black italic uppercase tracking-tighter">Extraction Logs</h4>
+              <h4 className="text-3xl font-black italic uppercase tracking-tighter">Scan History</h4>
             </div>
           </div>
 
           <div className="space-y-4 relative z-10">
             {activities.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-24 bg-white/[0.02] rounded-[32px] border border-white/5 border-dashed">
-                <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.5em]">No activity logs found</p>
+              <div className="flex flex-col items-center justify-center py-24 bg-secondary/30 rounded-[32px] border border-border/10 border-dashed">
+                <p className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.5em]">No activity logs found</p>
               </div>
             ) : (
               <div className="grid gap-4">
@@ -219,15 +219,15 @@ export default function Dashboard() {
                         navigate('/resume-builder');
                       }
                     }}
-                    className="group flex items-center justify-between p-6 rounded-3xl bg-white/[0.03] hover:bg-white/[0.06] transition-all border border-white/5 hover:border-white/10 cursor-pointer shadow-lg hover:shadow-primary/5"
+                    className="group flex items-center justify-between p-6 rounded-3xl bg-secondary/30 hover:bg-secondary/50 transition-all border border-border/10 hover:border-primary/20 cursor-pointer shadow-lg hover:shadow-primary/5"
                   >
                     <div className="flex items-center gap-6">
                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-inner ${activity.type === 'RESUME_SCAN' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-primary/10 text-primary'}`}>
                         {activity.type === 'RESUME_SCAN' ? <Zap size={22} strokeWidth={2.5} /> : <FileText size={22} strokeWidth={2.5} />}
                       </div>
                       <div>
-                        <h4 className="font-black text-base text-white tracking-tight group-hover:text-primary transition-colors uppercase italic">{activity.title}</h4>
-                        <p className="text-[9px] text-white/30 font-black mt-1.5 uppercase tracking-[0.3em]">
+                        <h4 className="font-black text-base text-foreground tracking-tight group-hover:text-primary transition-colors uppercase italic">{activity.title}</h4>
+                        <p className="text-[9px] text-foreground/30 font-black mt-1.5 uppercase tracking-[0.3em]">
                           {new Date(activity.createdAt).toLocaleTimeString()} · {new Date(activity.createdAt).toLocaleDateString()}
                         </p>
                       </div>
@@ -240,7 +240,7 @@ export default function Dashboard() {
                           </span>
                         </div>
                       )}
-                      <div className="p-3 bg-white/5 rounded-xl group-hover:bg-primary/20 group-hover:text-primary transition-all">
+                      <div className="p-3 bg-secondary/30 rounded-xl group-hover:bg-primary/20 group-hover:text-primary transition-all">
                         <ArrowUpRight size={18} strokeWidth={3} />
                       </div>
                     </div>
@@ -251,8 +251,8 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
-        <p className="text-center text-[10px] text-white/10 mt-20 font-black uppercase tracking-[0.8em] italic">
-          Forge Operational OS · Sector 7
+        <p className="text-center text-[10px] text-foreground/10 mt-20 font-black uppercase tracking-[0.8em] italic">
+          ATS Checker · Helping You Get Hired
         </p>
       </div >
     </div >

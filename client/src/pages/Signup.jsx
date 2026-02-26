@@ -118,7 +118,7 @@ export default function Signup() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="user@domain.com"
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-4 text-white outline-none transition-all placeholder:text-white/10 focus:border-primary/50 focus:bg-white/10 focus:ring-8 focus:ring-primary/5"
+                    className="w-full bg-secondary/30 border border-border/50 rounded-2xl pl-14 pr-6 py-4 text-foreground outline-none transition-all placeholder:text-muted-foreground/30 focus:border-primary/50 focus:bg-background focus:ring-8 focus:ring-primary/5"
                     required
                   />
                 </div>
@@ -134,7 +134,7 @@ export default function Signup() {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-4 text-white outline-none transition-all placeholder:text-white/10 focus:border-primary/50 focus:bg-white/10 focus:ring-8 focus:ring-primary/5"
+                    className="w-full bg-secondary/30 border border-border/50 rounded-2xl pl-14 pr-6 py-4 text-foreground outline-none transition-all placeholder:text-muted-foreground/30 focus:border-primary/50 focus:bg-background focus:ring-8 focus:ring-primary/5"
                     required
                   />
                 </div>

@@ -38,7 +38,7 @@ export default function Navbar() {
         {token && (
           <div className="hidden md:flex items-center gap-1 bg-secondary/30 dark:bg-secondary/10 p-1.5 rounded-2xl border border-border/50 backdrop-blur-md">
             {[
-              { path: "/resume-builder", icon: Layout, label: "Forge" },
+              { path: "/resume-builder", icon: Layout, label: "Builder" },
               { path: "/ats-scanner", icon: Activity, label: "Scanner" },
               { path: "/dashboard", icon: User, label: "Home" },
               { path: "/settings", icon: SettingsIcon, label: "Settings" }
