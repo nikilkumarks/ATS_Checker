@@ -107,7 +107,7 @@ const ATSScanner = () => {
                 >
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary/50 w-fit rounded-full border border-border/50 backdrop-blur-md mb-6">
                         <Activity size={12} className="text-primary" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Resume Comparison Engine</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Match Your Resume</span>
                     </div>
                     <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tighter italic uppercase leading-[0.8] flex flex-col">
                         ATS <span className="text-primary not-italic">Scanner</span>
@@ -126,7 +126,7 @@ const ATSScanner = () => {
                             <div className="relative z-10 space-y-12">
                                 {/* Upload Step */}
                                 <div className="space-y-6">
-                                    <h3 className="font-black uppercase tracking-[0.4em] text-[10px] text-primary italic">01 // Step 1: Upload Resume</h3>
+                                    <h3 className="font-black uppercase tracking-[0.4em] text-[10px] text-primary italic">1. Upload Your Resume</h3>
                                     <label
                                         htmlFor="resume-upload"
                                         className={`block h-52 border-2 border-dashed rounded-[32px] p-8 flex flex-col items-center justify-center transition-all cursor-pointer relative overflow-hidden group/upload ${file ? 'border-emerald-500/40 bg-emerald-500/5' : 'border-border/50 hover:border-primary/30 hover:bg-secondary/30'}`}
@@ -149,7 +149,7 @@ const ATSScanner = () => {
 
                                 {/* JD Step */}
                                 <div className="space-y-6">
-                                    <h3 className="font-black uppercase tracking-[0.4em] text-[10px] text-primary italic">02 // Step 2: Job Description</h3>
+                                    <h3 className="font-black uppercase tracking-[0.4em] text-[10px] text-primary italic">2. Paste Job Details</h3>
                                     <textarea
                                         value={jobDescription}
                                         onChange={(e) => setJobDescription(e.target.value)}
@@ -167,7 +167,7 @@ const ATSScanner = () => {
                             <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 blur-[50px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
 
                             <div className="relative z-10 space-y-4">
-                                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/20">System Controls</h3>
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/20">Scanner Options</h3>
 
                                 {error && (
                                     <motion.div
@@ -188,19 +188,19 @@ const ATSScanner = () => {
                                     {scanning ? (
                                         <>
                                             <div className="w-5 h-5 border-[3px] border-foreground/20 border-t-foreground rounded-full animate-spin" />
-                                            <span>Calculating Score...</span>
+                                            <span>Scanning...</span>
                                         </>
                                     ) : (
                                         <>
                                             <Activity size={18} strokeWidth={3} />
-                                            <span>Scan Resume</span>
+                                            <span>Check My Match</span>
                                         </>
                                     )}
                                 </button>
 
                                 <div className="pt-6 space-y-5">
                                     <div className="flex justify-between items-center px-1">
-                                        <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.3em]">Analysis Accuracy</span>
+                                        <span className="text-[9px] font-black text-foreground/20 uppercase tracking-[0.3em]">Scanner Precision</span>
                                         <span className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.3em]">AI Verified</span>
                                     </div>
                                     <div className="h-1 bg-secondary/50 rounded-full overflow-hidden">
@@ -245,11 +245,11 @@ const ATSScanner = () => {
                                             </svg>
                                             <div className="absolute flex flex-col items-center z-20">
                                                 <span className="text-8xl font-black italic tracking-tighter leading-none">{result.score}<span className="text-3xl text-foreground/50">%</span></span>
-                                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/20 mt-2">Overall Match Score</span>
+                                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/20 mt-2">Match Score</span>
                                             </div>
                                         </div>
                                         <div className="space-y-4 max-w-sm">
-                                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic">AI Feedback</h3>
+                                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic">Expert Advice</h3>
                                             <p className="text-foreground text-xl font-black italic tracking-tight leading-[1.4] opacity-80">"{result.summary}"</p>
                                         </div>
                                     </div>
@@ -258,7 +258,7 @@ const ATSScanner = () => {
                                     <div className="lg:col-span-6 space-y-12">
                                         <div className="space-y-6">
                                             <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-emerald-500 flex items-center gap-4">
-                                                <div className="h-[1px] w-8 bg-emerald-500/40" /> Keywords Found
+                                                <div className="h-[1px] w-8 bg-emerald-500/40" /> Good Keywords Found
                                             </h3>
                                             <div className="flex flex-wrap gap-3">
                                                 {result.foundKeywords && result.foundKeywords.length > 0 ? result.foundKeywords.map((kw, i) => (
@@ -271,7 +271,7 @@ const ATSScanner = () => {
 
                                         <div className="space-y-6">
                                             <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-yellow-500 flex items-center gap-4">
-                                                <div className="h-[1px] w-8 bg-yellow-500/40" /> Missing Keywords
+                                                <div className="h-[1px] w-8 bg-yellow-500/40" /> Recommended Keywords
                                             </h3>
                                             <div className="flex flex-wrap gap-3">
                                                 {result.missingKeywords && result.missingKeywords.length > 0 ? result.missingKeywords.map((kw, i) => (
@@ -296,7 +296,7 @@ const ATSScanner = () => {
                     )}
                 </AnimatePresence>
 
-                <p className="text-center text-[10px] text-foreground/10 mt-24 font-black uppercase tracking-[0.8em] italic opacity-40">Operational Scanning Framework · V7.4</p>
+                <p className="text-center text-[10px] text-foreground/10 mt-24 font-black uppercase tracking-[0.8em] italic opacity-40">Career Match Tool // Version 1.0</p>
             </div>
         </div>
     );
