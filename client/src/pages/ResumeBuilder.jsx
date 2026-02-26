@@ -12,6 +12,7 @@ import jsPDF from 'jspdf';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import Navbar from '../components/Navbar';
+import Toast from '../components/ui/Toast';
 import './ResumeBuilder.css';
 
 export default function ResumeBuilder() {
@@ -21,6 +22,9 @@ export default function ResumeBuilder() {
     const [loading, setLoading] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState('classic'); // Default to most ATS friendly
     const previewRef = useRef(null);
+
+    // Toast state
+    const [toast, setToast] = useState(null); // { message, type }
 
     // AI suggestion state
     const [aiSuggestion, setAiSuggestion] = useState(null); // { original, enhanced, field, id, type }
@@ -52,13 +56,13 @@ export default function ResumeBuilder() {
 
     const steps = [
         { title: "Contact", icon: <User size={18} />, key: "personal" },
-        { title: "Summary", icon: <Briefcase size={18} />, key: "summary" },
-        { title: "Jobs", icon: <Briefcase size={18} />, key: "experience" },
+        { title: "Summary", icon: <Sparkles size={18} />, key: "summary" },
+        { title: "Experience", icon: <Briefcase size={18} />, key: "experience" },
         { title: "Projects", icon: <FolderGit2 size={18} />, key: "projects" },
-        { title: "School", icon: <GraduationCap size={18} />, key: "education" },
+        { title: "Education", icon: <GraduationCap size={18} />, key: "education" },
         { title: "Skills", icon: <Code2 size={18} />, key: "skills" },
         { title: "Extras", icon: <Award size={18} />, key: "extras" },
-        { title: "Finish", icon: <Layout size={18} />, key: "template" }
+        { title: "Layout", icon: <Layout size={18} />, key: "template" }
     ];
 
     // --- Handlers ---
@@ -104,7 +108,7 @@ export default function ResumeBuilder() {
 
     const handleAIEnhance = async (field, text, type, id = null) => {
         if (!text || text.trim().length < 5) {
-            alert("Please enter more text to enhance (at least 5 characters).");
+            setToast({ message: "Please enter more text to enhance (at least 5 characters).", type: "info" });
             return;
         }
 
@@ -135,12 +139,12 @@ export default function ResumeBuilder() {
                     warning: data.warning || null
                 });
             } else {
-                alert("AI could not enhance this text. Please try again.");
+                setToast({ message: "AI could not enhance this text. Please try again.", type: "error" });
             }
 
         } catch (err) {
             console.error("AI Enhancement Error:", err);
-            alert(`Error: ${err.message}\n\nMake sure the server is running on port 5000.`);
+            setToast({ message: `Error: ${err.message}. Make sure the server is running.`, type: "error" });
         } finally {
             setLoading(false);
         }
@@ -264,7 +268,7 @@ export default function ResumeBuilder() {
             pdf.save(`${fileName}_Professional.pdf`);
         } catch (err) {
             console.error("PDF Export Error:", err);
-            alert("Export failed. Please try a different template or check your connection.");
+            setToast({ message: "Export failed. Please try a different template or check your connection.", type: "error" });
         } finally {
             setLoading(false);
         }
@@ -277,55 +281,49 @@ export default function ResumeBuilder() {
                 return (
                     <div className="space-y-8 animate-spring">
                         <header className="space-y-2">
-                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">About <span className="text-primary">You</span></h2>
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Basics for your contact info</p>
+                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Contact <span className="text-primary">Details</span></h2>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Add your basic contact information</p>
                         </header>
 
                         <div className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
-                                    <input type="text" placeholder="e.g. Alexander Pierce" className="input-field" value={resumeData.personal.fullName || ""} onChange={(e) => handlePersonalChange('fullName', e.target.value)} />
+                                    <input type="text" placeholder="e.g. Arjun Mehta" className="input-field" value={resumeData.personal.fullName || ""} onChange={(e) => handlePersonalChange('fullName', e.target.value)} />
                                 </div>
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center px-1">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Desired Job Title</label>
-                                        <button onClick={() => handleAIEnhance('jobTitle', resumeData.personal.jobTitle, 'jobTitle')} className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-1"><Sparkles size={10} /> AI Refine</button>
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Job Title</label>
+                                        <button onClick={() => handleAIEnhance('jobTitle', resumeData.personal.jobTitle, 'jobTitle')} className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-1"><Sparkles size={10} /> AI Improve</button>
                                     </div>
-                                    <input type="text" placeholder="e.g. Senior Software Architect" className="input-field" value={resumeData.personal.jobTitle || ""} onChange={(e) => handlePersonalChange('jobTitle', e.target.value)} />
+                                    <input type="text" placeholder="e.g. Full Stack Developer" className="input-field" value={resumeData.personal.jobTitle || ""} onChange={(e) => handlePersonalChange('jobTitle', e.target.value)} />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
-                                    <input type="email" placeholder="alex@example.com" className="input-field" value={resumeData.personal.email || ""} onChange={(e) => handlePersonalChange('email', e.target.value)} />
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email</label>
+                                    <input type="email" placeholder="arjun.mehta@email.com" className="input-field" value={resumeData.personal.email || ""} onChange={(e) => handlePersonalChange('email', e.target.value)} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Phone Number</label>
-                                    <input type="text" placeholder="+1 (555) 000-0000" className="input-field" value={resumeData.personal.phone || ""} onChange={(e) => handlePersonalChange('phone', e.target.value)} />
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Phone</label>
+                                    <input type="text" placeholder="+91 98765 43210" className="input-field" value={resumeData.personal.phone || ""} onChange={(e) => handlePersonalChange('phone', e.target.value)} />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Location</label>
-                                <input type="text" placeholder="San Francisco, CA" className="input-field" value={resumeData.personal.location || ""} onChange={(e) => handlePersonalChange('location', e.target.value)} />
+                                <input type="text" placeholder="Mumbai, Maharashtra" className="input-field" value={resumeData.personal.location || ""} onChange={(e) => handlePersonalChange('location', e.target.value)} />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">LinkedIn Profile</label>
-                                    <div className="relative">
-                                        <Linkedin size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
-                                        <input type="text" placeholder="linkedin.com/in/username" className="input-field pl-12" value={resumeData.personal.linkedin || ""} onChange={(e) => handlePersonalChange('linkedin', e.target.value)} />
-                                    </div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">LinkedIn</label>
+                                    <input type="text" placeholder="linkedin.com/in/arjun-mehta" className="input-field" value={resumeData.personal.linkedin || ""} onChange={(e) => handlePersonalChange('linkedin', e.target.value)} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Portfolio / GitHub</label>
-                                    <div className="relative">
-                                        <Github size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
-                                        <input type="text" placeholder="github.com/username" className="input-field pl-12" value={resumeData.personal.github || ""} onChange={(e) => handlePersonalChange('github', e.target.value)} />
-                                    </div>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">GitHub</label>
+                                    <input type="text" placeholder="github.com/arjun-mehta" className="input-field" value={resumeData.personal.github || ""} onChange={(e) => handlePersonalChange('github', e.target.value)} />
                                 </div>
                             </div>
                         </div>
@@ -337,11 +335,11 @@ export default function ResumeBuilder() {
                     <div className="space-y-8 animate-spring">
                         <header className="flex justify-between items-end">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Your <span className="text-primary">Summary</span></h2>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Explain what you do best</p>
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">About <span className="text-primary">You</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Briefly explain your best skills</p>
                             </div>
                             <button onClick={() => handleAIEnhance('summary', resumeData.summary, 'summary')} disabled={loading} className="ai-btn py-2">
-                                <Sparkles size={16} /> {loading ? "Optimizing..." : "AI Optimize"}
+                                <Sparkles size={16} /> {loading ? "Improving..." : "AI Improve"}
                             </button>
                         </header>
 
@@ -364,11 +362,11 @@ export default function ResumeBuilder() {
                     <div className="space-y-8 animate-spring">
                         <header className="flex justify-between items-end">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Job <span className="text-primary">History</span></h2>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Write about your past work</p>
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Work <span className="text-primary">Experience</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">List your past jobs and roles</p>
                             </div>
                             <button onClick={addExperience} className="ai-btn-sm py-2">
-                                <Plus size={16} /> Add Role
+                                <Plus size={16} /> Add Job
                             </button>
                         </header>
 
@@ -394,7 +392,7 @@ export default function ResumeBuilder() {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Company</label>
-                                            <input type="text" placeholder="e.g. Microsoft" className="input-field" value={exp.company || ""} onChange={(e) => updateItem('experience', exp.id, 'company', e.target.value)} />
+                                            <input type="text" placeholder="e.g. Tata Consultancy Services" className="input-field" value={exp.company || ""} onChange={(e) => updateItem('experience', exp.id, 'company', e.target.value)} />
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Start Date</label>
@@ -431,8 +429,8 @@ export default function ResumeBuilder() {
                     <div className="space-y-8 animate-spring">
                         <header className="flex justify-between items-end">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Your <span className="text-primary">Projects</span></h2>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Show off what you built</p>
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">My <span className="text-primary">Projects</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Show what you have built</p>
                             </div>
                             <button onClick={addProject} className="ai-btn-sm py-2">
                                 <Plus size={16} /> Add Project
@@ -490,8 +488,8 @@ export default function ResumeBuilder() {
                     <div className="space-y-8 animate-spring">
                         <header className="flex justify-between items-end">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">School <span className="text-primary">Info</span></h2>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Where you studied</p>
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Education <span className="text-primary">History</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Where you went to school</p>
                             </div>
                             <button onClick={addEducation} className="ai-btn-sm py-2">
                                 <Plus size={16} /> Add School
@@ -515,21 +513,21 @@ export default function ResumeBuilder() {
 
                                     <div className="space-y-6">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Degree & Major</label>
-                                            <input type="text" placeholder="e.g. Master of Computer Science" className="input-field" value={edu.degree || ""} onChange={(e) => updateItem('education', edu.id, 'degree', e.target.value)} />
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Degree</label>
+                                            <input type="text" placeholder="e.g. Computer Science" className="input-field" value={edu.degree || ""} onChange={(e) => updateItem('education', edu.id, 'degree', e.target.value)} />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Institution</label>
-                                            <input type="text" placeholder="e.g. MIT" className="input-field" value={edu.school || ""} onChange={(e) => updateItem('education', edu.id, 'school', e.target.value)} />
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">School</label>
+                                            <input type="text" placeholder="e.g. Indian Institute of Technology" className="input-field" value={edu.school || ""} onChange={(e) => updateItem('education', edu.id, 'school', e.target.value)} />
                                         </div>
                                         <div className="grid grid-cols-2 gap-6">
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Graduation Year</label>
+                                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Year</label>
                                                 <input type="text" placeholder="e.g. 2022" className="input-field" value={edu.year || ""} onChange={(e) => updateItem('education', edu.id, 'year', e.target.value)} />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">GPA / Honors</label>
-                                                <input type="text" placeholder="e.g. 3.9 / Cum Laude" className="input-field" value={edu.grade || ""} onChange={(e) => updateItem('education', edu.id, 'grade', e.target.value)} />
+                                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">GPA</label>
+                                                <input type="text" placeholder="e.g. 3.9" className="input-field" value={edu.grade || ""} onChange={(e) => updateItem('education', edu.id, 'grade', e.target.value)} />
                                             </div>
                                         </div>
                                     </div>
@@ -544,8 +542,8 @@ export default function ResumeBuilder() {
                     <div className="space-y-8 animate-spring">
                         <header className="flex justify-between items-end">
                             <div className="space-y-2">
-                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Your <span className="text-primary">Skills</span></h2>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">List what you can do</p>
+                                <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">My <span className="text-primary">Skills</span></h2>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">List your top skills</p>
                             </div>
                             <button onClick={() => handleAIEnhance('skills', resumeData.skills, 'skills')} disabled={loading} className="ai-btn py-2">
                                 <Sparkles size={16} /> {loading ? "Optimizing..." : "Analyze for ATS"}
@@ -579,8 +577,8 @@ export default function ResumeBuilder() {
                 return (
                     <div className="space-y-12 animate-spring">
                         <header className="space-y-2">
-                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Extra <span className="text-primary">Details</span></h2>
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">The finishing touches that set you apart</p>
+                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Extra <span className="text-primary">Info</span></h2>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Certifications and achievements</p>
                         </header>
 
                         <div className="space-y-6">
@@ -648,15 +646,15 @@ export default function ResumeBuilder() {
                 return (
                     <div className="space-y-8 animate-spring">
                         <header className="space-y-2">
-                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Ready for <span className="text-primary">Impact</span></h2>
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Select a layout and claim your future</p>
+                            <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">Choose <span className="text-primary">Layout</span></h2>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black opacity-60">Select a design for your resume</p>
                         </header>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {[
-                                { id: 'classic', name: 'Standard ATS', desc: 'Maximum Parsing Rate', icon: Layout },
-                                { id: 'modern', name: 'Modern Clean', desc: 'Perfect for High-Tech', icon: Layout },
-                                { id: 'minimal', name: 'Minimalist', desc: 'Focus on Experience', icon: Layout }
+                                { id: 'classic', name: 'ATS Optimized', desc: 'Maximum Parsing Accuracy', icon: Layout },
+                                { id: 'modern', name: 'Modern Premium', desc: 'Sleek & Professional', icon: Layout },
+                                { id: 'minimal', name: 'Minimalist', desc: 'Clean & Simple', icon: Layout }
                             ].map(t => (
                                 <div
                                     key={t.id}
@@ -715,15 +713,15 @@ export default function ResumeBuilder() {
         const { personal, summary, experience, projects, education, skills, certifications, achievements } = resumeData;
 
         const LayoutHeader = () => (
-            <header className={`border-b-2 pb-5 ${theme === 'dark' ? 'border-primary/30' : 'border-slate-900'}`}>
-                <h1 className="text-3xl font-black uppercase tracking-tighter mb-2 leading-none">{personal.fullName || 'YOUR NAME'}</h1>
-                <div className={`flex flex-wrap gap-x-4 gap-y-1 text-[8px] font-bold uppercase tracking-widest ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                    {personal.jobTitle && <span className={theme === 'dark' ? 'text-primary' : 'text-slate-900'}>{personal.jobTitle}</span>}
+            <header className="border-b-2 border-slate-900/10 pb-6 text-center">
+                <h1 className="text-3xl font-black uppercase tracking-tighter mb-3 leading-none text-slate-900">{personal.fullName || 'YOUR NAME'}</h1>
+                <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-[8px] font-bold uppercase tracking-widest text-slate-500">
+                    {personal.jobTitle && <span className="text-primary">{personal.jobTitle}</span>}
                     {personal.email && <span>{personal.email}</span>}
                     {personal.phone && <span>{personal.phone}</span>}
                     {personal.location && <span>{personal.location}</span>}
-                    {personal.linkedin && <span className="lowercase opacity-50">{personal.linkedin}</span>}
-                    {personal.github && <span className="lowercase opacity-50">{personal.github}</span>}
+                    {personal.linkedin && <span>LinkedIn: {personal.linkedin.replace(/https?:\/\//, '')}</span>}
+                    {personal.github && <span>GitHub: {personal.github.replace(/https?:\/\//, '')}</span>}
                 </div>
             </header>
         );
@@ -737,8 +735,8 @@ export default function ResumeBuilder() {
 
         if (selectedTemplate === 'modern') {
             return (
-                <div className={`w-full h-full flex transition-colors duration-500 ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>
-                    <div className={`w-[30%] p-6 space-y-6 h-full ${theme === 'dark' ? 'bg-zinc-900 border-r border-white/5' : 'bg-slate-50 border-r border-slate-200'}`}>
+                <div className={`w-full h-full flex transition-colors duration-500 ${theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}`}>
+                    <div className={`w-[30%] p-6 space-y-6 h-full ${theme === 'dark' ? 'bg-zinc-900 border-r border-white/5' : 'bg-secondary/30 border-r border-border/50'}`}>
                         <div>
                             <h1 className="text-2xl font-black uppercase tracking-tighter leading-none">{personal.fullName || 'NAME'}</h1>
                             <p className="text-[9px] font-black uppercase tracking-widest text-primary mt-1">{personal.jobTitle}</p>
@@ -776,7 +774,12 @@ export default function ResumeBuilder() {
                         )}
                     </div>
                     <div className="flex-1 p-8 space-y-6 overflow-y-auto custom-scrollbar h-full">
-                        {summary && <p className="text-[10px] italic leading-relaxed opacity-70 border-b border-border/10 pb-3">{summary}</p>}
+                        {summary && (
+                            <div className="space-y-2 border-b border-border/10 pb-4">
+                                <h3 className="text-[8px] font-black uppercase tracking-widest text-primary">Professional Profile</h3>
+                                <p className="text-[10px] italic leading-relaxed opacity-70">{summary}</p>
+                            </div>
+                        )}
 
                         {experience.length > 0 && (
                             <Section title="Experience">
@@ -821,7 +824,7 @@ export default function ResumeBuilder() {
 
         if (selectedTemplate === 'minimal') {
             return (
-                <div className={`p-[15mm] space-y-5 font-serif w-full h-full text-center transition-colors duration-500 overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>
+                <div className={`p-[15mm] space-y-5 font-serif w-full h-full text-center transition-colors duration-500 overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-foreground' : 'text-slate-800'}`}>
                     <header className="space-y-2">
                         <h1 className="text-3xl font-light tracking-[0.2em] uppercase">{personal.fullName || 'YOUR NAME'}</h1>
                         <div className="flex justify-center flex-wrap gap-x-4 gap-y-1 text-[7px] uppercase tracking-[0.3em] opacity-40">
@@ -832,7 +835,12 @@ export default function ResumeBuilder() {
                         </div>
                     </header>
                     <div className="max-w-2xl mx-auto space-y-5 text-left pb-10">
-                        {summary && <p className="text-[9px] italic leading-relaxed text-center opacity-60 border-y border-border/10 py-3">{summary}</p>}
+                        {summary && (
+                            <div className="space-y-1.5 border-y border-border/10 py-4 text-center text-left">
+                                <h3 className="text-[7px] font-black uppercase tracking-[0.4em] text-primary">Summary</h3>
+                                <p className="text-[9px] italic leading-relaxed opacity-60">{summary}</p>
+                            </div>
+                        )}
 
                         {experience.length > 0 && (
                             <div className="space-y-3">
@@ -894,48 +902,49 @@ export default function ResumeBuilder() {
 
         // CLASSIC / DEFAULT
         return (
-            <div className={`p-[15mm] space-y-6 font-sans leading-relaxed transition-colors duration-500 w-full h-full overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>
+            <div className={`p-[15mm] space-y-6 font-sans leading-relaxed transition-colors duration-500 w-full h-full overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-foreground' : 'text-slate-800'}`}>
                 <LayoutHeader />
-                {summary && <p className="text-[10px] italic leading-relaxed border-b border-border/10 pb-3">{summary}</p>}
-                <div className="grid grid-cols-3 gap-8 pb-10">
-                    <div className="col-span-2 space-y-6">
-                        <Section title="Professional Experience">
+                {summary && (
+                    <Section title="Professional Summary">
+                        <p className="text-[10px] italic leading-relaxed opacity-80">{summary}</p>
+                    </Section>
+                )}
+
+                <div className="space-y-8 pb-10">
+                    <Section title="Work Experience">
+                        <div className="space-y-4">
+                            {experience.map(exp => (
+                                <div key={exp.id} className="space-y-1">
+                                    <div className="flex justify-between items-baseline">
+                                        <h3 className="text-[11px] font-black uppercase tracking-tight">{exp.title}</h3>
+                                        <span className="text-[8px] font-black opacity-30 uppercase">{exp.startDate} — {exp.endDate}</span>
+                                    </div>
+                                    <p className="text-[9px] font-black text-primary uppercase italic leading-none">{exp.company} | {exp.location}</p>
+                                    <p className="text-[9px] leading-relaxed opacity-70 whitespace-pre-line">{exp.description}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </Section>
+
+                    {projects.length > 0 && (
+                        <Section title="Key Projects">
                             <div className="space-y-4">
-                                {experience.map(exp => (
-                                    <div key={exp.id} className="space-y-1">
+                                {projects.map(proj => (
+                                    <div key={proj.id} className="space-y-1">
                                         <div className="flex justify-between items-baseline">
-                                            <h3 className="text-[11px] font-black uppercase tracking-tight">{exp.title}</h3>
-                                            <span className="text-[8px] font-black opacity-30 uppercase">{exp.startDate} — {exp.endDate}</span>
+                                            <h4 className="font-black text-[10px] uppercase tracking-wider">{proj.name}</h4>
+                                            <span className="text-[8px] font-bold text-primary uppercase opacity-60">{proj.techStack}</span>
                                         </div>
-                                        <p className="text-[9px] font-black text-primary uppercase italic leading-none">{exp.company} | {exp.location}</p>
-                                        <p className="text-[9px] leading-relaxed opacity-70 whitespace-pre-line">{exp.description}</p>
+                                        <p className="text-[9px] leading-relaxed opacity-70 whitespace-pre-line">{proj.description}</p>
                                     </div>
                                 ))}
                             </div>
                         </Section>
+                    )}
 
-                        {projects.length > 0 && (
-                            <Section title="Featured Projects">
-                                <div className="space-y-3">
-                                    {projects.map(proj => (
-                                        <div key={proj.id} className="space-y-0.5">
-                                            <div className="flex justify-between items-baseline">
-                                                <h4 className="font-black text-[10px] uppercase tracking-wider">{proj.name}</h4>
-                                                <span className="text-[8px] font-bold text-primary uppercase opacity-60">{proj.techStack}</span>
-                                            </div>
-                                            <p className="text-[9px] leading-snug opacity-60 whitespace-pre-line">{proj.description}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </Section>
-                        )}
-                    </div>
-                    <div className="space-y-6">
-                        <Section title="Skills">
-                            <p className="text-[8px] font-bold leading-normal uppercase tracking-widest whitespace-pre-line opacity-60">{skills}</p>
-                        </Section>
+                    <div className="grid grid-cols-2 gap-8">
                         <Section title="Education">
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 {education.map(edu => (
                                     <div key={edu.id} className="space-y-0.5">
                                         <h4 className="text-[10px] font-black uppercase leading-tight">{edu.degree}</h4>
@@ -945,22 +954,31 @@ export default function ResumeBuilder() {
                                 ))}
                             </div>
                         </Section>
-                        {(certifications.length > 0 || achievements.length > 0) && (
-                            <Section title="Honors">
-                                <div className="space-y-1.5 text-[8px] font-bold opacity-40 uppercase tracking-tighter leading-tight">
+
+                        <Section title="Expertise">
+                            <p className="text-[8px] font-bold leading-relaxed uppercase tracking-widest whitespace-pre-line opacity-70">{skills}</p>
+                        </Section>
+                    </div>
+
+                    {(certifications.length > 0 || achievements.length > 0) && (
+                        <Section title="Achievements & Certs">
+                            <div className="grid grid-cols-2 gap-4 text-[8px] font-bold opacity-50 uppercase tracking-tighter leading-tight italic">
+                                <div className="space-y-1">
                                     {certifications.map(c => <p key={c.id}>• {c.name}</p>)}
+                                </div>
+                                <div className="space-y-1">
                                     {achievements.map(a => <p key={a.id}>• {a.title}</p>)}
                                 </div>
-                            </Section>
-                        )}
-                    </div>
+                            </div>
+                        </Section>
+                    )}
                 </div>
             </div>
         );
     };
 
     return (
-        <div className="min-h-screen bg-[#000000] text-white selection:bg-primary/30 transition-colors duration-300 overflow-x-hidden">
+        <div className="min-h-screen bg-background text-foreground selection:bg-primary/30 transition-colors duration-300 overflow-x-hidden">
             <Navbar />
 
             <div className="flex flex-1 pt-16 h-[calc(100vh)] overflow-hidden relative">
@@ -974,7 +992,7 @@ export default function ResumeBuilder() {
                 {/* SIDEBAR REMOVED FOR FULL WIDTH EXPERIENCE */}
 
                 {/* CENTER AREA: FULL-WIDTH EDITOR */}
-                <div className="flex-[1.2] flex flex-col relative z-10 bg-transparent overflow-hidden border-r border-white/5">
+                <div className="flex-[1.2] flex flex-col relative z-10 bg-transparent overflow-hidden border-r border-border/50">
 
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-0 md:p-12">
                         <div className="w-full px-8 md:px-16 pb-20">
@@ -987,13 +1005,13 @@ export default function ResumeBuilder() {
                                     transition={{ duration: 0.4, ease: "circOut" }}
                                     className="min-h-[600px]"
                                 >
-                                    <div className="p-1 w-fit rounded-full bg-white/5 border border-white/10 mb-10 flex items-center gap-3 pr-5 backdrop-blur-md">
+                                    <div className="p-1 w-fit rounded-full bg-secondary/30 border border-border/50 mb-10 flex items-center gap-3 pr-5 backdrop-blur-md">
                                         <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[10px] font-black shadow-lg shadow-primary/20">
                                             {activeStep + 1}
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary leading-none mb-0.5">Workspace</span>
-                                            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white/30 leading-none">Sector {activeStep + 1}</span>
+                                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary leading-none mb-0.5">Step</span>
+                                            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground leading-none">{steps[activeStep].title}</span>
                                         </div>
                                     </div>
 
@@ -1008,7 +1026,7 @@ export default function ResumeBuilder() {
                             onClick={() => navigate('/dashboard')}
                             className="px-10 py-5 rounded-2xl border border-border/50 bg-secondary/30 hover:bg-secondary/50 text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-3 group mr-4"
                         >
-                            <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Abort
+                            <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Exit
                         </button>
 
                         <div className="flex items-center gap-4">
@@ -1020,7 +1038,7 @@ export default function ResumeBuilder() {
                                     : 'border-border/50 text-muted-foreground hover:bg-secondary/30 hover:text-foreground active:scale-95'
                                     }`}
                             >
-                                Revert
+                                Back
                             </button>
 
                             <div className="hidden lg:flex flex-col items-center gap-2.5 mx-8">
@@ -1037,7 +1055,7 @@ export default function ResumeBuilder() {
                                     className="bg-primary text-primary-foreground px-14 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] shadow-2xl shadow-primary/20 hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-4 group relative overflow-hidden"
                                 >
                                     <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                                    <span className="relative z-10">{activeStep === steps.length - 2 ? 'Finalize Forge' : 'Continue'}</span>
+                                    <span className="relative z-10">{activeStep === steps.length - 2 ? 'Finish' : 'Next'}</span>
                                     <ChevronRight size={16} strokeWidth={3} className="group-hover:translate-x-1 transition-transform relative z-10" />
                                 </button>
                             ) : (
@@ -1048,7 +1066,7 @@ export default function ResumeBuilder() {
                                 >
                                     <div className="absolute inset-0 bg-white/10 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
                                     <Download size={18} strokeWidth={3} className={loading ? 'animate-bounce' : ''} />
-                                    <span>{loading ? 'Forging...' : 'Extract Resume'}</span>
+                                    <span>{loading ? 'Working...' : 'Download Resume'}</span>
                                 </button>
                             )}
                         </div>
@@ -1060,7 +1078,7 @@ export default function ResumeBuilder() {
                     {/* AMBIENT GLOW BEHIND SHEET */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-12 flex items-start justify-center relative">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-12 flex items-start justify-center relative">
                         {/* PHYSICAL A4 PAPER PREVIEW */}
                         <div className="a4-sheet-container">
                             <div className="relative group transition-all duration-700 hover:-translate-y-4">
@@ -1068,7 +1086,7 @@ export default function ResumeBuilder() {
                                 <div className="absolute top-10 left-10 right-10 bottom-0 bg-black/60 blur-[100px] opacity-50 group-hover:opacity-70 transition-opacity" />
                                 <div className="absolute top-4 left-4 right-4 bottom-0 bg-black/40 blur-[40px]" />
 
-                                <div className="a4-sheet overflow-hidden bg-white relative z-10 ring-1 ring-border/10">
+                                <div className="a4-sheet overflow-y-auto custom-scrollbar bg-white relative z-10 ring-1 ring-border/10">
                                     {/* PHYSICAL PAPER GRAIN */}
                                     <div className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
 
@@ -1084,8 +1102,15 @@ export default function ResumeBuilder() {
                     </div>
                 </div>
             </div>
-            {/* AI SUGGESTION MODAL */}
             <AnimatePresence>
+                {toast && (
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        onClose={() => setToast(null)}
+                    />
+                )}
+
                 {aiSuggestion && (
                     <motion.div
                         initial={{ opacity: 0 }}
