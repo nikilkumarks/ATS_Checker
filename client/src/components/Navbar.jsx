@@ -26,7 +26,7 @@ export default function Navbar() {
           to={token ? "/dashboard" : "/"}
           className="flex items-center gap-3 active:scale-95 transition-transform group"
         >
-          <div className="p-2.5 bg-primary rounded-xl shadow-lg shadow-primary/20 rotate-3 group-hover:rotate-0 transition-all duration-500">
+          <div className="p-2.5 bg-primary rounded-xl shadow-lg shadow-primary/20 transition-all duration-500">
             <Zap size={22} fill="currentColor" className="text-primary-foreground" />
           </div>
           <span className="font-black text-2xl tracking-tighter uppercase italic leading-none">
@@ -51,7 +51,7 @@ export default function Navbar() {
                   : "text-muted-foreground hover:text-foreground hover:bg-background/50"
                   }`}
               >
-                <item.icon size={14} /> {item.label}
+                <item.icon size={14} strokeWidth={3} /> {item.label}
               </Link>
             ))}
           </div>
