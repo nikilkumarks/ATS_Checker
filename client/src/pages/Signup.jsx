@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { signupApi } from "../api/authApi";
 import { Link } from "react-router-dom";
-import { User, Mail, Lock, UserPlus, Github } from "lucide-react";
+import { User, Mail, Lock, UserPlus } from "lucide-react";
 import Navbar from "../components/Navbar";
 
 export default function Signup() {
@@ -50,9 +50,9 @@ export default function Signup() {
 
       {/* AMBIENT BACKGROUND ELEMENTS */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.04] pointer-events-none" />
+        <div className="blob top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/10" />
+        <div className="blob bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02] dark:opacity-[0.03] pointer-events-none" />
       </div>
 
       <div className="w-full max-w-md relative z-10">
@@ -67,11 +67,13 @@ export default function Signup() {
             </span>
           </Link>
           <h2 className="text-2xl font-black uppercase tracking-tighter text-foreground/90">
-            Join the <span className="text-primary">Network</span>
+            Create <span className="text-primary">Account</span>
           </h2>
           <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black mt-2 opacity-60">
-            Create your clearance and begin the forge
+            Join thousands of professionals today
           </p>
+          Broadway
+          Broadway
         </div>
 
         {/* glass Card */}
@@ -147,30 +149,22 @@ export default function Signup() {
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <><UserPlus size={18} strokeWidth={3} /> Commence Deployment</>
+                <><UserPlus size={18} strokeWidth={3} /> Sign Up</>
               )}
             </button>
 
-            <div className="relative my-8">
-              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-white/5" /></div>
-              <div className="relative flex justify-center text-[8px] font-black uppercase tracking-widest text-muted-foreground/40"><span className="bg-background px-4">Direct Verification</span></div>
-            </div>
-
-            <button type="button" className="w-full py-4 border border-white/10 rounded-2xl flex items-center justify-center gap-3 text-white/60 hover:text-white hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest">
-              <Github size={18} /> Verify with GitHub
-            </button>
           </form>
 
           <p className="mt-10 text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-            Existing Operator?{" "}
+            Already have an account?{" "}
             <Link to="/login" className="text-primary hover:underline underline-offset-4 decoration-2">
-              Return to Base
+              Login
             </Link>
           </p>
         </div>
 
         <p className="mt-8 text-center text-[8px] font-black uppercase tracking-[0.4em] text-muted-foreground/20 px-10">
-          By deploying, you agree to our Protocol & Privacy Framework
+          By signing up, you agree to our Terms & Privacy Policy
         </p>
       </div>
     </div>
