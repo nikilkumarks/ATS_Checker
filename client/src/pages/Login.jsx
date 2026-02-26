@@ -2,7 +2,7 @@ import { useState } from "react";
 import { loginApi } from "../api/authApi";
 import { setToken } from "../services/tokenService";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, LogIn, Github } from "lucide-react";
+import { Mail, Lock, LogIn } from "lucide-react";
 import Navbar from "../components/Navbar";
 
 export default function Login() {
@@ -61,14 +61,6 @@ export default function Login() {
       <div className="w-full max-w-md relative z-10">
         {/* Logo/Header */}
         <div className="text-center mb-10">
-          <Link to="/" className="inline-flex items-center gap-3 mb-6 transition-transform hover:scale-105">
-            <div className="p-3 bg-primary rounded-2xl shadow-xl shadow-primary/20 rotate-3">
-              <LogIn size={28} fill="currentColor" className="text-primary-foreground" />
-            </div>
-            <span className="text-4xl font-black italic tracking-tighter uppercase text-foreground">
-              ATS <span className="text-primary">Checker</span>
-            </span>
-          </Link>
           <h2 className="text-2xl font-black uppercase tracking-tighter text-foreground/90">
             Welcome <span className="text-primary">Back</span>
           </h2>
@@ -135,14 +127,6 @@ export default function Login() {
               )}
             </button>
 
-            <div className="relative my-8">
-              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border/50" /></div>
-              <div className="relative flex justify-center text-[8px] font-black uppercase tracking-widest text-muted-foreground/40"><span className="bg-background px-4">Or Login With</span></div>
-            </div>
-
-            <button type="button" className="w-full py-4 border border-border/50 rounded-2xl flex items-center justify-center gap-3 text-foreground/60 hover:text-foreground hover:bg-secondary/50 transition-all text-[10px] font-black uppercase tracking-widest">
-              <Github size={18} /> GitHub
-            </button>
           </form>
 
           <p className="mt-10 text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
