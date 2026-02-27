@@ -286,44 +286,44 @@ export default function ResumeBuilder() {
                         </header>
 
                         <div className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
-                                    <input type="text" placeholder="e.g. Arjun Mehta" className="input-field" value={resumeData.personal.fullName || ""} onChange={(e) => handlePersonalChange('fullName', e.target.value)} />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name</label>
+                                    <input type="text" placeholder="e.g. Arjun Mehta" className="input-field text-base" value={resumeData.personal.fullName || ""} onChange={(e) => handlePersonalChange('fullName', e.target.value)} />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="space-y-3">
                                     <div className="flex justify-between items-center px-1">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Job Title</label>
+                                        <label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Job Title</label>
                                         <button onClick={() => handleAIEnhance('jobTitle', resumeData.personal.jobTitle, 'jobTitle')} className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-1"><Sparkles size={10} /> AI Improve</button>
                                     </div>
-                                    <input type="text" placeholder="e.g. Full Stack Developer" className="input-field" value={resumeData.personal.jobTitle || ""} onChange={(e) => handlePersonalChange('jobTitle', e.target.value)} />
+                                    <input type="text" placeholder="e.g. Full Stack Developer" className="input-field text-base" value={resumeData.personal.jobTitle || ""} onChange={(e) => handlePersonalChange('jobTitle', e.target.value)} />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email</label>
-                                    <input type="email" placeholder="arjun.mehta@email.com" className="input-field" value={resumeData.personal.email || ""} onChange={(e) => handlePersonalChange('email', e.target.value)} />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Email</label>
+                                    <input type="email" placeholder="arjun.mehta@email.com" className="input-field text-base" value={resumeData.personal.email || ""} onChange={(e) => handlePersonalChange('email', e.target.value)} />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Phone</label>
-                                    <input type="text" placeholder="+91 98765 43210" className="input-field" value={resumeData.personal.phone || ""} onChange={(e) => handlePersonalChange('phone', e.target.value)} />
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Phone</label>
+                                    <input type="text" placeholder="+91 98765 43210" className="input-field text-base" value={resumeData.personal.phone || ""} onChange={(e) => handlePersonalChange('phone', e.target.value)} />
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Location</label>
-                                <input type="text" placeholder="Mumbai, Maharashtra" className="input-field" value={resumeData.personal.location || ""} onChange={(e) => handlePersonalChange('location', e.target.value)} />
+                            <div className="space-y-3">
+                                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">Location</label>
+                                <input type="text" placeholder="Mumbai, Maharashtra" className="input-field text-base" value={resumeData.personal.location || ""} onChange={(e) => handlePersonalChange('location', e.target.value)} />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">LinkedIn</label>
-                                    <input type="text" placeholder="linkedin.com/in/arjun-mehta" className="input-field" value={resumeData.personal.linkedin || ""} onChange={(e) => handlePersonalChange('linkedin', e.target.value)} />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">LinkedIn</label>
+                                    <input type="text" placeholder="linkedin.com/in/arjun-mehta" className="input-field text-base" value={resumeData.personal.linkedin || ""} onChange={(e) => handlePersonalChange('linkedin', e.target.value)} />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">GitHub</label>
-                                    <input type="text" placeholder="github.com/arjun-mehta" className="input-field" value={resumeData.personal.github || ""} onChange={(e) => handlePersonalChange('github', e.target.value)} />
+                                <div className="space-y-3">
+                                    <label className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">GitHub</label>
+                                    <input type="text" placeholder="github.com/arjun-mehta" className="input-field text-base" value={resumeData.personal.github || ""} onChange={(e) => handlePersonalChange('github', e.target.value)} />
                                 </div>
                             </div>
                         </div>
@@ -385,35 +385,35 @@ export default function ResumeBuilder() {
                                         </button>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Title</label>
-                                            <input type="text" placeholder="e.g. Lead Developer" className="input-field" value={exp.title || ""} onChange={(e) => updateItem('experience', exp.id, 'title', e.target.value)} />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                        <div className="space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Title</label>
+                                            <input type="text" placeholder="e.g. Lead Developer" className="input-field text-base" value={exp.title || ""} onChange={(e) => updateItem('experience', exp.id, 'title', e.target.value)} />
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Company</label>
-                                            <input type="text" placeholder="e.g. Tata Consultancy Services" className="input-field" value={exp.company || ""} onChange={(e) => updateItem('experience', exp.id, 'company', e.target.value)} />
+                                        <div className="space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Company</label>
+                                            <input type="text" placeholder="e.g. Tata Consultancy Services" className="input-field text-base" value={exp.company || ""} onChange={(e) => updateItem('experience', exp.id, 'company', e.target.value)} />
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Start Date</label>
-                                            <input type="text" placeholder="Jan 2020" className="input-field" value={exp.startDate || ""} onChange={(e) => updateItem('experience', exp.id, 'startDate', e.target.value)} />
+                                        <div className="space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Start Date</label>
+                                            <input type="text" placeholder="Jan 2020" className="input-field text-base" value={exp.startDate || ""} onChange={(e) => updateItem('experience', exp.id, 'startDate', e.target.value)} />
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">End Date</label>
-                                            <input type="text" placeholder="Present" className="input-field" value={exp.endDate || ""} onChange={(e) => updateItem('experience', exp.id, 'endDate', e.target.value)} />
+                                        <div className="space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">End Date</label>
+                                            <input type="text" placeholder="Present" className="input-field text-base" value={exp.endDate || ""} onChange={(e) => updateItem('experience', exp.id, 'endDate', e.target.value)} />
                                         </div>
                                     </div>
 
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-center px-1">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Achievements & Impact</label>
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Achievements & Impact</label>
                                             <button onClick={() => handleAIEnhance('experience', exp.description, 'experience', exp.id)} className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-1.5">
                                                 <Sparkles size={12} /> AI Rewrite
                                             </button>
                                         </div>
                                         <textarea
                                             placeholder="• Scaled core platform to 1M+ active users..."
-                                            className="textarea-field h-40 custom-scrollbar text-sm"
+                                            className="textarea-field h-40 custom-scrollbar text-base"
                                             value={exp.description || ""}
                                             onChange={(e) => updateItem('experience', exp.id, 'description', e.target.value)}
                                         />
@@ -452,27 +452,27 @@ export default function ResumeBuilder() {
                                         </button>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Project Name</label>
-                                            <input type="text" placeholder="e.g. AI Content Engine" className="input-field" value={proj.name || ""} onChange={(e) => updateItem('projects', proj.id, 'name', e.target.value)} />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                        <div className="space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Project Name</label>
+                                            <input type="text" placeholder="e.g. AI Content Engine" className="input-field text-base" value={proj.name || ""} onChange={(e) => updateItem('projects', proj.id, 'name', e.target.value)} />
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Tech Stack</label>
-                                            <input type="text" placeholder="e.g. Next.js, OpenAI, PostgreSQL" className="input-field" value={proj.techStack || ""} onChange={(e) => updateItem('projects', proj.id, 'techStack', e.target.value)} />
+                                        <div className="space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Tech Stack</label>
+                                            <input type="text" placeholder="e.g. Next.js, OpenAI, PostgreSQL" className="input-field text-base" value={proj.techStack || ""} onChange={(e) => updateItem('projects', proj.id, 'techStack', e.target.value)} />
                                         </div>
                                     </div>
 
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-center px-1">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Outcome & Contribution</label>
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Outcome & Contribution</label>
                                             <button onClick={() => handleAIEnhance('projects', proj.description, 'projects', proj.id)} className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-1.5">
                                                 <Sparkles size={12} /> AI Rewrite
                                             </button>
                                         </div>
                                         <textarea
                                             placeholder="Decreased processing time by 45% by implementing a custom caching layer..."
-                                            className="textarea-field h-32 custom-scrollbar text-sm"
+                                            className="textarea-field h-32 custom-scrollbar text-base"
                                             value={proj.description || ""}
                                             onChange={(e) => updateItem('projects', proj.id, 'description', e.target.value)}
                                         />
@@ -511,23 +511,23 @@ export default function ResumeBuilder() {
                                         </button>
                                     </div>
 
-                                    <div className="space-y-6">
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Degree</label>
-                                            <input type="text" placeholder="e.g. Computer Science" className="input-field" value={edu.degree || ""} onChange={(e) => updateItem('education', edu.id, 'degree', e.target.value)} />
+                                    <div className="space-y-8">
+                                        <div className="space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Degree</label>
+                                            <input type="text" placeholder="e.g. Computer Science" className="input-field text-base" value={edu.degree || ""} onChange={(e) => updateItem('education', edu.id, 'degree', e.target.value)} />
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">School</label>
-                                            <input type="text" placeholder="e.g. Indian Institute of Technology" className="input-field" value={edu.school || ""} onChange={(e) => updateItem('education', edu.id, 'school', e.target.value)} />
+                                        <div className="space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">School</label>
+                                            <input type="text" placeholder="e.g. Indian Institute of Technology" className="input-field text-base" value={edu.school || ""} onChange={(e) => updateItem('education', edu.id, 'school', e.target.value)} />
                                         </div>
-                                        <div className="grid grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Year</label>
-                                                <input type="text" placeholder="e.g. 2022" className="input-field" value={edu.year || ""} onChange={(e) => updateItem('education', edu.id, 'year', e.target.value)} />
+                                        <div className="grid grid-cols-2 gap-8">
+                                            <div className="space-y-3">
+                                                <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Year</label>
+                                                <input type="text" placeholder="e.g. 2022" className="input-field text-base" value={edu.year || ""} onChange={(e) => updateItem('education', edu.id, 'year', e.target.value)} />
                                             </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">GPA</label>
-                                                <input type="text" placeholder="e.g. 3.9" className="input-field" value={edu.grade || ""} onChange={(e) => updateItem('education', edu.id, 'grade', e.target.value)} />
+                                            <div className="space-y-3">
+                                                <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">GPA</label>
+                                                <input type="text" placeholder="e.g. 3.9" className="input-field text-base" value={edu.grade || ""} onChange={(e) => updateItem('education', edu.id, 'grade', e.target.value)} />
                                             </div>
                                         </div>
                                     </div>
@@ -552,7 +552,7 @@ export default function ResumeBuilder() {
 
                         <div className="space-y-6">
                             <textarea
-                                className="textarea-field h-64 custom-scrollbar font-mono text-base leading-relaxed"
+                                className="textarea-field h-64 custom-scrollbar font-mono text-base leading-relaxed p-6"
                                 placeholder="Languages: JavaScript, Python, Rust\nFrameworks: React, Next.js, Node.js\nCore: Distributed Systems, AWS, CI/CD"
                                 value={resumeData.skills}
                                 onChange={(e) => handleSimpleChange('skills', e.target.value)}
@@ -596,16 +596,16 @@ export default function ResumeBuilder() {
 
                             <div className="space-y-4">
                                 {resumeData.certifications.map((cert) => (
-                                    <div key={cert.id} className="card-input group flex items-end gap-4">
-                                        <div className="flex-1 space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Certificate Name</label>
-                                            <input type="text" placeholder="e.g. AWS Solutions Architect" className="input-field" value={cert.name || ""} onChange={(e) => updateItem('certifications', cert.id, 'name', e.target.value)} />
+                                    <div key={cert.id} className="card-input group flex items-end gap-6 mb-4">
+                                        <div className="flex-1 space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Certificate Name</label>
+                                            <input type="text" placeholder="e.g. AWS Solutions Architect" className="input-field text-base" value={cert.name || ""} onChange={(e) => updateItem('certifications', cert.id, 'name', e.target.value)} />
                                         </div>
-                                        <div className="w-1/3 space-y-2">
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Year</label>
-                                            <input type="text" placeholder="2023" className="input-field" value={cert.year || ""} onChange={(e) => updateItem('certifications', cert.id, 'year', e.target.value)} />
+                                        <div className="w-1/3 space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Year</label>
+                                            <input type="text" placeholder="2023" className="input-field text-base" value={cert.year || ""} onChange={(e) => updateItem('certifications', cert.id, 'year', e.target.value)} />
                                         </div>
-                                        <button onClick={() => removeItem('certifications', cert.id)} className="delete-btn mb-1.5">
+                                        <button onClick={() => removeItem('certifications', cert.id)} className="delete-btn static mb-1 mt-0">
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
@@ -628,11 +628,12 @@ export default function ResumeBuilder() {
 
                             <div className="space-y-4">
                                 {resumeData.achievements.map((ach) => (
-                                    <div key={ach.id} className="card-input group flex items-center gap-4">
-                                        <div className="flex-1">
-                                            <input type="text" placeholder="e.g. Increased revenue by 25% through A/B testing..." className="input-field" value={ach.title || ""} onChange={(e) => updateItem('achievements', ach.id, 'title', e.target.value)} />
+                                    <div key={ach.id} className="card-input group flex items-center gap-6 mb-4">
+                                        <div className="flex-1 space-y-3">
+                                            <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Achievement</label>
+                                            <input type="text" placeholder="e.g. Increased revenue by 25% through A/B testing..." className="input-field text-base" value={ach.title || ""} onChange={(e) => updateItem('achievements', ach.id, 'title', e.target.value)} />
                                         </div>
-                                        <button onClick={() => removeItem('achievements', ach.id)} className="delete-btn">
+                                        <button onClick={() => removeItem('achievements', ach.id)} className="delete-btn static mt-6">
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
@@ -992,7 +993,7 @@ export default function ResumeBuilder() {
                 {/* SIDEBAR REMOVED FOR FULL WIDTH EXPERIENCE */}
 
                 {/* CENTER AREA: FULL-WIDTH EDITOR */}
-                <div className="flex-[1.2] flex flex-col relative z-10 bg-transparent overflow-hidden border-r border-border/50">
+                <div className="flex-[1.5] flex flex-col relative z-10 bg-transparent overflow-hidden border-r border-border/50">
 
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-0 md:p-12">
                         <div className="w-full px-8 md:px-16 pb-20">
@@ -1074,11 +1075,11 @@ export default function ResumeBuilder() {
                 </div>
 
                 {/* RIGHT PANEL: FULL-HEIGHT PREVIEW */}
-                <div className="flex-1 bg-background hidden lg:flex flex-col relative z-20 overflow-hidden border-l border-border/50">
+                <div className="flex-1 min-w-[500px] bg-background hidden lg:flex flex-col relative z-20 overflow-hidden border-l border-border/50">
                     {/* AMBIENT GLOW BEHIND SHEET */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-12 flex items-start justify-center relative">
+                    <div className="flex-1 overflow-auto custom-scrollbar p-6 md:p-12 flex items-start justify-center relative">
                         {/* PHYSICAL A4 PAPER PREVIEW */}
                         <div className="a4-sheet-container">
                             <div className="relative group transition-all duration-700 hover:-translate-y-4">
