@@ -714,9 +714,9 @@ export default function ResumeBuilder() {
         const { personal, summary, experience, projects, education, skills, certifications, achievements } = resumeData;
 
         const LayoutHeader = () => (
-            <header className="border-b-2 border-slate-900/10 pb-6 text-center">
-                <h1 className="text-3xl font-black uppercase tracking-tighter mb-3 leading-none text-slate-900">{personal.fullName || 'YOUR NAME'}</h1>
-                <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-[8px] font-bold uppercase tracking-widest text-slate-500">
+            <header className={`border-b-2 pb-6 text-center ${theme === 'dark' ? 'border-border/50' : 'border-slate-900/10'}`}>
+                <h1 className={`text-4xl font-black uppercase tracking-tighter mb-3 leading-none ${theme === 'dark' ? 'text-foreground' : 'text-slate-900'}`}>{personal.fullName || 'YOUR NAME'}</h1>
+                <div className={`flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px] font-bold uppercase tracking-widest ${theme === 'dark' ? 'text-muted-foreground' : 'text-slate-500'}`}>
                     {personal.jobTitle && <span className="text-primary">{personal.jobTitle}</span>}
                     {personal.email && <span>{personal.email}</span>}
                     {personal.phone && <span>{personal.phone}</span>}
@@ -728,68 +728,71 @@ export default function ResumeBuilder() {
         );
 
         const Section = ({ title, children }) => (
-            <section className="space-y-2">
-                <h2 className="text-[9px] font-black uppercase tracking-[0.2em] border-l-4 border-primary pl-2">{title}</h2>
-                <div className="space-y-3">{children}</div>
+            <section className="space-y-3">
+                <h2 className="text-[11px] font-black uppercase tracking-[0.2em] border-l-4 border-primary pl-3">{title}</h2>
+                <div className="space-y-4">{children}</div>
             </section>
         );
 
         if (selectedTemplate === 'modern') {
             return (
-                <div className={`w-full h-full flex transition-colors duration-500 ${theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}`}>
-                    <div className={`w-[30%] p-6 space-y-6 h-full ${theme === 'dark' ? 'bg-zinc-900 border-r border-white/5' : 'bg-secondary/30 border-r border-border/50'}`}>
+                <div className={`w-full h-full flex transition-colors duration-500 ${theme === 'dark' ? 'text-foreground bg-background' : 'text-slate-900 bg-white'}`}>
+                    <div className={`w-[30%] p-8 space-y-8 h-full ${theme === 'dark' ? 'bg-zinc-900 border-r border-white/5' : 'bg-secondary/30 border-r border-border/50'}`}>
                         <div>
-                            <h1 className="text-2xl font-black uppercase tracking-tighter leading-none">{personal.fullName || 'NAME'}</h1>
-                            <p className="text-[9px] font-black uppercase tracking-widest text-primary mt-1">{personal.jobTitle}</p>
+                            <h1 className="text-3xl font-black uppercase tracking-tighter leading-none">{personal.fullName || 'NAME'}</h1>
+                            <p className="text-xs font-black uppercase tracking-widest text-primary mt-2">{personal.jobTitle}</p>
                         </div>
 
-                        <div className="space-y-3 pt-2">
-                            <h3 className="text-[8px] font-black uppercase tracking-widest opacity-40">Contact</h3>
-                            <div className="space-y-1 text-[8px] font-bold break-words uppercase">
-                                <p className="truncate">{personal.email}</p>
+                        <div className="space-y-4 pt-4 px-1">
+                            <h3 className="text-[10px] font-black uppercase tracking-widest opacity-50 break-words">Contact</h3>
+                            <div className="space-y-1.5 text-[10px] font-bold break-words uppercase">
+                                <p className="break-all">{personal.email}</p>
                                 <p>{personal.phone}</p>
-                                <p className="truncate">{personal.location}</p>
-                                {personal.linkedin && <p className="truncate lowercase text-[7px] opacity-40">{personal.linkedin}</p>}
-                                {personal.github && <p className="truncate lowercase text-[7px] opacity-40">{personal.github}</p>}
+                                <p className="break-words">{personal.location}</p>
+                                {personal.linkedin && <p className="break-all lowercase text-[9px] opacity-60">{personal.linkedin}</p>}
+                                {personal.github && <p className="break-all lowercase text-[9px] opacity-60">{personal.github}</p>}
                             </div>
                         </div>
 
                         {skills && (
-                            <div className="space-y-3">
-                                <h3 className="text-[8px] font-black uppercase tracking-widest opacity-40">Expertise</h3>
-                                <p className="text-[8px] font-bold leading-relaxed uppercase tracking-widest whitespace-pre-line">{skills}</p>
+                            <div className="space-y-4">
+                                <h3 className="text-[10px] font-black uppercase tracking-widest opacity-50">Expertise</h3>
+                                <p className="text-[10px] font-bold leading-relaxed uppercase tracking-widest whitespace-pre-line">{skills}</p>
                             </div>
                         )}
 
                         {education.length > 0 && (
-                            <div className="space-y-3">
-                                <h3 className="text-[8px] font-black uppercase tracking-widest opacity-40">Education</h3>
+                            <div className="space-y-4">
+                                <h3 className="text-[10px] font-black uppercase tracking-widest opacity-50">Education</h3>
                                 {education.map(edu => (
-                                    <div key={edu.id} className="space-y-0.5">
-                                        <p className="text-[9px] font-black leading-tight uppercase">{edu.degree}</p>
-                                        <p className="text-[8px] font-bold opacity-50 uppercase">{edu.school} · {edu.year}</p>
-                                        {edu.grade && <p className="text-[7px] font-black text-primary uppercase">{edu.grade}</p>}
+                                    <div key={edu.id} className="space-y-1">
+                                        <p className="text-[11px] font-black leading-tight uppercase">{edu.degree}</p>
+                                        <p className="text-[10px] font-bold opacity-60 uppercase">{edu.school} · {edu.year}</p>
+                                        {edu.grade && <p className="text-[9px] font-black text-primary uppercase">{edu.grade}</p>}
                                     </div>
                                 ))}
                             </div>
                         )}
                     </div>
-                    <div className="flex-1 p-8 space-y-6 overflow-y-auto custom-scrollbar h-full">
+                    <div className="flex-1 p-10 space-y-8 overflow-y-auto custom-scrollbar h-full">
                         {summary && (
-                            <div className="space-y-2 border-b border-border/10 pb-4">
-                                <h3 className="text-[8px] font-black uppercase tracking-widest text-primary">Professional Profile</h3>
-                                <p className="text-[10px] italic leading-relaxed opacity-70">{summary}</p>
+                            <div className="space-y-3 border-b border-border/10 pb-6">
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Professional Profile</h3>
+                                <p className="text-xs italic leading-relaxed opacity-80">{summary}</p>
                             </div>
                         )}
 
                         {experience.length > 0 && (
                             <Section title="Experience">
-                                <div className="space-y-3">
+                                <div className="space-y-5">
                                     {experience.map(exp => (
-                                        <div key={exp.id} className="space-y-1">
-                                            <h4 className="font-black uppercase text-[10px] tracking-widest">{exp.title}</h4>
-                                            <p className="text-[8px] font-black text-primary uppercase">{exp.company} | {exp.startDate} — {exp.endDate}</p>
-                                            <p className="text-[9px] leading-relaxed opacity-70 whitespace-pre-line">{exp.description}</p>
+                                        <div key={exp.id} className="space-y-1.5">
+                                            <div className="flex justify-between items-baseline gap-4">
+                                                <h4 className="font-black uppercase text-xs tracking-widest flex-1 break-words">{exp.title}</h4>
+                                                <span className="text-[10px] font-black opacity-60 uppercase shrink-0 text-right">{exp.startDate} — {exp.endDate}</span>
+                                            </div>
+                                            <p className="text-[10px] font-black text-primary uppercase">{exp.company}</p>
+                                            <p className="text-[11px] leading-relaxed opacity-80 whitespace-pre-line">{exp.description}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -798,12 +801,14 @@ export default function ResumeBuilder() {
 
                         {projects.length > 0 && (
                             <Section title="Selected Projects">
-                                <div className="space-y-3">
+                                <div className="space-y-5">
                                     {projects.map(proj => (
-                                        <div key={proj.id} className="space-y-0.5">
-                                            <h4 className="font-black uppercase text-[9px] tracking-widest">{proj.name}</h4>
-                                            <p className="text-[8px] font-bold text-primary uppercase">{proj.techStack}</p>
-                                            <p className="text-[9px] leading-relaxed opacity-70 whitespace-pre-line">{proj.description}</p>
+                                        <div key={proj.id} className="space-y-1.5">
+                                            <div className="flex justify-between items-baseline gap-4">
+                                                <h4 className="font-black uppercase text-[11px] tracking-widest flex-1 break-words">{proj.name}</h4>
+                                                <span className="text-[10px] font-bold text-primary uppercase shrink-0 text-right">{proj.techStack}</span>
+                                            </div>
+                                            <p className="text-[11px] leading-relaxed opacity-80 whitespace-pre-line">{proj.description}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -812,7 +817,7 @@ export default function ResumeBuilder() {
 
                         {(certifications.length > 0 || achievements.length > 0) && (
                             <Section title="Honors & Certs">
-                                <div className="space-y-1 text-[9px] font-bold opacity-70 italic leading-tight">
+                                <div className="space-y-1.5 text-[11px] font-bold opacity-80 italic leading-tight">
                                     {certifications.map(c => <p key={c.id}>• {c.name} ({c.year})</p>)}
                                     {achievements.map(a => <p key={a.id}>• {a.title}</p>)}
                                 </div>
@@ -825,71 +830,71 @@ export default function ResumeBuilder() {
 
         if (selectedTemplate === 'minimal') {
             return (
-                <div className={`p-[15mm] space-y-5 font-serif w-full h-full text-center transition-colors duration-500 overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-foreground' : 'text-slate-800'}`}>
-                    <header className="space-y-2">
-                        <h1 className="text-3xl font-light tracking-[0.2em] uppercase">{personal.fullName || 'YOUR NAME'}</h1>
-                        <div className="flex justify-center flex-wrap gap-x-4 gap-y-1 text-[7px] uppercase tracking-[0.3em] opacity-40">
+                <div className={`p-[15mm] space-y-8 font-serif w-full h-full text-center transition-colors duration-500 overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-foreground bg-background' : 'text-slate-800 bg-white'}`}>
+                    <header className="space-y-3">
+                        <h1 className="text-4xl font-light tracking-[0.2em] uppercase">{personal.fullName || 'YOUR NAME'}</h1>
+                        <div className="flex justify-center flex-wrap gap-x-6 gap-y-2 text-[9px] uppercase tracking-[0.3em] opacity-60">
                             <span>{personal.location}</span>
                             <span>{personal.email}</span>
                             <span>{personal.phone}</span>
                             {personal.linkedin && <span>{personal.linkedin}</span>}
                         </div>
                     </header>
-                    <div className="max-w-2xl mx-auto space-y-5 text-left pb-10">
+                    <div className="max-w-2xl mx-auto space-y-8 text-left pb-10">
                         {summary && (
-                            <div className="space-y-1.5 border-y border-border/10 py-4 text-center text-left">
-                                <h3 className="text-[7px] font-black uppercase tracking-[0.4em] text-primary">Summary</h3>
-                                <p className="text-[9px] italic leading-relaxed opacity-60">{summary}</p>
+                            <div className="space-y-2.5 border-y border-border/10 py-6 text-center text-left">
+                                <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-primary">Summary</h3>
+                                <p className="text-[11px] italic leading-relaxed opacity-80">{summary}</p>
                             </div>
                         )}
 
                         {experience.length > 0 && (
-                            <div className="space-y-3">
-                                <h3 className="text-[8px] font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-0.5">Experience</h3>
+                            <div className="space-y-5">
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-1">Experience</h3>
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="space-y-1">
-                                        <div className="flex justify-between items-center">
-                                            <h4 className="font-bold text-[10px] uppercase tracking-widest">{exp.title} | <span className="text-primary/70">{exp.company}</span></h4>
-                                            <span className="text-[7px] uppercase tracking-widest opacity-40">{exp.startDate} — {exp.endDate}</span>
+                                    <div key={exp.id} className="space-y-1.5">
+                                        <div className="flex justify-between items-baseline gap-4">
+                                            <h4 className="font-bold text-[12px] uppercase tracking-widest flex-1 break-words">{exp.title} | <span className="text-primary/70">{exp.company}</span></h4>
+                                            <span className="text-[9px] uppercase tracking-widest opacity-60 shrink-0 text-right">{exp.startDate} — {exp.endDate}</span>
                                         </div>
-                                        <p className="text-[9px] leading-normal opacity-70 whitespace-pre-line">{exp.description}</p>
+                                        <p className="text-[11px] leading-relaxed opacity-80 whitespace-pre-line">{exp.description}</p>
                                     </div>
                                 ))}
                             </div>
                         )}
 
                         {projects.length > 0 && (
-                            <div className="space-y-3">
-                                <h3 className="text-[8px] font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-0.5">Key Projects</h3>
+                            <div className="space-y-5">
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-primary border-b border-primary/20 pb-1">Key Projects</h3>
                                 {projects.map(proj => (
-                                    <div key={proj.id} className="space-y-0.5">
-                                        <div className="flex justify-between items-baseline">
-                                            <h4 className="font-bold text-[9px] uppercase tracking-widest">{proj.name}</h4>
-                                            <span className="text-[7px] uppercase tracking-widest opacity-40">{proj.techStack}</span>
+                                    <div key={proj.id} className="space-y-1">
+                                        <div className="flex justify-between items-baseline gap-4">
+                                            <h4 className="font-bold text-[11px] uppercase tracking-widest flex-1 break-words">{proj.name}</h4>
+                                            <span className="text-[9px] uppercase tracking-widest opacity-60 shrink-0 text-right">{proj.techStack}</span>
                                         </div>
-                                        <p className="text-[8px] leading-relaxed opacity-60 italic whitespace-pre-line">{proj.description}</p>
+                                        <p className="text-[10px] leading-relaxed opacity-80 italic whitespace-pre-line">{proj.description}</p>
                                     </div>
                                 ))}
                             </div>
                         )}
 
-                        <div className="grid grid-cols-2 gap-8 pt-4 border-t border-border/10">
+                        <div className="grid grid-cols-2 gap-10 pt-6 border-t border-border/10">
                             {education.length > 0 && (
-                                <div className="space-y-3">
-                                    <h3 className="text-[8px] font-black uppercase tracking-widest text-primary">Education</h3>
+                                <div className="space-y-4">
+                                    <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Education</h3>
                                     {education.map(edu => (
-                                        <div key={edu.id} className="space-y-0.5">
-                                            <p className="text-[9px] font-bold uppercase">{edu.degree}</p>
-                                            <p className="text-[7px] opacity-50 uppercase tracking-widest">{edu.school} | {edu.year} | {edu.grade}</p>
+                                        <div key={edu.id} className="space-y-1">
+                                            <p className="text-[11px] font-bold uppercase">{edu.degree}</p>
+                                            <p className="text-[9px] opacity-70 uppercase tracking-widest">{edu.school} | {edu.year} | {edu.grade}</p>
                                         </div>
                                     ))}
                                 </div>
                             )}
-                            <div className="space-y-3">
-                                <h3 className="text-[8px] font-black uppercase tracking-widest text-primary">Details</h3>
-                                <div className="space-y-2">
-                                    {skills && <p className="text-[8px] leading-tight uppercase tracking-widest opacity-50">{skills}</p>}
-                                    <div className="space-y-0.5 opacity-40 italic text-[7px]">
+                            <div className="space-y-4">
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-primary">Details</h3>
+                                <div className="space-y-3">
+                                    {skills && <p className="text-[10px] leading-tight uppercase tracking-widest opacity-70">{skills}</p>}
+                                    <div className="space-y-1 opacity-60 italic text-[9px]">
                                         {achievements.slice(0, 3).map(a => <p key={a.id}>• {a.title}</p>)}
                                         {certifications.slice(0, 2).map(c => <p key={c.id}>• {c.name}</p>)}
                                     </div>
@@ -903,25 +908,25 @@ export default function ResumeBuilder() {
 
         // CLASSIC / DEFAULT
         return (
-            <div className={`p-[15mm] space-y-6 font-sans leading-relaxed transition-colors duration-500 w-full h-full overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-foreground' : 'text-slate-800'}`}>
+            <div className={`p-[15mm] space-y-8 font-sans leading-relaxed transition-colors duration-500 w-full h-full overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-foreground bg-background' : 'text-slate-800 bg-white'}`}>
                 <LayoutHeader />
                 {summary && (
                     <Section title="Professional Summary">
-                        <p className="text-[10px] italic leading-relaxed opacity-80">{summary}</p>
+                        <p className="text-xs italic leading-relaxed opacity-80">{summary}</p>
                     </Section>
                 )}
 
-                <div className="space-y-8 pb-10">
+                <div className="space-y-10 pb-10">
                     <Section title="Work Experience">
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             {experience.map(exp => (
-                                <div key={exp.id} className="space-y-1">
-                                    <div className="flex justify-between items-baseline">
-                                        <h3 className="text-[11px] font-black uppercase tracking-tight">{exp.title}</h3>
-                                        <span className="text-[8px] font-black opacity-30 uppercase">{exp.startDate} — {exp.endDate}</span>
+                                <div key={exp.id} className="space-y-1.5">
+                                    <div className="flex justify-between items-baseline gap-4">
+                                        <h3 className="text-sm font-black uppercase tracking-tight flex-1 break-words">{exp.title}</h3>
+                                        <span className="text-[10px] font-black opacity-40 uppercase shrink-0 text-right">{exp.startDate} — {exp.endDate}</span>
                                     </div>
-                                    <p className="text-[9px] font-black text-primary uppercase italic leading-none">{exp.company} | {exp.location}</p>
-                                    <p className="text-[9px] leading-relaxed opacity-70 whitespace-pre-line">{exp.description}</p>
+                                    <p className="text-[11px] font-black text-primary uppercase italic leading-none">{exp.company} | {exp.location}</p>
+                                    <p className="text-[11px] leading-relaxed opacity-80 whitespace-pre-line">{exp.description}</p>
                                 </div>
                             ))}
                         </div>
@@ -929,45 +934,45 @@ export default function ResumeBuilder() {
 
                     {projects.length > 0 && (
                         <Section title="Key Projects">
-                            <div className="space-y-4">
+                            <div className="space-y-6">
                                 {projects.map(proj => (
-                                    <div key={proj.id} className="space-y-1">
-                                        <div className="flex justify-between items-baseline">
-                                            <h4 className="font-black text-[10px] uppercase tracking-wider">{proj.name}</h4>
-                                            <span className="text-[8px] font-bold text-primary uppercase opacity-60">{proj.techStack}</span>
+                                    <div key={proj.id} className="space-y-1.5">
+                                        <div className="flex justify-between items-baseline gap-4">
+                                            <h4 className="font-black text-[12px] uppercase tracking-wider flex-1 break-words">{proj.name}</h4>
+                                            <span className="text-[10px] font-bold text-primary uppercase opacity-60 shrink-0 text-right">{proj.techStack}</span>
                                         </div>
-                                        <p className="text-[9px] leading-relaxed opacity-70 whitespace-pre-line">{proj.description}</p>
+                                        <p className="text-[11px] leading-relaxed opacity-80 whitespace-pre-line">{proj.description}</p>
                                     </div>
                                 ))}
                             </div>
                         </Section>
                     )}
 
-                    <div className="grid grid-cols-2 gap-8">
+                    <div className="grid grid-cols-2 gap-10">
                         <Section title="Education">
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {education.map(edu => (
-                                    <div key={edu.id} className="space-y-0.5">
-                                        <h4 className="text-[10px] font-black uppercase leading-tight">{edu.degree}</h4>
-                                        <p className="text-[8px] font-bold opacity-50 uppercase">{edu.school}</p>
-                                        <p className="text-[8px] font-black text-primary uppercase tracking-widest">{edu.year} · {edu.grade}</p>
+                                    <div key={edu.id} className="space-y-1">
+                                        <h4 className="text-[12px] font-black uppercase leading-tight">{edu.degree}</h4>
+                                        <p className="text-[10px] font-bold opacity-60 uppercase">{edu.school}</p>
+                                        <p className="text-[10px] font-black text-primary uppercase tracking-widest">{edu.year} · {edu.grade}</p>
                                     </div>
                                 ))}
                             </div>
                         </Section>
 
                         <Section title="Expertise">
-                            <p className="text-[8px] font-bold leading-relaxed uppercase tracking-widest whitespace-pre-line opacity-70">{skills}</p>
+                            <p className="text-[10px] font-bold leading-relaxed uppercase tracking-widest whitespace-pre-line opacity-80">{skills}</p>
                         </Section>
                     </div>
 
                     {(certifications.length > 0 || achievements.length > 0) && (
                         <Section title="Achievements & Certs">
-                            <div className="grid grid-cols-2 gap-4 text-[8px] font-bold opacity-50 uppercase tracking-tighter leading-tight italic">
-                                <div className="space-y-1">
+                            <div className="grid grid-cols-2 gap-6 text-[10px] font-bold opacity-70 uppercase tracking-tighter leading-tight italic">
+                                <div className="space-y-2">
                                     {certifications.map(c => <p key={c.id}>• {c.name}</p>)}
                                 </div>
-                                <div className="space-y-1">
+                                <div className="space-y-2">
                                     {achievements.map(a => <p key={a.id}>• {a.title}</p>)}
                                 </div>
                             </div>
@@ -1087,14 +1092,14 @@ export default function ResumeBuilder() {
                                 <div className="absolute top-10 left-10 right-10 bottom-0 bg-black/60 blur-[100px] opacity-50 group-hover:opacity-70 transition-opacity" />
                                 <div className="absolute top-4 left-4 right-4 bottom-0 bg-black/40 blur-[40px]" />
 
-                                <div className="a4-sheet overflow-y-auto custom-scrollbar bg-white relative z-10 ring-1 ring-border/10">
+                                <div className="a4-sheet overflow-y-auto custom-scrollbar relative z-10 ring-1 ring-border/10 overflow-hidden" style={{ backgroundColor: theme === 'dark' ? '#09090b' : '#ffffff' }}>
                                     {/* PHYSICAL PAPER GRAIN */}
                                     <div className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-multiply bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
 
                                     {/* DOCUMENT SHINE REFLECTION */}
                                     <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-white/0 via-white/5 to-white/10" />
 
-                                    <div id="resume-preview" className={`${theme === 'dark' ? 'bg-zinc-900 text-white' : 'bg-white text-slate-900'} w-full h-full origin-top transition-transform duration-500`}>
+                                    <div id="resume-preview" className={`w-full min-h-full origin-top transition-transform duration-500 bg-transparent`}>
                                         {renderTemplate()}
                                     </div>
                                 </div>
