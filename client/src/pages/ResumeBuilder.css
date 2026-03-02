@@ -42,51 +42,52 @@
     }
 
     .a4-sheet-container {
-        @apply w-full flex justify-center pb-20 transition-all duration-700;
-        perspective: 2500px;
+        @apply w-full h-full flex items-start justify-center p-4 md:p-8 transition-all duration-700;
     }
 
     .a4-sheet {
         width: 210mm;
         height: 297mm;
-        background: transparent;
-        transform: scale(0.85);
+        min-height: 297mm;
+        background: white;
         transform-origin: top center;
-        margin-bottom: -44.55mm;
-        /* removes bottom empty space from 0.85 scale (297 * 0.15) */
-        border-radius: 8px;
-        @apply transition-all duration-700;
+        border-radius: 4px;
+        @apply transition-all duration-500 relative flex flex-col shrink-0;
         box-shadow:
-            0 10px 30px -10px rgba(0, 0, 0, 0.5),
-            0 40px 100px -40px rgba(0, 0, 0, 0.4),
-            0 0 100px rgba(var(--primary), 0.05);
+            0 0 2px rgba(0, 0, 0, 0.1),
+            0 20px 50px -10px rgba(0, 0, 0, 0.4),
+            0 10px 20px -5px rgba(0, 0, 0, 0.2);
     }
 
-    @media (min-width: 1024px) {
+    /* Scaling logic based on container width */
+    @media (max-width: 1400px) {
+        .a4-sheet {
+            transform: scale(0.6);
+            margin-bottom: -118.8mm;
+            /* 297 * 0.4 */
+        }
+    }
+
+    @media (min-width: 1401px) and (max-width: 1600px) {
+        .a4-sheet {
+            transform: scale(0.75);
+            margin-bottom: -74.25mm;
+            /* 297 * 0.25 */
+        }
+    }
+
+    @media (min-width: 1601px) and (max-width: 1919px) {
         .a4-sheet {
             transform: scale(0.9);
             margin-bottom: -29.7mm;
         }
     }
 
-    @media (min-width: 1280px) {
-        .a4-sheet {
-            transform: scale(1.0);
-            margin-bottom: 0mm;
-        }
-    }
-
-    @media (min-width: 1536px) {
-        .a4-sheet {
-            transform: scale(1.1);
-            margin-bottom: 29.7mm;
-        }
-    }
-
     @media (min-width: 1920px) {
         .a4-sheet {
-            transform: scale(1.2);
-            margin-bottom: 59.4mm;
+            transform: scale(1.0);
+            margin-bottom: 0px;
+            margin-top: 15mm;
         }
     }
 
