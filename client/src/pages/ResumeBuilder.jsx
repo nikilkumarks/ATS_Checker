@@ -15,7 +15,7 @@ import Navbar from '../components/Navbar';
 import Toast from '../components/ui/Toast';
 import './ResumeBuilder.css';
 
-export default function ResumeBuilder() {
+function ResumeBuilder() {
     const navigate = useNavigate();
     const { theme, toggleTheme } = useTheme();
     const [activeStep, setActiveStep] = useState(0);
@@ -166,118 +166,90 @@ export default function ResumeBuilder() {
 
 
     const handleDownloadPDF = async () => {
-        const previewElement = document.getElementById('resume-preview') || document.querySelector('[id^="resume-preview"]');
-        if (!previewElement) {
-            setToast({ message: "No content found to download. Please finish your resume.", type: "error" });
+        const previewElement = document.getElementById('resume-preview');
+
+        if (!previewElement || previewElement.offsetParent === null) {
+            setToast({
+                message: "Download failed. Please ensure the 'Live Preview' is visible on your screen (try maximizing your window).",
+                type: "error"
+            });
             return;
         }
 
         setLoading(true);
         try {
-            const container = previewElement.closest('.overflow-y-auto') || window;
-            if (container.scrollTo) container.scrollTo({ top: 0, behavior: 'instant' });
+            console.log("PDF Export: Initiating capture process...");
+
+            // Give the browser a moment to settle any animations
+            await new Promise(r => setTimeout(r, 400));
 
             const canvas = await html2canvas(previewElement, {
-                scale: 1.0,
+                scale: 1.5,
                 useCORS: true,
-                backgroundColor: "#ffffff",
+                allowTaint: true,
+                backgroundColor: theme === 'dark' ? "#09090b" : "#ffffff",
                 logging: false,
+                windowWidth: 1200, // Forces the width to capture as it would on desktop
                 onclone: (clonedDoc) => {
-                    const el = clonedDoc.getElementById('resume-preview') || clonedDoc.querySelector('[id^="resume-preview"]');
-                    if (!el) return;
+                    const clone = clonedDoc.getElementById('resume-preview');
+                    if (!clone) return;
 
-                    // FIX: html2canvas 1.4.1 crashes on Tailwind 4's color-mix() and oklch()
-                    // We must convert all calculated colors to standard RGB strings for the capture
-                    const allElements = el.querySelectorAll('*');
-                    allElements.forEach(node => {
-                        const style = window.getComputedStyle(node);
+                    // Standardize layout for clone capture
+                    clone.style.width = '210mm';
+                    clone.style.height = 'auto';
+                    clone.style.margin = '0';
+                    clone.style.padding = '0';
+                    clone.style.transform = 'none';
+                    clone.style.position = 'static';
+                    clone.style.display = 'block';
+                    clone.style.visibility = 'visible';
 
-                        // Capture computed values to resolve color-mix and variables
-                        const computedColor = style.color;
-                        const computedBg = style.backgroundColor;
-                        const computedBorderColor = style.borderColor;
-
-                        // Force override with computed (resolved) values
-                        if (computedColor) node.style.color = computedColor;
-                        if (computedBg && computedBg !== 'rgba(0, 0, 0, 0)' && computedBg !== 'transparent') {
-                            node.style.backgroundColor = computedBg;
-                        }
-                        if (computedBorderColor) node.style.borderColor = computedBorderColor;
-
-                        // Disable transitions/animations which also cause issues
-                        node.style.transition = 'none';
-                        node.style.animation = 'none';
+                    // Simple, non-recursive style reset to prevent capture glitches
+                    const allInClone = clone.querySelectorAll('*');
+                    allInClone.forEach(el => {
+                        el.style.animation = 'none';
+                        el.style.transition = 'none';
+                        el.style.boxShadow = 'none';
+                        el.style.transform = 'none';
                     });
-
-                    el.style.transform = 'none';
-                    el.style.scale = '1';
-                    el.style.margin = '0 auto';
-                    el.style.padding = '0';
-                    el.style.width = '210mm';
-                    el.style.height = 'auto';
-                    el.style.display = 'block';
-                    el.style.visibility = 'visible';
-                    el.style.position = 'relative';
-                    el.style.boxShadow = 'none';
-                    el.style.overflow = 'visible';
-
-                    const styleTag = clonedDoc.createElement('style');
-                    styleTag.innerHTML = `
-                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-                        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; transition: none !important; animation: none !important; }
-                        body { background: white !important; overflow: visible !important; width: auto !important; height: auto !important; }
-                        #resume-preview, [id^="resume-preview"] { 
-                            background: white !important; 
-                            color: black !important; 
-                            min-height: 297mm !important;
-                            overflow: visible !important;
-                            box-shadow: none !important;
-                        }
-                    `;
-                    clonedDoc.head.appendChild(styleTag);
                 }
             });
 
-            // Standard JPEG 0.7 quality is significantly smaller and usually acceptable for documents
-            const imgData = canvas.toDataURL('image/jpeg', 0.7);
+            console.log("PDF Export: Captured successfully. Generating Document...");
 
+            const imgData = canvas.toDataURL('image/jpeg', 0.9);
             const pdf = new jsPDF({
                 orientation: 'portrait',
                 unit: 'mm',
-                format: 'a4',
-                compress: true
+                format: 'a4'
             });
 
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
-            const canvasWidth = canvas.width;
-            const canvasHeight = canvas.height;
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-            const ratio = pdfWidth / canvasWidth;
-            const finalImageHeight = canvasHeight * ratio;
-
-            let heightLeft = finalImageHeight;
+            let heightLeft = imgHeight;
             let position = 0;
 
-            pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, finalImageHeight, undefined, 'FAST');
+            pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
             heightLeft -= pdfHeight;
 
             while (heightLeft > 0) {
-                position = heightLeft - finalImageHeight;
+                position = heightLeft - imgHeight;
                 pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, finalImageHeight, undefined, 'FAST');
+                pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
                 heightLeft -= pdfHeight;
             }
 
-            const rawFileName = (resumeData.personal.fullName || 'Resume').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-            const fileName = rawFileName.length > 0 ? rawFileName : 'my_resume';
-            pdf.save(`${fileName}_Professional.pdf`);
-
+            const fileName = (resumeData.personal.fullName || 'Professional').replace(/\s+/g, '_');
+            pdf.save(`${fileName}_Professional_Resume.pdf`);
             setToast({ message: "Resume downloaded successfully!", type: "success" });
+
         } catch (err) {
-            console.error("PDF Export Error:", err);
+            console.error("PDF EXPORT ERROR:", err);
             setToast({
-                message: "Download failed. Please try a simpler template or check your content length.",
+                message: "Export failed due to content complexity. Try switching to the 'ATS Optimized' template.",
                 type: "error"
             });
         } finally {
@@ -286,7 +258,7 @@ export default function ResumeBuilder() {
     };
 
     // --- Render Editors ---
-    const renderEditor = () => {
+    function renderEditor() {
         switch (activeStep) {
             case 0: // Personal Information
                 return (
@@ -855,7 +827,7 @@ export default function ResumeBuilder() {
 
         if (selectedTemplate === 'minimal') {
             return (
-                <div className={`p-[25mm] space-y-12 font-serif w-full h-full text-center transition-colors duration-500 overflow-y-auto custom-scrollbar ${theme === 'dark' ? 'text-foreground bg-[#09090b]' : 'text-slate-800 bg-white'}`}>
+                <div className={`p-[25mm] space-y-12 font-serif w-full h-full text-center transition-colors duration-500 ${theme === 'dark' ? 'text-foreground bg-[#09090b]' : 'text-slate-800 bg-white'}`}>
                     <header className="space-y-6">
                         <h1 className="text-5xl font-light tracking-[0.25em] uppercase border-b-2 border-border/10 pb-6 mb-4">{personal.fullName || 'YOUR NAME'}</h1>
                         <div className="flex justify-center flex-wrap gap-x-10 gap-y-3 text-[10px] font-bold uppercase tracking-[0.4em] opacity-60">
@@ -1252,3 +1224,5 @@ export default function ResumeBuilder() {
         </div>
     );
 }
+
+export default ResumeBuilder;
