@@ -166,75 +166,86 @@ function ResumeBuilder() {
 
 
     const handleDownloadPDF = async () => {
-        const previewElement = document.getElementById('resume-preview');
+        let previewElement = document.getElementById('resume-preview');
 
-        if (!previewElement || previewElement.offsetParent === null) {
-            setToast({
-                message: "Download failed. Please ensure the 'Live Preview' is visible on your screen (try maximizing your window).",
-                type: "error"
-            });
+        if (!previewElement) {
+            previewElement = document.querySelector('.a4-sheet');
+        }
+
+        if (!previewElement) {
+            setToast({ message: "Content not found. Please refresh and try again.", type: "error" });
             return;
         }
 
         setLoading(true);
         try {
-            console.log("PDF Export: Initiating capture process...");
+            console.log("PDF Export: Starting capture...");
 
-            // Give the browser a moment to settle any animations
+            // Give React a moment to finish any re-renders
             await new Promise(r => setTimeout(r, 400));
 
             const canvas = await html2canvas(previewElement, {
-                scale: 1.5,
+                scale: 1.5, // 1.5 is safer than 2.0 for memory limitations
                 useCORS: true,
-                allowTaint: true,
+                allowTaint: false,
                 backgroundColor: theme === 'dark' ? "#09090b" : "#ffffff",
                 logging: false,
-                windowWidth: 1200, // Forces the width to capture as it would on desktop
                 onclone: (clonedDoc) => {
-                    const clone = clonedDoc.getElementById('resume-preview');
+                    const clone = clonedDoc.getElementById('resume-preview') || clonedDoc.querySelector('.a4-sheet');
                     if (!clone) return;
 
-                    // Standardize layout for clone capture
+                    // If original is hidden, parent tree must be forced visible in the clone
+                    let curr = clone;
+                    while (curr && curr.style) {
+                        curr.style.display = 'block';
+                        curr.style.visibility = 'visible';
+                        curr.style.opacity = '1';
+                        curr = curr.parentElement;
+                    }
+
+                    // A4 standard capture setup
                     clone.style.width = '210mm';
                     clone.style.height = 'auto';
-                    clone.style.margin = '0';
-                    clone.style.padding = '0';
+                    clone.style.minHeight = '297mm';
                     clone.style.transform = 'none';
-                    clone.style.position = 'static';
-                    clone.style.display = 'block';
-                    clone.style.visibility = 'visible';
+                    clone.style.margin = '0';
+                    clone.style.padding = '20mm';
+                    if (selectedTemplate === 'modern' || selectedTemplate === 'minimal') {
+                        clone.style.padding = '0';
+                    }
 
-                    // Simple, non-recursive style reset to prevent capture glitches
-                    const allInClone = clone.querySelectorAll('*');
-                    allInClone.forEach(el => {
+                    // Style safety sweep
+                    const all = clone.querySelectorAll('*');
+                    all.forEach(el => {
                         el.style.animation = 'none';
                         el.style.transition = 'none';
                         el.style.boxShadow = 'none';
-                        el.style.transform = 'none';
+                        el.style.mixBlendMode = 'normal';
+
+                        const s = window.getComputedStyle(el);
+                        if (s.backgroundColor.includes('color-mix')) {
+                            el.style.backgroundColor = s.backgroundColor.includes('transparent') ? 'transparent' : '#888';
+                        }
                     });
                 }
             });
 
-            console.log("PDF Export: Captured successfully. Generating Document...");
+            console.log("PDF Export: Canvas captured.");
 
-            const imgData = canvas.toDataURL('image/jpeg', 0.9);
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            const pdf = new jsPDF('p', 'mm', 'a4', true);
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
-            const imgProps = pdf.getImageProperties(imgData);
-            const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            const imgHeight = (canvas.height * pdfWidth) / canvas.width;
 
             let heightLeft = imgHeight;
             let position = 0;
 
+            // Page 1
             pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
             heightLeft -= pdfHeight;
 
+            // Subsequent pages
             while (heightLeft > 0) {
                 position = heightLeft - imgHeight;
                 pdf.addPage();
@@ -242,14 +253,15 @@ function ResumeBuilder() {
                 heightLeft -= pdfHeight;
             }
 
-            const fileName = (resumeData.personal.fullName || 'Professional').replace(/\s+/g, '_');
+            const fileName = (resumeData.personal.fullName || 'Resume').replace(/[^a-z0-9]/gi, '_');
             pdf.save(`${fileName}_Professional_Resume.pdf`);
+
             setToast({ message: "Resume downloaded successfully!", type: "success" });
 
         } catch (err) {
             console.error("PDF EXPORT ERROR:", err);
             setToast({
-                message: "Export failed due to content complexity. Try switching to the 'ATS Optimized' template.",
+                message: "Export failed. Please try again on a desktop computer or maximize your browser window.",
                 type: "error"
             });
         } finally {
