@@ -45,7 +45,7 @@ export default function App() {
       <Route
         path="/admin-panel"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute adminOnly>
             <AdminPanel />
           </ProtectedRoute>
         }

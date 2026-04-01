@@ -1,13 +1,27 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Zap, Sun, Moon, Layout, Activity, User, LogOut, Settings as SettingsIcon } from "lucide-react";
+import { Zap, Sun, Moon, Layout, Activity, User, LogOut, Settings as SettingsIcon, Shield, Menu, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const navItems = [
+    { path: "/resume-builder", icon: Layout, label: "Builder" },
+    { path: "/ats-scanner", icon: Activity, label: "Scanner" },
+    { path: "/dashboard", icon: User, label: "Home" },
+    { path: "/settings", icon: SettingsIcon, label: "Settings" },
+    ...(user.role === "admin" ? [{ path: "/admin-panel", icon: Shield, label: "Admin" }] : [])
+  ];
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -19,7 +33,7 @@ export default function Navbar() {
     <nav
       className="fixed top-0 w-full z-50 backdrop-blur-xl border-b border-border/50 bg-background/60 transition-all duration-500"
     >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
 
         {/* Logo Section */}
         <Link
@@ -37,12 +51,7 @@ export default function Navbar() {
         {/* Navigation Pill - Desktop (Visible only when logged in) */}
         {token && (
           <div className="hidden md:flex items-center gap-1 bg-secondary/30 dark:bg-secondary/10 p-1.5 rounded-2xl border border-border/50 backdrop-blur-md">
-            {[
-              { path: "/resume-builder", icon: Layout, label: "Builder" },
-              { path: "/ats-scanner", icon: Activity, label: "Scanner" },
-              { path: "/dashboard", icon: User, label: "Home" },
-              { path: "/settings", icon: SettingsIcon, label: "Settings" }
-            ].map((item) => (
+            {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -58,7 +67,7 @@ export default function Navbar() {
         )}
 
         {/* Actions/Theme Toggle */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
 
           {/* Enhanced Theme Toggle (Always visible) */}
           <button
@@ -80,6 +89,17 @@ export default function Navbar() {
           </button>
 
           <div className="h-6 w-px bg-border/50 mx-1 hidden sm:block" />
+
+          {token && (
+            <button
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              className="md:hidden p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-all duration-300"
+              aria-label="Toggle navigation menu"
+              aria-expanded={isMobileMenuOpen}
+            >
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          )}
 
           {token ? (
             <div className="flex items-center gap-3">
@@ -120,6 +140,25 @@ export default function Navbar() {
           )}
         </div>
       </div>
+
+      {token && isMobileMenuOpen && (
+        <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl px-4 pb-4">
+          <div className="pt-3 grid gap-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${location.pathname === item.path
+                  ? "bg-background text-primary shadow-sm border border-border/50"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/60 border border-transparent"
+                  }`}
+              >
+                <item.icon size={14} strokeWidth={3} /> {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
