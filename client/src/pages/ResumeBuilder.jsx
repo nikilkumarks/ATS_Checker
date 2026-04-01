@@ -256,6 +256,7 @@ function ResumeBuilder() {
     const [loading, setLoading] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState('classic'); // Default to most ATS friendly
     const previewRef = useRef(null);
+    const prevStepRef = useRef(0);
 
     // Toast state
     const [toast, setToast] = useState(null); // { message, type }
@@ -1188,17 +1189,18 @@ function ResumeBuilder() {
                 {/* SIDEBAR REMOVED FOR FULL WIDTH EXPERIENCE */}
 
                 {/* CENTER AREA: FULL-WIDTH EDITOR */}
-                <div className={`flex-[1.5] flex flex-col relative z-10 bg-transparent overflow-hidden md:border-r border-border/50 ${activeStep === steps.length - 1 ? 'hidden lg:flex' : 'flex'}`}>
+                <div className="flex-[1.5] flex flex-col relative z-10 bg-transparent overflow-hidden md:border-r border-border/50">
 
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-0 md:p-12">
                         <div className="w-full px-8 md:px-16 pb-20">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeStep}
-                                    initial={{ opacity: 0, scale: 0.98, y: 20 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 1.02, y: -20 }}
-                                    transition={{ duration: 0.4, ease: "circOut" }}
+                                    initial={{ opacity: 0, x: activeStep > prevStepRef.current ? 100 : -100 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: activeStep > prevStepRef.current ? -100 : 100 }}
+                                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                                    onAnimationStart={() => { prevStepRef.current = activeStep; }}
                                     className="min-h-[600px] mt-8 md:mt-12"
                                 >
                                     <div className="p-1 w-fit rounded-full bg-secondary/30 border border-border/50 mb-10 flex items-center gap-3 pr-5 backdrop-blur-md">
@@ -1263,7 +1265,7 @@ function ResumeBuilder() {
                 </div>
 
                 {/* RIGHT PANEL: FULL-HEIGHT PREVIEW */}
-                <div className={`flex-1 lg:min-w-0 xl:min-w-[550px] bg-secondary/20 hidden lg:flex flex-col relative z-20 overflow-hidden border-l border-border/50 backdrop-blur-sm ${activeStep === steps.length - 1 ? '!flex' : ''}`}>
+                <div className="flex-1 lg:min-w-0 xl:min-w-[550px] bg-secondary/20 hidden lg:flex flex-col relative z-20 overflow-hidden border-l border-border/50 backdrop-blur-sm">
                     {/* PANEL HEADER */}
                     <div className="h-16 border-b border-border/50 flex items-center justify-between px-8 bg-card/40 backdrop-blur-xl shrink-0">
                         <div className="flex items-center gap-3">
