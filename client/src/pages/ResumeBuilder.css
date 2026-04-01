@@ -22,11 +22,11 @@
     }
 
     .card-input {
-        @apply bg-card p-8 border-2 border-border/40 rounded-[32px] mb-8 relative transition-all hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 scale-100;
+        @apply bg-card p-5 sm:p-8 border-2 border-border/40 rounded-[24px] sm:rounded-[32px] mb-8 relative transition-all hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 scale-100;
     }
 
     .ai-btn {
-        @apply bg-gradient-to-br from-primary via-primary to-indigo-600 rounded-2xl px-6 py-3.5 text-xs font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 hover:shadow-primary/40 active:scale-95 flex items-center gap-3;
+        @apply bg-gradient-to-br from-primary via-primary to-indigo-600 rounded-2xl px-4 sm:px-6 py-3 sm:py-3.5 text-[10px] sm:text-xs font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-white shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 hover:shadow-primary/40 active:scale-95 flex items-center gap-2 sm:gap-3;
     }
 
     .ai-btn-sm {
@@ -34,7 +34,7 @@
     }
 
     .add-btn {
-        @apply w-full py-6 border-2 border-dashed border-border/40 rounded-[32px] flex flex-col items-center justify-center gap-2 text-muted-foreground font-black uppercase tracking-[0.3em] text-[10px] transition-all hover:border-primary/50 hover:text-primary hover:bg-primary/5 hover:scale-[1.01] active:scale-95;
+        @apply w-full py-5 sm:py-6 border-2 border-dashed border-border/40 rounded-[24px] sm:rounded-[32px] flex flex-col items-center justify-center gap-2 text-muted-foreground font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] transition-all hover:border-primary/50 hover:text-primary hover:bg-primary/5 hover:scale-[1.01] active:scale-95;
     }
 
     .delete-btn {
