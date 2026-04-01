@@ -675,7 +675,7 @@ function ResumeBuilder() {
                                             <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">School</label>
                                             <input type="text" placeholder="e.g. Indian Institute of Technology" className="input-field text-base" value={edu.school || ""} onChange={(e) => updateItem('education', edu.id, 'school', e.target.value)} />
                                         </div>
-                                        <div className="grid grid-cols-2 gap-8">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                             <div className="space-y-3">
                                                 <label className="text-xs font-black text-muted-foreground uppercase tracking-widest ml-1">Year</label>
                                                 <input type="text" placeholder="e.g. 2022" className="input-field text-base" value={edu.year || ""} onChange={(e) => updateItem('education', edu.id, 'year', e.target.value)} />
@@ -1058,7 +1058,7 @@ function ResumeBuilder() {
                             </div>
                         )}
 
-                        <div className="grid grid-cols-2 gap-16 pt-10 border-t border-border/10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 pt-10 border-t border-border/10">
                             {education.length > 0 && (
                                 <div className="space-y-6">
                                     <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-primary">Scholastic</h3>
@@ -1128,7 +1128,7 @@ function ResumeBuilder() {
                         </Section>
                     )}
 
-                    <div className="grid grid-cols-2 gap-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
                         {education.length > 0 && (
                             <Section title="Education">
                                 <div className="space-y-6">
@@ -1158,7 +1158,7 @@ function ResumeBuilder() {
 
                     {(certifications.length > 0 || achievements.length > 0) && (
                         <Section title="Achievements & Certs">
-                            <div className="grid grid-cols-2 gap-8 text-[12px] font-bold opacity-80 uppercase tracking-tight leading-relaxed italic">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 text-[12px] font-bold opacity-80 uppercase tracking-tight leading-relaxed italic">
                                 <div className="space-y-3">
                                     {certifications.map(c => <p key={c.id} className="flex items-start gap-2"><span className="text-primary">•</span>{c.name}</p>)}
                                 </div>
@@ -1177,7 +1177,7 @@ function ResumeBuilder() {
         <div className="min-h-screen bg-background text-foreground selection:bg-primary/30 transition-colors duration-300 overflow-x-hidden">
             <Navbar />
 
-            <div className="flex flex-1 pt-16 h-[calc(100vh)] overflow-hidden relative">
+            <div className="flex flex-1 pt-16 min-h-[calc(100vh-4rem)] md:h-[calc(100vh)] overflow-visible md:overflow-hidden relative">
                 {/* PREMUIM AMBIENT BACKGROUND */}
                 <div className="fixed inset-0 pointer-events-none z-0">
                     <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-primary/5 blur-[140px] rounded-full animate-glow" />
@@ -1188,7 +1188,7 @@ function ResumeBuilder() {
                 {/* SIDEBAR REMOVED FOR FULL WIDTH EXPERIENCE */}
 
                 {/* CENTER AREA: FULL-WIDTH EDITOR */}
-                <div className="flex-[1.5] flex flex-col relative z-10 bg-transparent overflow-hidden border-r border-border/50">
+                <div className={`flex-[1.5] flex flex-col relative z-10 bg-transparent overflow-hidden md:border-r border-border/50 ${activeStep === steps.length - 1 ? 'hidden lg:flex' : 'flex'}`}>
 
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-0 md:p-12">
                         <div className="w-full px-8 md:px-16 pb-20">
@@ -1199,7 +1199,7 @@ function ResumeBuilder() {
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 1.02, y: -20 }}
                                     transition={{ duration: 0.4, ease: "circOut" }}
-                                    className="min-h-[600px]"
+                                    className="min-h-[600px] mt-8 md:mt-12"
                                 >
                                     <div className="p-1 w-fit rounded-full bg-secondary/30 border border-border/50 mb-10 flex items-center gap-3 pr-5 backdrop-blur-md">
                                         <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[10px] font-black shadow-lg shadow-primary/20">
@@ -1217,19 +1217,12 @@ function ResumeBuilder() {
                         </div>
                     </div>
 
-                    <footer className="p-8 bg-card/60 border-t border-border/50 backdrop-blur-3xl flex justify-between items-center shrink-0 shadow-2xl relative z-20">
-                        <button
-                            onClick={() => navigate('/dashboard')}
-                            className="px-10 py-5 rounded-2xl border border-border/50 bg-secondary/30 hover:bg-secondary/50 text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-3 group mr-4"
-                        >
-                            <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Exit
-                        </button>
-
-                        <div className="flex items-center gap-4">
+                    <footer className="p-5 md:p-8 bg-card/60 border-t border-border/50 backdrop-blur-3xl flex flex-col gap-4 md:flex-row md:justify-between md:items-center shrink-0 shadow-2xl relative z-20">
+                        <div className="flex w-full md:w-auto items-center justify-between md:justify-start gap-3 md:gap-4">
                             <button
                                 onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
                                 disabled={activeStep === 0}
-                                className={`px-10 py-5 rounded-2xl border transition-all font-black text-[9px] uppercase tracking-[0.4em] ${activeStep === 0
+                                className={`px-6 md:px-10 py-4 md:py-5 rounded-2xl border transition-all font-black text-[9px] uppercase tracking-[0.25em] md:tracking-[0.4em] ${activeStep === 0
                                     ? 'opacity-0 pointer-events-none'
                                     : 'border-border/50 text-muted-foreground hover:bg-secondary/30 hover:text-foreground active:scale-95'
                                     }`}
@@ -1248,7 +1241,7 @@ function ResumeBuilder() {
                             {activeStep < steps.length - 1 ? (
                                 <button
                                     onClick={() => setActiveStep(prev => Math.min(steps.length - 1, prev + 1))}
-                                    className="bg-primary text-primary-foreground px-14 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] shadow-2xl shadow-primary/20 hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-4 group relative overflow-hidden"
+                                    className="bg-primary text-primary-foreground px-8 md:px-14 py-4 md:py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] shadow-2xl shadow-primary/20 hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-3 md:gap-4 group relative overflow-hidden"
                                 >
                                     <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                                     <span className="relative z-10">{activeStep === steps.length - 2 ? 'Finish' : 'Next'}</span>
@@ -1258,7 +1251,7 @@ function ResumeBuilder() {
                                 <button
                                     onClick={handleDownloadPDF}
                                     disabled={loading}
-                                    className="bg-emerald-600 text-white px-14 py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] shadow-2xl shadow-emerald-600/30 hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-4 group relative overflow-hidden"
+                                    className="bg-emerald-600 text-white px-8 md:px-14 py-4 md:py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] shadow-2xl shadow-emerald-600/30 hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-3 md:gap-4 group relative overflow-hidden"
                                 >
                                     <div className="absolute inset-0 bg-white/10 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
                                     <Download size={18} strokeWidth={3} className={loading ? 'animate-bounce' : ''} />
@@ -1270,7 +1263,7 @@ function ResumeBuilder() {
                 </div>
 
                 {/* RIGHT PANEL: FULL-HEIGHT PREVIEW */}
-                <div className="flex-1 min-w-[550px] bg-secondary/20 hidden lg:flex flex-col relative z-20 overflow-hidden border-l border-border/50 backdrop-blur-sm">
+                <div className={`flex-1 lg:min-w-0 xl:min-w-[550px] bg-secondary/20 hidden lg:flex flex-col relative z-20 overflow-hidden border-l border-border/50 backdrop-blur-sm ${activeStep === steps.length - 1 ? '!flex' : ''}`}>
                     {/* PANEL HEADER */}
                     <div className="h-16 border-b border-border/50 flex items-center justify-between px-8 bg-card/40 backdrop-blur-xl shrink-0">
                         <div className="flex items-center gap-3">
