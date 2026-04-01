@@ -7,13 +7,247 @@ import {
     Mail, Phone, MapPin, Linkedin, Github, ExternalLink, Sparkles, X, CheckCircle2,
     Sun, Moon, Activity
 } from 'lucide-react';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import Navbar from '../components/Navbar';
 import Toast from '../components/ui/Toast';
 import './ResumeBuilder.css';
+
+const createPdfStyles = (template, isDark) => {
+    const colors = isDark
+        ? { pageBg: '#09090b', sidebarBg: '#18181b', text: '#f4f4f5', muted: '#a1a1aa', accent: '#60a5fa', border: '#3f3f46', chipBg: '#27272a' }
+        : { pageBg: '#ffffff', sidebarBg: '#f8fafc', text: '#111827', muted: '#4b5563', accent: '#2563eb', border: '#d1d5db', chipBg: '#f3f4f6' };
+
+    return StyleSheet.create({
+        page: {
+            padding: template === 'minimal' ? 24 : 22,
+            fontSize: 11,
+            color: colors.text,
+            backgroundColor: colors.pageBg,
+            fontFamily: template === 'minimal' ? 'Times-Roman' : 'Helvetica'
+        },
+        modernContainer: { flexDirection: 'row', minHeight: '100%' },
+        modernSidebar: {
+            width: '32%',
+            backgroundColor: colors.sidebarBg,
+            padding: 12,
+            borderRightWidth: 1,
+            borderRightColor: colors.border
+        },
+        modernMain: { width: '68%', padding: 12 },
+        name: {
+            fontSize: template === 'minimal' ? 22 : 24,
+            fontWeight: 700,
+            textAlign: 'center',
+            marginBottom: 8,
+            color: colors.text
+        },
+        contactRow: {
+            textAlign: 'center',
+            marginBottom: 5,
+            color: colors.muted,
+            fontSize: 10
+        },
+        section: {
+            marginTop: 10,
+            marginBottom: 6
+        },
+        sectionTitle: {
+            fontSize: 11,
+            fontWeight: 700,
+            color: colors.accent,
+            marginBottom: 6,
+            textTransform: 'uppercase'
+        },
+        itemTitleRow: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginBottom: 2
+        },
+        itemTitle: {
+            fontSize: 11,
+            fontWeight: 700,
+            color: colors.text
+        },
+        itemSubTitle: {
+            fontSize: 10,
+            color: colors.accent,
+            marginBottom: 3
+        },
+        bodyText: {
+            fontSize: 10,
+            lineHeight: 1.45,
+            color: colors.muted
+        },
+        chipWrap: {
+            flexDirection: 'row',
+            flexWrap: 'wrap'
+        },
+        chip: {
+            borderWidth: 1,
+            borderColor: colors.border,
+            backgroundColor: colors.chipBg,
+            paddingVertical: 2,
+            paddingHorizontal: 5,
+            fontSize: 9,
+            marginRight: 4,
+            marginBottom: 4,
+            color: colors.text
+        }
+    });
+};
+
+function ResumePdfDocument({ data, template, isDark }) {
+    const { personal, summary, experience, projects, education, skills, certifications, achievements } = data;
+    const skillList = (skills || '').split(/[\n,•]/).map(s => s.trim()).filter(Boolean);
+    const styles = createPdfStyles(template, isDark);
+
+    const renderSharedSections = () => (
+        <>
+            {summary ? (
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Professional Summary</Text>
+                    <Text style={styles.bodyText}>{summary}</Text>
+                </View>
+            ) : null}
+
+            {experience?.length ? (
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Work Experience</Text>
+                    {experience.map((exp) => (
+                        <View key={exp.id} style={{ marginBottom: 8 }}>
+                            <View style={styles.itemTitleRow}>
+                                <Text style={styles.itemTitle}>{exp.title || ''}</Text>
+                                <Text style={styles.bodyText}>{`${exp.startDate || ''} - ${exp.endDate || ''}`}</Text>
+                            </View>
+                            <Text style={styles.itemSubTitle}>{`${exp.company || ''}${exp.location ? ` | ${exp.location}` : ''}`}</Text>
+                            <Text style={styles.bodyText}>{exp.description || ''}</Text>
+                        </View>
+                    ))}
+                </View>
+            ) : null}
+
+            {projects?.length ? (
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Projects</Text>
+                    {projects.map((proj) => (
+                        <View key={proj.id} style={{ marginBottom: 8 }}>
+                            <View style={styles.itemTitleRow}>
+                                <Text style={styles.itemTitle}>{proj.name || ''}</Text>
+                                <Text style={styles.bodyText}>{proj.techStack || ''}</Text>
+                            </View>
+                            <Text style={styles.bodyText}>{proj.description || ''}</Text>
+                        </View>
+                    ))}
+                </View>
+            ) : null}
+        </>
+    );
+
+    return (
+        <Document>
+            <Page size="A4" style={styles.page}>
+                {template === 'modern' ? (
+                    <View style={styles.modernContainer}>
+                        <View style={styles.modernSidebar}>
+                            <Text style={[styles.name, { textAlign: 'left', fontSize: 20 }]}>{personal.fullName || 'YOUR NAME'}</Text>
+                            <Text style={[styles.contactRow, { textAlign: 'left' }]}>{personal.jobTitle || ''}</Text>
+                            <Text style={[styles.contactRow, { textAlign: 'left' }]}>{personal.email || ''}</Text>
+                            <Text style={[styles.contactRow, { textAlign: 'left' }]}>{personal.phone || ''}</Text>
+                            <Text style={[styles.contactRow, { textAlign: 'left' }]}>{personal.location || ''}</Text>
+
+                            {skillList.length ? (
+                                <View style={styles.section}>
+                                    <Text style={styles.sectionTitle}>Skills</Text>
+                                    <View style={styles.chipWrap}>
+                                        {skillList.map((skill, idx) => (
+                                            <Text key={`${skill}-${idx}`} style={styles.chip}>{skill}</Text>
+                                        ))}
+                                    </View>
+                                </View>
+                            ) : null}
+
+                            {education?.length ? (
+                                <View style={styles.section}>
+                                    <Text style={styles.sectionTitle}>Education</Text>
+                                    {education.map((edu) => (
+                                        <View key={edu.id} style={{ marginBottom: 6 }}>
+                                            <Text style={styles.itemTitle}>{edu.degree || ''}</Text>
+                                            <Text style={styles.bodyText}>{`${edu.school || ''} | ${edu.year || ''}`}</Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            ) : null}
+                        </View>
+
+                        <View style={styles.modernMain}>
+                            {renderSharedSections()}
+                            {(certifications?.length || achievements?.length) ? (
+                                <View style={styles.section}>
+                                    <Text style={styles.sectionTitle}>Achievements & Certifications</Text>
+                                    {certifications.map((c) => (
+                                        <Text key={c.id} style={styles.bodyText}>- {c.name}{c.year ? ` (${c.year})` : ''}</Text>
+                                    ))}
+                                    {achievements.map((a) => (
+                                        <Text key={a.id} style={styles.bodyText}>- {a.title}</Text>
+                                    ))}
+                                </View>
+                            ) : null}
+                        </View>
+                    </View>
+                ) : (
+                    <>
+                        <Text style={styles.name}>{personal.fullName || 'YOUR NAME'}</Text>
+                        <Text style={styles.contactRow}>
+                            {[personal.jobTitle, personal.email, personal.phone, personal.location].filter(Boolean).join(' | ')}
+                        </Text>
+                        <Text style={styles.contactRow}>
+                            {[personal.linkedin, personal.github].filter(Boolean).join(' | ')}
+                        </Text>
+
+                        {renderSharedSections()}
+
+                        {education?.length ? (
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>Education</Text>
+                                {education.map((edu) => (
+                                    <View key={edu.id} style={{ marginBottom: 6 }}>
+                                        <Text style={styles.itemTitle}>{edu.degree || ''}</Text>
+                                        <Text style={styles.bodyText}>{`${edu.school || ''} | ${edu.year || ''}${edu.grade ? ` | ${edu.grade}` : ''}`}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        ) : null}
+
+                        {skillList.length ? (
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>Skills</Text>
+                                <View style={styles.chipWrap}>
+                                    {skillList.map((skill, idx) => (
+                                        <Text key={`${skill}-${idx}`} style={styles.chip}>{skill}</Text>
+                                    ))}
+                                </View>
+                            </View>
+                        ) : null}
+
+                        {(certifications?.length || achievements?.length) ? (
+                            <View style={styles.section}>
+                                <Text style={styles.sectionTitle}>Achievements & Certifications</Text>
+                                {certifications.map((c) => (
+                                    <Text key={c.id} style={styles.bodyText}>- {c.name}{c.year ? ` (${c.year})` : ''}</Text>
+                                ))}
+                                {achievements.map((a) => (
+                                    <Text key={a.id} style={styles.bodyText}>- {a.title}</Text>
+                                ))}
+                            </View>
+                        ) : null}
+                    </>
+                )}
+            </Page>
+        </Document>
+    );
+}
 
 function ResumeBuilder() {
     const navigate = useNavigate();
@@ -164,97 +398,23 @@ function ResumeBuilder() {
         setAiSuggestion(null);
     };
 
-
     const handleDownloadPDF = async () => {
-        let previewElement = document.getElementById('resume-preview');
-
-        if (!previewElement) {
-            previewElement = document.querySelector('.a4-sheet');
-        }
-
-        if (!previewElement) {
-            setToast({ message: "Content not found. Please refresh and try again.", type: "error" });
-            return;
-        }
-
         setLoading(true);
         try {
-            console.log("PDF Export: Starting capture...");
-
-            // Give React a moment to finish any re-renders
             await new Promise(r => setTimeout(r, 400));
 
-            const canvas = await html2canvas(previewElement, {
-                scale: 1.5, // 1.5 is safer than 2.0 for memory limitations
-                useCORS: true,
-                allowTaint: false,
-                backgroundColor: theme === 'dark' ? "#09090b" : "#ffffff",
-                logging: false,
-                onclone: (clonedDoc) => {
-                    const clone = clonedDoc.getElementById('resume-preview') || clonedDoc.querySelector('.a4-sheet');
-                    if (!clone) return;
-
-                    // If original is hidden, parent tree must be forced visible in the clone
-                    let curr = clone;
-                    while (curr && curr.style) {
-                        curr.style.display = 'block';
-                        curr.style.visibility = 'visible';
-                        curr.style.opacity = '1';
-                        curr = curr.parentElement;
-                    }
-
-                    // A4 standard capture setup
-                    clone.style.width = '210mm';
-                    clone.style.height = 'auto';
-                    clone.style.minHeight = '297mm';
-                    clone.style.transform = 'none';
-                    clone.style.margin = '0';
-                    clone.style.padding = '20mm';
-                    if (selectedTemplate === 'modern' || selectedTemplate === 'minimal') {
-                        clone.style.padding = '0';
-                    }
-
-                    // Style safety sweep
-                    const all = clone.querySelectorAll('*');
-                    all.forEach(el => {
-                        el.style.animation = 'none';
-                        el.style.transition = 'none';
-                        el.style.boxShadow = 'none';
-                        el.style.mixBlendMode = 'normal';
-
-                        const s = window.getComputedStyle(el);
-                        if (s.backgroundColor.includes('color-mix')) {
-                            el.style.backgroundColor = s.backgroundColor.includes('transparent') ? 'transparent' : '#888';
-                        }
-                    });
-                }
-            });
-
-            console.log("PDF Export: Canvas captured.");
-
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            const pdf = new jsPDF('p', 'mm', 'a4', true);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
-            const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
-            let heightLeft = imgHeight;
-            let position = 0;
-
-            // Page 1
-            pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
-            heightLeft -= pdfHeight;
-
-            // Subsequent pages
-            while (heightLeft > 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
-                heightLeft -= pdfHeight;
-            }
-
             const fileName = (resumeData.personal.fullName || 'Resume').replace(/[^a-z0-9]/gi, '_');
-            pdf.save(`${fileName}_Professional_Resume.pdf`);
+            const downloadName = `${fileName}_Professional_Resume.pdf`;
+
+            const blob = await pdf(<ResumePdfDocument data={resumeData} template={selectedTemplate} isDark={theme === 'dark'} />).toBlob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = downloadName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 1500);
 
             setToast({ message: "Resume downloaded successfully!", type: "success" });
 
@@ -1233,6 +1393,13 @@ function ResumeBuilder() {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Always-mounted off-screen element used for reliable PDF export */}
+            <div className="fixed -left-[99999px] top-0 pointer-events-none" aria-hidden="true">
+                <div ref={previewRef} className="w-[210mm] min-h-[297mm]">
+                    {renderTemplate()}
+                </div>
+            </div>
         </div>
     );
 }
