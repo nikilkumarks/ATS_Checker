@@ -1,0 +1,25 @@
+{
+  "name": "ats-checker",
+  "version": "1.0.0",
+  "description": "ATS Checker - Resume Analysis Tool",
+  "main": "api/index.js",
+  "scripts": {
+    "dev": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "start": "cd client && npm run preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cohere-ai": "^7.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.4",
+    "multer": "^2.0.2",
+    "pdf-parse": "^1.1.1"
+  }
+}
