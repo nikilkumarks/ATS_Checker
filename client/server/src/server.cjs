@@ -2,6 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
+
+// Log environment loading
+console.log("Env vars available:", Object.keys(process.env).filter(k => k.startsWith("MONGO") || k.startsWith("JWT") || k.startsWith("COHERE")).length, "keys");
+
 const authRoutes = require("./routes/authRoutes.cjs")
 const activityRoutes = require("./routes/activityRoutes.cjs");
 const scanRoutes = require("./routes/scanRoutes.cjs");
@@ -25,7 +29,7 @@ function connectToDatabase() {
       })
       .catch(err => {
         mongoConnectionPromise = null;
-        console.log(err);
+        console.log("MongoDB Connection Error:", err.message);
         throw err;
       });
   }
@@ -38,7 +42,8 @@ app.use(async (req, res, next) => {
     await connectToDatabase();
     next();
   } catch (err) {
-    next(err);
+    console.error("DB Connection middleware error:", err.message);
+    res.status(500).json({ error: "Database connection failed", details: err.message });
   }
 });
 
