@@ -82,4 +82,16 @@ router.get("/dashboard", auth, (req, res) => {
   res.json({ user: req.user });
 });
 
+app.use((err, req, res, next) => {
+  console.error("Unhandled API error:", err);
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  res.status(500).json({
+    message: "Internal server error",
+    error: err?.message || "Unknown error"
+  });
+});
+
 module.exports = app;
