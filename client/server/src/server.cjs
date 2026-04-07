@@ -1,10 +1,29 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-require("dotenv").config();
+
+// Only load dotenv in local development, not in Vercel
+if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+  try {
+    require("dotenv").config();
+  } catch (e) {
+    console.log("dotenv not available");
+  }
+}
 
 // Log environment loading
 console.log("Env vars available:", Object.keys(process.env).filter(k => k.startsWith("MONGO") || k.startsWith("JWT") || k.startsWith("COHERE")).length, "keys");
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("VERCEL:", !!process.env.VERCEL);
+
+// Check required env vars
+if (!process.env.MONGO_URI) {
+  console.error("❌ ERROR: MONGO_URI environment variable not set!");
+  console.error("Required env vars: MONGO_URI, JWT_SECRET");
+}
+if (!process.env.JWT_SECRET) {
+  console.warn("⚠️  WARNING: JWT_SECRET environment variable not set!");
+}
 
 const authRoutes = require("./routes/authRoutes.cjs")
 const activityRoutes = require("./routes/activityRoutes.cjs");
