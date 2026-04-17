@@ -2,7 +2,6 @@ const User = require("../models/users.cjs");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const validatePassword = require("../utils/passwordValidator.cjs");
-require("dotenv").config();
 
 exports.signup = async (req, res) => {
   try {
