@@ -1,21 +1,20 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const path = require("path");
-const fs = require("fs");
 
-// Load .env for local development; in cloud platforms process.env is already injected.
-try {
-  require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
-} catch (e) {
-  console.log("dotenv not available");
+// Only load dotenv in local development, not in Vercel
+if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+  try {
+    require("dotenv").config();
+  } catch (e) {
+    console.log("dotenv not available");
+  }
 }
 
 // Log environment loading
-console.log("Env vars available:", Object.keys(process.env).filter(k => k.startsWith("MONGO") || k.startsWith("JWT") || k.startsWith("COHERE") || k.startsWith("GOOGLE")).length, "keys");
+console.log("Env vars available:", Object.keys(process.env).filter(k => k.startsWith("MONGO") || k.startsWith("JWT") || k.startsWith("COHERE")).length, "keys");
 console.log("NODE_ENV:", process.env.NODE_ENV);
 console.log("VERCEL:", !!process.env.VERCEL);
-console.log("GOOGLE_CLIENT_ID present:", !!process.env.GOOGLE_CLIENT_ID);
 
 // Check required env vars
 if (!process.env.MONGO_URI) {
@@ -38,9 +37,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const clientPublicPath = path.resolve(__dirname, "..", "public");
-const clientIndexPath = path.join(clientPublicPath, "index.html");
-
 let mongoConnectionPromise = null;
 
 function connectToDatabase() {
@@ -60,7 +56,7 @@ function connectToDatabase() {
   return mongoConnectionPromise;
 }
 
-async function ensureDatabaseConnection(req, res, next) {
+app.use(async (req, res, next) => {
   try {
     await connectToDatabase();
     next();
@@ -68,31 +64,15 @@ async function ensureDatabaseConnection(req, res, next) {
     console.error("DB Connection middleware error:", err.message);
     res.status(500).json({ error: "Database connection failed", details: err.message });
   }
-}
-
-if (fs.existsSync(clientPublicPath)) {
-  app.use(express.static(clientPublicPath));
-
-  app.use((req, res, next) => {
-    if (req.method === "GET" && !req.path.startsWith("/api")) {
-      if (fs.existsSync(clientIndexPath)) {
-        return res.sendFile(clientIndexPath);
-      }
-
-      return res.status(404).json({ message: "Frontend build not found" });
-    }
-
-    return next();
-  });
-}
+});
 
 // API Routes
-app.use("/api/auth", ensureDatabaseConnection, authRoutes);
-app.use("/api/activity", ensureDatabaseConnection, activityRoutes);
-app.use("/api/scan", ensureDatabaseConnection, scanRoutes);
-app.use("/api/ai", ensureDatabaseConnection, aiRoutes);
-app.use("/api/admin", ensureDatabaseConnection, adminRoutes);
-app.use("/api", ensureDatabaseConnection, router);
+app.use("/api/auth", authRoutes);
+app.use("/api/activity", activityRoutes);
+app.use("/api/scan", scanRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api", router);
 
 app.get("/api/test", (req, res) => {
   res.json({ message: "Serverless working" });

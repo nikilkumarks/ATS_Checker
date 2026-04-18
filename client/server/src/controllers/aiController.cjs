@@ -1,4 +1,5 @@
 const { CohereClient } = require("cohere-ai");
+require("dotenv").config();
 
 exports.enhanceText = async (req, res) => {
     const { text, type } = req.body;

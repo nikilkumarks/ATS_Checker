@@ -11,7 +11,6 @@ import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import Navbar from '../components/Navbar';
-import BackNavigation from '../components/BackNavigation';
 import Toast from '../components/ui/Toast';
 import './ResumeBuilder.css';
 
@@ -417,21 +416,6 @@ function ResumeBuilder() {
             link.click();
             document.body.removeChild(link);
             setTimeout(() => URL.revokeObjectURL(url), 1500);
-
-            const token = localStorage.getItem('token');
-            if (token) {
-                await fetch(`${API_URL}/api/activity/resume-create`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        title: `Resume Download: ${downloadName}`,
-                        template: selectedTemplate
-                    })
-                });
-            }
 
             setToast({ message: "Resume downloaded successfully!", type: "success" });
 
@@ -1206,9 +1190,6 @@ function ResumeBuilder() {
 
                 {/* CENTER AREA: FULL-WIDTH EDITOR */}
                 <div className="flex-[1.5] flex flex-col relative z-10 bg-transparent overflow-hidden md:border-r border-border/50">
-                    <div className="px-8 md:px-16 pt-6 md:pt-8 pb-0 shrink-0">
-                        <BackNavigation label="Back" fallbackTo="/dashboard" />
-                    </div>
 
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-0 md:p-12">
                         <div className="w-full px-8 md:px-16 pb-20">

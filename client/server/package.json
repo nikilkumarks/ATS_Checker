@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "main": "server.cjs",
   "scripts": {
-    "dev": "nodemon src/start.cjs",
-    "build": "cd .. && npm run build",
-    "start": "node src/start.cjs"
+    "dev": "nodemon src/server.cjs",
+    "start": "node src/server.cjs"
   },
   "keywords": [],
   "author": "",
@@ -17,9 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "google-auth-library": "^10.6.2",
     "jsonwebtoken": "^9.0.3",
-    "mammoth": "^1.12.0",
     "mongoose": "^9.1.4",
     "multer": "^2.0.2",
     "pdf-parse": "^1.1.1"
