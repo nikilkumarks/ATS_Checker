@@ -3,6 +3,7 @@ import API_URL from '../../api/config';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from '../../components/Navbar';
+import BackNavigation from '../../components/BackNavigation';
 import ATSScannerHero from './ATSScannerHero';
 import ATSScannerForm from './ATSScannerForm';
 import ATSScannerResults from './ATSScannerResults';
@@ -78,23 +79,17 @@ const ATSScanner = () => {
     const resultRoleRecommendations = result?.roleRecommendations || [];
 
     return (
-        <div className="min-h-screen overflow-x-hidden bg-background text-foreground transition-colors duration-500 ease-in-out">
+        <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
             <Navbar />
 
-            {/* Premium Ambient Background */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <div className="absolute top-[-20%] right-[-10%] h-[1000px] w-[1000px] rounded-full bg-primary/10 blur-[130px]" />
-                <div className="absolute bottom-[-20%] left-[-10%] h-[800px] w-[800px] rounded-full bg-cyan-500/10 blur-[130px]" />
-                
-                {/* Subtle Grid Noise Texture */}
-                <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.07] [mask-image:radial-gradient(ellipse_at_center,black,transparent_90%)]" 
-                     style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm1 1h38v38H1V1z' fill='%23888' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")` }} />
-            </div>
+            <div className="relative z-10 mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-10 xl:px-12 pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 lg:pb-24">
+                <div className="mb-6 sm:mb-8">
+                    <BackNavigation label="Back" fallbackTo="/dashboard" />
+                </div>
 
-            <div className="relative z-10 mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 md:pt-36 pb-20">
                 <ATSScannerHero />
                 
-                <div className="mt-12">
+                <div className="mt-10 sm:mt-12">
                     <ATSScannerForm
                         file={file}
                         jobDescription={jobDescription}
@@ -108,7 +103,7 @@ const ATSScanner = () => {
 
                 <AnimatePresence mode="wait">
                     {result && (
-                        <div className="mt-16 animate-in fade-in slide-in-from-top-10 duration-1000">
+                        <div className="mt-12 sm:mt-16 animate-in fade-in slide-in-from-top-10 duration-1000">
                             <ATSScannerResults
                                 result={result}
                                 questions={resultQuestions}

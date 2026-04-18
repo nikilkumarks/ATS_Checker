@@ -38,3 +38,13 @@ export const loginApi = async (data) => {
   });
   return await parseResponse(res);
 };
+
+export const googleAuthApi = async (credential) => {
+  const res = await fetch(`${BASE_URL}/google`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ credential })
+  });
+
+  return await parseResponse(res);
+};
