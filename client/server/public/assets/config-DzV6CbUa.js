@@ -1,0 +1,1 @@
+const n="".trim();function e(o){return o.replace(/\/$/,"")}let t=n;if(typeof window<"u"){const o=["localhost","127.0.0.1"].includes(window.location.hostname),i=/localhost|127\.0\.0\.1/i.test(n);!o&&(!n||i)&&(t=window.location.origin)}const s=e(t||"");export{s as A};
