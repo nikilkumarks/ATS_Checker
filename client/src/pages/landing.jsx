@@ -1,140 +1,257 @@
+import { useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { Link } from "react-router-dom";
+import Footer from "../components/Footer";
+import { Link, Navigate } from "react-router-dom";
 import {
   ArrowRight,
+  BrainCircuit,
   CheckCircle,
-  BarChart3,
-  ShieldCheck,
-  Zap,
+  Clock3,
+  FileDown,
+  LogIn,
+  Sparkles,
+  Target,
   PenTool,
   Scan,
-  Globe,
-  Star
+  Upload
 } from "lucide-react";
 
 export default function Landing() {
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (token) return;
+
+    const root = document.documentElement;
+    const previousTheme = root.classList.contains("dark") ? "dark" : "light";
+
+    root.classList.remove("light", "dark");
+    root.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+
+    return () => {
+      root.classList.remove("light", "dark");
+      root.classList.add(previousTheme);
+      localStorage.setItem("theme", previousTheme);
+    };
+  }, [token]);
+
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  const stats = [
+    {
+      value: "75%",
+      title: "Resumes Rejected",
+      detail: "Resumes are rejected by bots before a human ever sees them."
+    },
+    {
+      value: "6 Seconds",
+      title: "Recruiter Attention",
+      detail: "The average time a recruiter spends looking at a resume."
+    },
+    {
+      value: "90%",
+      title: "Interview Lift",
+      detail: "Increase in interview chances when using ATS-optimized keywords."
+    }
+  ];
+
+  const featureCards = [
+    {
+      icon: <PenTool size={28} />,
+      title: "The Smart Builder",
+      desc: "Build resumes with a Live Preview. Use 'AI Improve' to transform basic bullet points into high-impact, professional syntax instantly.",
+      tone: "from-cyan-500/25 to-primary/20"
+    },
+    {
+      icon: <Scan size={28} />,
+      title: "The Precision Scanner",
+      desc: "Don't apply blindly. Compare your resume against any Job Description to see your match score and identify missing critical keywords.",
+      tone: "from-primary/25 to-indigo-500/20"
+    },
+    {
+      icon: <Target size={28} />,
+      title: "The Interview Navigator",
+      desc: "Get custom-tailored interview questions based on your specific projects and experience. Know your 'High Value' sections at a glance.",
+      tone: "from-emerald-500/25 to-cyan-500/20"
+    }
+  ];
+
+  const flowSteps = [
+    {
+      number: "01",
+      title: "Secure Login",
+      detail: "Sign in instantly using Google OAuth or your account credentials."
+    },
+    {
+      number: "02",
+      title: "Build or Upload",
+      detail: "Choose your starting point with builder templates or an existing resume."
+    },
+    {
+      number: "03",
+      title: "Analyze & Optimize",
+      detail: "Let the Cohere-powered AI find keyword gaps and refine your content."
+    },
+    {
+      number: "04",
+      title: "Download & Apply",
+      detail: "Export your ATS-ready resume in a click and apply with confidence."
+    }
+  ];
+
+  const logos = ["META", "GOOGLE", "AMAZON", "NETFLIX", "MICROSOFT", "OPENAI"];
+
   return (
     <div className="bg-background text-foreground min-h-screen overflow-x-hidden">
-      <Navbar />
+      <Navbar showThemeToggle={false} />
 
-      {/* AMBIENT BACKGROUND ELEMENTS */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="blob top-[-10%] left-[-10%] w-[70%] h-[70%] bg-primary/15" />
-        <div className="blob bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/15" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.02] dark:opacity-[0.04] pointer-events-none" />
+        <div className="blob -top-24 -left-32 h-168 w-2xl bg-primary/15" />
+        <div className="blob -bottom-20 -right-28 h-144 w-xl bg-cyan-500/15" />
+        <div className="absolute inset-0 opacity-[0.06] bg-[radial-gradient(circle_at_1px_1px,var(--foreground)_1px,transparent_0)] bg-size-[24px_24px]" />
       </div>
 
+      <section className="relative z-10 pt-30 pb-14 sm:pt-34 sm:pb-18 lg:pt-44 lg:pb-28">
+        <div className="mx-auto grid max-w-7xl gap-8 sm:gap-10 px-4 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+          <div className="animate-fade-up">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-secondary/35 px-4 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-primary">
+              <Sparkles size={14} />
+              Premium AI Career Suite
+            </div>
 
-      {/* HERO SECTION */}
-      <section className="relative pt-40 pb-32 z-10">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-foreground/5 border border-foreground/10 text-primary text-[10px] font-black tracking-[0.3em] uppercase mb-10 animate-fade-up">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-            </span>
-            AI-Powered Career Tools
+            <h1 className="mt-6 sm:mt-8 text-4xl sm:text-6xl lg:text-7xl font-black uppercase leading-[0.9] sm:leading-[0.88] tracking-tight">
+              Stop Guessing.
+              <br />
+              <span className="bg-linear-to-r from-primary via-blue-400 to-blue-500 bg-clip-text text-transparent">
+                Start Getting Hired.
+              </span>
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted-foreground">
+              The AI-powered career suite that optimizes your resume, predicts your ATS score, and prepares you for the interview-all in one place.
+            </p>
+
+            <div className="mt-8 sm:mt-10 flex flex-col gap-3 sm:gap-4 sm:flex-row">
+              <Link
+                to="/signup"
+                className="group inline-flex w-full sm:w-auto items-center justify-center gap-3 rounded-2xl bg-linear-to-r from-primary to-blue-500 px-6 sm:px-8 py-4 text-[11px] sm:text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.22em] text-primary-foreground shadow-2xl shadow-primary/30 transition-all hover:-translate-y-0.5"
+              >
+                Get Started - It's Free
+                <ArrowRight size={16} strokeWidth={3} className="transition-transform group-hover:translate-x-1" />
+              </Link>
+              <a
+                href="#how-it-works"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-3 rounded-2xl border border-border/60 bg-secondary/45 px-6 sm:px-8 py-4 text-[11px] sm:text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.22em] text-foreground transition-all hover:bg-secondary/75"
+              >
+                Watch Demo
+              </a>
+            </div>
+
+            <p className="mt-5 text-sm text-muted-foreground">
+              Used by students on HireLenz to land roles at top tech firms.
+            </p>
+
+            <div className="mt-7 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:max-w-xl">
+              <div className="rounded-xl border border-border/60 bg-background/45 px-3 py-2">
+                <p className="text-[8px] font-black uppercase tracking-[0.18em] text-muted-foreground">Prediction</p>
+                <p className="mt-1 text-sm font-black text-foreground">ATS Score</p>
+              </div>
+              <div className="rounded-xl border border-border/60 bg-background/45 px-3 py-2">
+                <p className="text-[8px] font-black uppercase tracking-[0.18em] text-muted-foreground">Interview</p>
+                <p className="mt-1 text-sm font-black text-foreground">Question Bank</p>
+              </div>
+              <div className="rounded-xl border border-border/60 bg-background/45 px-3 py-2">
+                <p className="text-[8px] font-black uppercase tracking-[0.18em] text-muted-foreground">Workflow</p>
+                <p className="mt-1 text-sm font-black text-foreground">One Platform</p>
+              </div>
+            </div>
           </div>
 
-          <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-[0.85] mb-10 animate-fade-up [animation-delay:100ms]">
-            Get <span className="text-primary not-italic">Hired</span>
-            <br />
-            <span className="text-foreground/10 dark:text-foreground/20">Faster</span>
-          </h1>
+          <div className="relative animate-fade-up [animation-delay:120ms]">
+            <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary/30 blur-3xl" />
+            <div className="rounded-4xl border border-border/60 bg-card/60 p-5 sm:p-8 backdrop-blur-3xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground">AI Command Center</p>
+              <div className="mt-4 space-y-3">
+                {["Resume Optimization", "ATS Match Prediction", "Interview Readiness", "AI-Improved Content"].map((line) => (
+                  <div key={line} className="flex items-center gap-2 rounded-xl border border-border/50 bg-background/50 px-3 py-2.5 text-sm text-foreground/90">
+                    <CheckCircle size={15} className="text-primary" />
+                    {line}
+                  </div>
+                ))}
+              </div>
 
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-border/50 bg-background/50 p-3">
+                  <p className="text-[9px] font-black uppercase tracking-[0.16em] text-muted-foreground">Response Lift</p>
+                  <p className="mt-1 text-xl font-black text-foreground">+34%</p>
+                </div>
+                <div className="rounded-2xl border border-border/50 bg-background/50 p-3">
+                  <p className="text-[9px] font-black uppercase tracking-[0.16em] text-muted-foreground">Avg Scan Speed</p>
+                  <p className="mt-1 text-xl font-black text-foreground">&lt; 1s</p>
+                </div>
+              </div>
 
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed mb-16 animate-fade-up [animation-delay:200ms]">
-            Build professional resumes that beat automated filters.
-            Instantly check your score and get more interviews with our smart scanner.
-          </p>
+              <div className="mt-5 rounded-2xl border border-border/50 bg-linear-to-r from-primary/12 to-blue-500/12 p-4">
+                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">Realtime Insight</p>
+                <p className="mt-1 text-sm leading-relaxed text-foreground/90">
+                  "Your resume is 82% aligned. Add cloud deployment impact metrics and Kubernetes keyword mentions for higher ranking."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-6 animate-fade-up [animation-delay:300ms]">
-            <Link
-              to="/signup"
-              className="group relative px-10 py-5 bg-primary text-primary-foreground font-black text-xs uppercase tracking-[0.3em] rounded-2xl overflow-hidden shadow-2xl shadow-primary/20 hover:shadow-primary/40 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-4"
-            >
-              Get Started Now
-              <ArrowRight size={18} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
-              <div className="absolute inset-0 bg-primary-foreground/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-            </Link>
-
-            <Link
-              to="/login"
-              className="px-10 py-5 border border-border/50 bg-secondary/50 dark:bg-secondary/30 backdrop-blur-xl text-foreground font-black text-xs uppercase tracking-[0.3em] rounded-2xl hover:bg-secondary/80 transition-all flex items-center justify-center gap-3"
-            >
-              Member Login
-            </Link>
+      <section id="about" className="relative z-10 py-14 sm:py-16 animate-fade-up [animation-delay:80ms]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mb-6 text-center">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">The ATS Gap</p>
+            <h2 className="mt-2 text-3xl sm:text-4xl font-black uppercase tracking-tight">The Problem In Numbers</h2>
           </div>
 
-          <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-60 dark:opacity-40 animate-fade-up [animation-delay:400ms]">
-            {[
-              { label: "Happy Users", val: "12.4k+" },
-              { label: "Success Rate", val: "98.2%" },
-              { label: "Scan Time", val: " < 1s" },
-              { label: "Top Ratings", val: "5 Stars" }
-            ].map(stat => (
-              <div key={stat.label} className="flex flex-col items-center">
-                <span className="text-2xl font-black text-foreground">{stat.val}</span>
-                <span className="text-[10px] uppercase tracking-widest font-bold mt-1 text-muted-foreground">{stat.label}</span>
+          <div className="grid gap-5 md:grid-cols-3">
+            {stats.map((item) => (
+              <div key={item.title} className="rounded-3xl border border-border/55 bg-card/55 p-6 backdrop-blur-xl transition-all hover:-translate-y-1 hover:border-primary/45">
+                <p className="text-3xl font-black uppercase tracking-tight text-primary">{item.value}</p>
+                <p className="mt-2 text-[11px] font-black uppercase tracking-[0.2em] text-foreground">{item.title}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.detail}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CORE CAPABILITIES */}
-      <section className="py-32 relative z-10 bg-gradient-to-b from-transparent via-background to-transparent">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-20 animate-fade-up">
-            <div className="text-left">
-              <h2 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter mb-4">
-                Key <span className="text-primary italic">Features</span>
+      <section id="features" className="py-18 sm:py-24 relative z-10 bg-linear-to-b from-transparent via-background/40 to-transparent animate-fade-up [animation-delay:120ms]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight">
+                The <span className="text-primary">Solution</span>
               </h2>
-              <p className="text-muted-foreground max-w-md font-medium">
-                Modern tools designed to help you land your dream job faster.
+              <p className="mt-3 max-w-xl text-muted-foreground">
+                Three purpose-built systems to move you from resume draft to interview-ready fast.
               </p>
             </div>
-            <div className="text-[10px] font-black uppercase tracking-[0.5em] text-foreground/20 pb-2"> Status: Active </div>
+            <p className="text-[10px] font-black uppercase tracking-[0.32em] text-muted-foreground">AI Suite: Active</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
-            {[
-              {
-                icon: <PenTool size={32} />,
-                title: "Resume Builder",
-                desc: "Build high-quality resumes instantly with proven professional templates.",
-                color: "from-primary/20 to-indigo-600/20"
-              },
-              {
-                icon: <Scan size={32} />,
-                title: "ATS Scanner",
-                desc: "Check your resume against automated filters to find and fix potential issues.",
-                color: "from-blue-600/20 to-cyan-500/20"
-              },
-              {
-                icon: <ShieldCheck size={32} />,
-                title: "Secure Data",
-                desc: "Your personal information is safe and encrypted with our secure platform.",
-                color: "from-emerald-600/20 to-teal-500/20"
-              }
-            ].map((item, index) => (
-              <div
-                key={item.title}
-                className="group relative p-10 rounded-[40px] glass hover:border-primary/40 transition-all duration-500 overflow-hidden"
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-700`} />
-
+          <div className="grid gap-5 sm:gap-6 md:grid-cols-3">
+            {featureCards.map((item) => (
+              <div key={item.title} className="group relative overflow-hidden rounded-4xl border border-border/55 bg-card/50 p-5 sm:p-7 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-primary/40">
+                <div className={`absolute inset-0 bg-linear-to-br ${item.tone} opacity-0 transition-opacity duration-500 group-hover:opacity-100`} />
                 <div className="relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-secondary/80 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 text-primary border border-border/50">
+                  <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-border/55 bg-secondary/60 text-primary transition-transform duration-500 group-hover:scale-105">
                     {item.icon}
                   </div>
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-4">{item.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed text-sm font-medium opacity-70 group-hover:opacity-100 transition-opacity">
+                  <h3 className="text-2xl font-black uppercase tracking-tight">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                     {item.desc}
                   </p>
                 </div>
-
-                <div className="absolute bottom-6 right-8 text-primary opacity-20 transition-all duration-500 group-hover:translate-x-2 group-hover:opacity-100">
+                <div className="absolute bottom-6 right-7 text-primary/35 transition-all duration-500 group-hover:translate-x-1 group-hover:text-primary">
                   <ArrowRight size={24} />
                 </div>
               </div>
@@ -143,93 +260,86 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* SOCIAL PROOF / TRUST */}
-      <section className="py-20 z-10 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 whitespace-nowrap overflow-hidden">
-          <div className="flex animate-marquee gap-20 opacity-20 items-center">
-            {["GOOGLE", "META", "AMAZON", "NETFLIX", "APPLE", "SPACEX", "OPENAI", "COHERE"].map(brand => (
-              <span key={brand} className="text-4xl font-black italic tracking-tighter">{brand}</span>
-            ))}
-            {/* Duplicate for seamless loop */}
-            {["GOOGLE", "META", "AMAZON", "NETFLIX", "APPLE", "SPACEX", "OPENAI", "COHERE"].map(brand => (
-              <span key={brand + "_2"} className="text-4xl font-black italic tracking-tighter">{brand}</span>
-            ))}
+      <section id="how-it-works" className="relative z-10 py-18 sm:py-24 animate-fade-up [animation-delay:140ms]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mb-12 text-center">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">How It Works</p>
+            <h3 className="mt-3 text-3xl sm:text-4xl font-black uppercase tracking-tight">A Simple Path To Better Outcomes</h3>
           </div>
-        </div>
-      </section>
 
-      {/* FINAL CTA */}
-      <section className="py-40 relative z-10 overflow-hidden">
-        {/* Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-primary/20 blur-[150px] rounded-full opacity-30" />
-
-        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-          <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase mb-10 leading-none">
-            Ready to <span className="text-primary">Start?</span>
-          </h2>
-          <p className="text-muted-foreground text-lg md:text-xl font-medium mb-16 opacity-70">
-            Join thousands of professionals who have already improved their careers.
-            Start getting the interviews you deserve today.
-          </p>
-          <Link
-            to="/signup"
-            className="inline-flex items-center gap-4 px-12 py-6 bg-foreground text-background font-black text-xs uppercase tracking-[0.4em] rounded-2xl hover:scale-105 transition-all shadow-2xl shadow-foreground/10 active:scale-95 group"
-          >
-            Start Now <ArrowRight size={20} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="py-20 border-t border-border/50 relative z-10 bg-background">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-12 mb-20">
-            <div className="col-span-2">
-              <Link to="/" className="flex items-center gap-3 active:scale-95 transition-transform group mb-6">
-                <div className="p-2.5 bg-primary rounded-xl shadow-lg shadow-primary/20 rotate-3">
-                  <Zap size={22} fill="currentColor" className="text-primary-foreground" />
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {flowSteps.map((step) => (
+              <div key={step.number} className="rounded-3xl border border-border/55 bg-card/45 p-6 backdrop-blur-xl">
+                <p className="text-primary text-sm font-black uppercase tracking-[0.24em]">{step.number}</p>
+                <h4 className="mt-3 text-xl font-black uppercase tracking-tight">{step.title}</h4>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{step.detail}</p>
+                <div className="mt-4 text-primary">
+                  {step.number === "01" && <LogIn size={16} />}
+                  {step.number === "02" && <Upload size={16} />}
+                  {step.number === "03" && <BrainCircuit size={16} />}
+                  {step.number === "04" && <FileDown size={16} />}
                 </div>
-                <span className="font-black text-2xl tracking-tighter uppercase italic leading-none">
-                  ATS <span className="text-primary">Checker</span>
-                </span>
-              </Link>
-              <p className="text-muted-foreground text-sm font-medium leading-relaxed max-w-xs opacity-50">
-                Professional tools for the modern job seeker. Simple, fast, and effective.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-foreground/20">Features</h4>
-              <div className="flex flex-col gap-3 text-xs font-black uppercase tracking-widest text-muted-foreground/60">
-                <Link to="/resume-builder" className="hover:text-primary transition-colors">Builder</Link>
-                <Link to="/ats-scanner" className="hover:text-primary transition-colors">Scanner</Link>
-                <Link to="/settings" className="hover:text-primary transition-colors">Settings</Link>
               </div>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-foreground/20">Company</h4>
-              <div className="flex flex-col gap-3 text-xs font-black uppercase tracking-widest text-muted-foreground/60">
-                <a href="#" className="hover:text-primary transition-colors">About Us</a>
-                <a href="#" className="hover:text-primary transition-colors">Contact</a>
-                <a href="#" className="hover:text-primary transition-colors">Support</a>
-              </div>
-            </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          <div className="flex flex-col md:flex-row justify-between items-center pt-10 border-t border-border/50 gap-6">
-            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground/30">
-              &copy; {new Date().getFullYear()} ATS Checker. All rights reserved.
-            </p>
-
-            <div className="flex gap-8 text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground/30">
-              <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-              <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-              <a href="#" className="hover:text-foreground transition-colors">Cookies</a>
+      <section className="relative z-10 py-14 sm:py-16 overflow-hidden animate-fade-up [animation-delay:160ms]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <p className="text-center text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
+            Our scanner is designed to help you beat the filters at these companies and more.
+          </p>
+          <div className="mt-6 sm:mt-8 overflow-hidden whitespace-nowrap rounded-3xl border border-border/55 bg-card/45 p-4 sm:p-6 backdrop-blur-xl">
+            <div className="flex animate-marquee gap-10 sm:gap-16 text-xl sm:text-3xl font-black uppercase tracking-tight text-foreground/30">
+              {logos.map((brand) => (
+                <span key={brand}>{brand}</span>
+              ))}
+              {logos.map((brand) => (
+                <span key={`${brand}-dup`}>{brand}</span>
+              ))}
             </div>
           </div>
         </div>
-      </footer>
+      </section>
+
+      <section className="py-20 sm:py-28 relative z-10 overflow-hidden">
+        <div className="absolute left-1/2 top-1/2 h-72 w-xl -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-[120px]" />
+
+        <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 text-center animate-fade-up [animation-delay:180ms]">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-[0.92]">
+            Ready To Turn
+            <span className="text-primary"> Applications Into Interviews?</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-3xl text-base sm:text-lg text-muted-foreground leading-relaxed">
+            Join professionals who use HireLenz to sharpen resumes, close skill gaps, and stand out in crowded hiring pipelines.
+          </p>
+          <div className="mt-8 sm:mt-10 flex flex-col items-center justify-center gap-3 sm:gap-4 sm:flex-row">
+            <Link
+              to="/signup"
+              className="group inline-flex w-full sm:w-auto items-center justify-center gap-3 rounded-2xl bg-linear-to-r from-primary to-blue-500 px-6 sm:px-8 py-4 text-[11px] sm:text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.24em] text-primary-foreground shadow-2xl shadow-primary/25 transition-all hover:-translate-y-0.5"
+            >
+              Create Account
+              <ArrowRight size={16} strokeWidth={3} className="transition-transform group-hover:translate-x-1" />
+            </Link>
+            <Link
+              to="/login"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-3 rounded-2xl border border-border/60 bg-secondary/40 px-6 sm:px-8 py-4 text-[11px] sm:text-xs font-black uppercase tracking-[0.16em] sm:tracking-[0.24em] text-foreground transition-all hover:bg-secondary/70"
+            >
+              I Already Have An Account
+            </Link>
+          </div>
+
+          <div className="mt-12 mx-auto max-w-3xl rounded-2xl border border-border/55 bg-card/45 p-4 text-left backdrop-blur-xl">
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground">Pitch Angle</p>
+            <p className="mt-2 text-sm text-foreground/90">
+              "We didn't just build a scanner; we built a professional-grade portal. Our landing page is designed to educate the user on the ATS gap before moving them into our secure, AI-driven environment."
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <Footer isLanding />
     </div>
   );
 }

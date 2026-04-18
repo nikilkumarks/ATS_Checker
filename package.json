@@ -1,12 +1,12 @@
 {
-  "name": "ats-checker",
+  "name": "hirelenz",
   "version": "1.0.0",
-  "description": "ATS Checker - Resume Analysis Tool",
+  "description": "HireLenz - AI Career Suite",
   "main": "api/index.js",
   "scripts": {
     "dev": "cd client && npm run dev",
     "build": "cd client && npm run build",
-    "start": "cd client && npm run preview"
+    "start": "cd client/server && npm start"
   },
   "keywords": [],
   "author": "",

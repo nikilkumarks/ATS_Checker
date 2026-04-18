@@ -2,22 +2,16 @@ import { useEffect, useState } from "react";
 import API_URL from "../api/config";
 import { useNavigate } from "react-router-dom";
 import {
-  LogOut,
   FileText,
   Plus,
   Zap,
-  LayoutDashboard,
   ArrowUpRight,
-  Search,
-  ChevronRight,
-  Shield,
-  Moon,
-  Sun
+  ChevronRight
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useTheme } from "../context/ThemeContext";
 import { useToggle } from "../context/ToggleContext";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { Sparkles } from "lucide-react";
 
 export default function Dashboard() {
@@ -25,7 +19,6 @@ export default function Dashboard() {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
   const { toggles } = useToggle();
 
   useEffect(() => {
@@ -86,6 +79,32 @@ export default function Dashboard() {
     );
   }
 
+  const scanActivities = activities.filter((activity) => activity.type === "RESUME_SCAN");
+  const buildActivities = activities.filter((activity) => activity.type === "RESUME_CREATE");
+
+  const scoredScans = scanActivities
+    .map((activity) => Number(activity?.details?.score))
+    .filter((score) => Number.isFinite(score));
+
+  const averageScanScore = scoredScans.length
+    ? scoredScans.reduce((sum, score) => sum + score, 0) / scoredScans.length
+    : 0;
+
+  const profileAccuracy = Math.min(
+    100,
+    Math.max(
+      0,
+      Math.round(
+        (averageScanScore * 0.7) +
+        Math.min(scanActivities.length * 4, 15) +
+        Math.min(buildActivities.length * 3, 15)
+      )
+    )
+  );
+
+  const suggestedDomain =
+    scanActivities[0]?.details?.roleRecommendations?.[0]?.role || "Not enough scan data yet";
+
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30 transition-colors duration-300 overflow-x-hidden">
       {/* AMBIENT BACKGROUND ELEMENTS */}
@@ -129,6 +148,45 @@ export default function Dashboard() {
           </div>
         </motion.section>
 
+        {/* PROFILE SNAPSHOT */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="mb-10 sm:mb-12 md:mb-16"
+        >
+          <div className="rounded-3xl sm:rounded-[36px] border border-border/50 bg-card/40 backdrop-blur-xl p-5 sm:p-7 md:p-8">
+            <div className="mb-5 sm:mb-6">
+              <h2 className="text-lg sm:text-xl font-black tracking-tight">Profile Snapshot</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground font-semibold">
+                Based on your scans and resume downloads.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4 sm:p-5">
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground">Profile Accuracy</p>
+                <p className="mt-2 text-3xl sm:text-4xl font-black text-primary tracking-tight">{profileAccuracy}%</p>
+              </div>
+
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4 sm:p-5">
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground">Total Scans</p>
+                <p className="mt-2 text-3xl sm:text-4xl font-black tracking-tight">{scanActivities.length}</p>
+              </div>
+
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4 sm:p-5">
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground">Total Builds</p>
+                <p className="mt-2 text-3xl sm:text-4xl font-black tracking-tight">{buildActivities.length}</p>
+              </div>
+
+              <div className="rounded-2xl border border-border/50 bg-background/50 p-4 sm:p-5">
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground">Suggested Domain</p>
+                <p className="mt-2 text-sm sm:text-base font-black text-foreground/80 leading-snug wrap-break-word">{suggestedDomain}</p>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
         {/* QUICK ACTIONS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-10 sm:mb-12 md:mb-16">
           <motion.div
@@ -136,13 +194,13 @@ export default function Dashboard() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
             onClick={() => navigate('/resume-builder')}
-            className="group relative p-[1px] rounded-3xl sm:rounded-[40px] bg-gradient-to-br from-border/50 to-transparent cursor-pointer overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
+            className="group relative p-px rounded-3xl sm:rounded-[40px] bg-linear-to-br from-border/50 to-transparent cursor-pointer overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
           >
             <div className="bg-card/60 backdrop-blur-3xl p-6 sm:p-8 lg:p-10 rounded-3xl sm:rounded-[40px] h-full flex flex-col justify-between relative overflow-hidden">
               <div className="absolute -top-10 -left-10 w-32 h-32 bg-primary/10 blur-[50px] rounded-full group-hover:bg-primary/20 transition-all" />
 
               <div className="relative z-10">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl sm:rounded-[24px] bg-secondary/50 flex items-center justify-center mb-6 sm:mb-8 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500 shadow-xl group-hover:shadow-primary/20">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl sm:rounded-3xl bg-secondary/50 flex items-center justify-center mb-6 sm:mb-8 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500 shadow-xl group-hover:shadow-primary/20">
                   <Plus size={32} strokeWidth={3} />
                 </div>
                 <h3 className="text-3xl sm:text-4xl font-black mb-3 sm:mb-4 italic tracking-tighter uppercase leading-none">Resume <span className="text-foreground/20">Builder</span></h3>
@@ -161,16 +219,16 @@ export default function Dashboard() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
             onClick={() => navigate('/ats-scanner')}
-            className="group relative p-[1px] rounded-3xl sm:rounded-[40px] bg-gradient-to-br from-border/50 to-transparent cursor-pointer overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/10"
+            className="group relative p-px rounded-3xl sm:rounded-[40px] bg-linear-to-br from-border/50 to-transparent cursor-pointer overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/10"
           >
             <div className="bg-card/60 backdrop-blur-3xl p-6 sm:p-8 lg:p-10 rounded-3xl sm:rounded-[40px] h-full flex flex-col justify-between relative overflow-hidden">
               <div className="absolute -top-10 -left-10 w-32 h-32 bg-emerald-500/10 blur-[50px] rounded-full group-hover:bg-emerald-500/20 transition-all" />
 
               <div className="relative z-10">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl sm:rounded-[24px] bg-secondary/50 flex items-center justify-center mb-6 sm:mb-8 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500 shadow-xl group-hover:shadow-emerald-500/20">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl sm:rounded-3xl bg-secondary/50 flex items-center justify-center mb-6 sm:mb-8 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500 shadow-xl group-hover:shadow-emerald-500/20">
                   <Zap size={32} strokeWidth={3} />
                 </div>
-                <h3 className="text-3xl sm:text-4xl font-black mb-3 sm:mb-4 italic tracking-tighter uppercase leading-none">ATS <span className="opacity-20">Scanner</span></h3>
+                <h3 className="text-3xl sm:text-4xl font-black mb-3 sm:mb-4 italic tracking-tighter uppercase leading-none">HireLenz <span className="opacity-20">Scanner</span></h3>
                 <p className="text-muted-foreground text-sm sm:text-base font-medium leading-relaxed mb-6 sm:mb-8 opacity-70">
                   Compare your resume against job descriptions to see how you match up.
                 </p>
@@ -201,7 +259,7 @@ export default function Dashboard() {
 
           <div className="space-y-4 relative z-10">
             {activities.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-14 sm:py-24 bg-secondary/30 rounded-3xl sm:rounded-[32px] border border-border/10 border-dashed">
+              <div className="flex flex-col items-center justify-center py-14 sm:py-24 bg-secondary/30 rounded-3xl sm:rounded-4xl border border-border/10 border-dashed">
                 <p className="text-[9px] sm:text-[10px] font-black text-foreground/20 uppercase tracking-[0.25em] sm:tracking-[0.5em] text-center">No activity logs found</p>
               </div>
             ) : (
@@ -226,7 +284,7 @@ export default function Dashboard() {
                         {activity.type === 'RESUME_SCAN' ? <Zap size={22} strokeWidth={2.5} /> : <FileText size={22} strokeWidth={2.5} />}
                       </div>
                       <div className="min-w-0">
-                        <h4 className="font-black text-sm sm:text-base text-foreground tracking-tight group-hover:text-primary transition-colors uppercase italic break-words">{activity.title}</h4>
+                        <h4 className="font-black text-sm sm:text-base text-foreground tracking-tight group-hover:text-primary transition-colors uppercase italic wrap-break-word">{activity.title}</h4>
                         <p className="text-[8px] sm:text-[9px] text-foreground/30 font-black mt-1.5 uppercase tracking-[0.2em] sm:tracking-[0.3em]">
                           {new Date(activity.createdAt).toLocaleTimeString()} · {new Date(activity.createdAt).toLocaleDateString()}
                         </p>
@@ -252,9 +310,11 @@ export default function Dashboard() {
         </motion.div>
 
         <p className="text-center text-[9px] sm:text-[10px] text-foreground/10 mt-14 sm:mt-20 font-black uppercase tracking-[0.3em] sm:tracking-[0.8em] italic">
-          ATS Checker · Helping You Get Hired
+          HireLenz · Helping You Get Hired
         </p>
       </div >
+
+      <Footer />
     </div >
   );
 }
