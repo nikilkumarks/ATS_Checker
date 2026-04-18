@@ -1,4 +1,4 @@
-🤖 HireLenz - AI-Powered Resume Analyzer & Builder
+🤖 AI-Powered ATS Resume Analyzer & Builder
 
 A full-stack web application that helps users create ATS-friendly resumes, analyze resume performance against job descriptions, and improve content using AI-powered suggestions.
 
@@ -16,7 +16,7 @@ This platform acts as a SaaS product with user and admin dashboards.
 
 -Role-based access (User & Admin)
 
-📄 HireLenz Resume Checker
+📄 ATS Resume Checker
 
 -Upload resume in PDF format
 

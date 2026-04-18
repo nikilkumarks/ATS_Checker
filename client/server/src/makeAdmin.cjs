@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("./models/users.cjs");
+require("dotenv").config();
 
 mongoose.connect(process.env.MONGO_URI).then(async () => {
     // Replace with your registered email

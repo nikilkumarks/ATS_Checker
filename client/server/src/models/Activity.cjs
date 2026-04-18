@@ -21,30 +21,6 @@ const activitySchema = new mongoose.Schema({
         missingKeywords: [String],
         summary: String,
         analysis: String,
-        interviewQuestions: [
-            {
-                category: String,
-                difficulty: String,
-                question: String
-            }
-        ],
-        attentionMap: [
-            {
-                section: String,
-                attention: String,
-                score: Number,
-                reason: String
-            }
-        ],
-        roleRecommendations: [
-            {
-                role: String,
-                match: Number,
-                missingSkills: [String],
-                salaryRange: String,
-                roadmap: [String]
-            }
-        ],
         jobDescription: String,
         template: String // For builder
     },
